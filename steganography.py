@@ -40,7 +40,7 @@ class Par:
 
 #původní dokument se rozloží na odstavce,runy a slova, ty se následně z jiným stylem uloží do nového dokumentu
 def split_document(doc,message_pattern,file):
-   new_doc = docx.Document()
+   new_doc = Document()
    message_len = len(message_pattern)
    message_end = False
 
@@ -49,10 +49,14 @@ def split_document(doc,message_pattern,file):
    for paragraph in doc.paragraphs:
       par = new_doc.add_paragraph()
       for run in paragraph.runs:
-         words = run.text.strip().split(" ")
+         words = run.text.strip().split(" ") # tady
 
          #kvůli zipu se nedopíše zbytek
          for word in words:
+
+            
+            if word == "" or word == " ":
+               continue
             bit = next(msg_iter, None)
 
             if bit is None:
@@ -62,9 +66,11 @@ def split_document(doc,message_pattern,file):
                par.add_run(word +" ")
             elif(bit == '1'):
                par.add_run(word +" ").bold = True
-  
+
+   file = file.split("/")
+   
    save_path = 'encoded'
-   file_name = 'encoded_'+file
+   file_name = 'encoded_'+file[1]
 
 
    try:
@@ -126,43 +132,59 @@ def print_text(file):
 
 #ukrytí tajné zprávy pomocí Baconovy šifry
 def Bacon_encode(file, message):
-   
-   doc = docx.Document(file)
-   binary_message = str_to_binary(message)
-   print("Binary message: " + binary_message)
+       
+   fileDir = os.path.dirname(os.path.realpath(__file__))
+   filename = os.path.join(fileDir, file)
+
+   print(filename)
+
+   try:
+      doc = docx.Document(filename)
+   except:
+      print("Non existing file")
+      sys.exit()
+
+   # binary_message = str_to_binary(message)
+   # print("Binary message: " + binary_message)
 
    message = split(message)
    message_string = listToString(message)
-   print(message)
 
    index_array = []
    for i in range(len(message)):
       index_array.append(string.ascii_lowercase.index(message[i]))
+
+ 
    print(index_array)
-  
 
    message_pattern = []
    for k in index_array:
       #nutné upravit hodnoty indexů, kvůli dvojicím i,j a u,v (mají stejný vzor v Baconově šifře)
-      if(k > 8 and k < 19):
+      if(k > 8 and k <= 19):
          k -= 1
-      elif(k > 19):
+      elif(k == 20):
+         k -= 1
+      elif(k > 20):
          k -= 2
+      
       message_pattern.append(bacons_table[k])
 
    
    pattern_string = listToString(message_pattern)
-   print(message_pattern,pattern_string)
+   print(message_pattern)
    print("\n", end='')
 
    #nutno zjistit počet slov, více slov umožňuje ukrytí delší zprávy
    full_text = print_text(file)
+
    word_list = full_text.split()
-   number_of_words = len(word_list)
+   number_of_words = len(re.findall(r'\w+', full_text))
+
    
-   # print(len(binary_message))
-   # print(number_of_words)
-   if(len(binary_message) > number_of_words):
+   # print(len(message*5))
+   # print("Number of words in text is:",number_of_words)
+
+   if(len(message*5) > number_of_words):
       print("Cover text doesn't have enough capacity to hide this message")
       sys.exit()
    
@@ -191,7 +213,7 @@ def Bacon_encode(file, message):
       
 def Bacon_decode(file):
    try:
-      doc = docx.Document(file)
+      doc = Document(file)
    except:
       print("Non existing file")
       sys.exit()
@@ -207,7 +229,10 @@ def Bacon_decode(file):
 
       for run in paragraph.runs:
          # #pro kódování a dekódování Baconovou šifrou nepracuji s bílými znaky (pro práci s nimi je implementována jiná metoda)
-         for word in run.text.strip().split(" "):
+         t = run.text
+         split = t.strip().split(" ")
+
+         for word in split:
             if run.bold:
                bold_words.append(word)
                binary = binary + '1';
@@ -308,9 +333,12 @@ def main(argv):
          if(cfg.message == ''):
             print("To encode you need to use parameter -m for secret message")
             sys.exit()
+   
          Bacon_encode(cfg.inputfile, cfg.message)
-
+         
          #zakódované zprávy jsou uložené ve složce encoded
+        
+      
          save_path = 'encoded'
          file_name = 'encoded_'+cfg.inputfile
 
@@ -330,11 +358,14 @@ def main(argv):
       txt_to_docx.add_paragraph(text)
       
       name_docx = cfg.inputfile.split('.txt')
-      txt_to_docx.save(name_docx[0]+'_new.docx')
+      txt_to_docx.save(name_docx[0]+'.docx')
+
+      Bacon_encode(name_docx[0]+'.docx', cfg.message)
+
 
    # uložení tajné zprávy do souboru: {path}
    print("\n", end='')
-   print ("Output file: {0}" .format(file_path))
+   # print ("Output file: {0}" .format(file_path))
 
 if __name__ == "__main__":
    main(sys.argv[1:])
