@@ -74,10 +74,12 @@ def syn_encode(file, message):
     binary_mes = steganography.str_to_binary(message)
     print(binary_mes)
     print("\n", end='')
-
+  
     full_text = steganography.print_text(file)
+    print("YAAAAAAAAAAAAAAAAAAAAAAAY")
     word_list = full_text.split()
     number_of_words = len(re.findall(r'\w+', full_text))
+
 
     #pro ukrytí jednoho znaku je potřeba 8 znaků cover textu
     words_available = count_dictionary_words(full_text)

@@ -47,8 +47,8 @@ def split_document(message_pattern,file, method):
       synonyms.add_skip_tag(font_styles)
 
 
-   save_path = 'encoded'   
-   file = file.split("/")
+   save_path = 'encoded'  
+   file = os.path.split(file)
    file_name = 'encoded_'+file[1]
 
    try:

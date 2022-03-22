@@ -128,6 +128,7 @@ def docx_replace(old_file,new_file,rep):
 
 
 def print_text(file):
+   print("AAAAAAAAAA" + file)
    complete_text = []
    doc = docx.Document(file)
    for paragraph in doc.paragraphs:
@@ -155,7 +156,7 @@ def ArgumentsParsing(argv):
    #načtení defaultních hodnot
    cfg = Config()
    try:
-      opts, args = getopt.getopt(sys.argv[1:],"i:ed:s:bwr",['ifile=','encode','decode','message','bacon','whitespaces','replace'])
+      opts, args = getopt.getopt(argv,"i:ed:s:bwr",['ifile=','encode','decode','message','bacon','whitespaces','replace'])
    except getopt.GetoptError:
      print("steganography.py -i <inputfile> -e/-d -s <secret_message> -<b/w/r>")
      sys.exit(2)
@@ -229,6 +230,7 @@ def main(argv):
          elif(cfg.whitespaces is True):
             file_path = whitespaces.Spaces_encode(cfg.inputfile, cfg.message)
          elif(cfg.replace is True):
+            print(cfg.inputfile)
             file_path = synonyms.syn_encode(cfg.inputfile, cfg.message)
 
 
