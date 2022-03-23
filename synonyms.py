@@ -82,15 +82,14 @@ def syn_encode(file, message):
 
     #pro ukrytí jednoho znaku je potřeba 8 znaků cover textu
     words_available = count_dictionary_words(full_text)
-  
-    if(len(message*8) > words_available):
+    if(len(message)*8 > words_available):
         print("Cover text doesn't have enough capacity to hide this message")
-        sys.exit()
+        return False
 
-
+    print(f"Enough data: needed {len(message)*8} available: {words_available}")
     combined = list(zip(dictionary_of_zeros, dictionary_of_synonyms))
-    for couple in combined:
-        print(couple)
+    # for couple in combined:
+    #     print(couple)
 
     path = xml_parse.split_document(binary_mes, file, "synonyms")
     return path
@@ -181,16 +180,11 @@ def syn_element(prop_el,bit,namespace, word, run):
             syn_word = syn_word.upper()
 
         # apply <w:rStyle w:val="synonym"/>  
-        for subelement in prop_el[:]: 
-            tag = create_syn_tag()
+        tag = create_syn_tag()
         prop_el.append(tag)
-       
-       
-
     elif(word.lower() in dictionary_of_synonyms):
         # apply <w:rStyle w:val="skip"/>  
-        for subelement in prop_el[:]: 
-            tag = skip_tag()
+        tag = skip_tag()
         prop_el.append(tag)
 
     return syn_word

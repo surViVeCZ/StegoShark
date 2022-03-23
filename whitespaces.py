@@ -40,7 +40,7 @@ def Spaces_encode(file, message):
     #pro ukrytí jednoho znaku je potřeba 8 znaků cover textu
     if(len(message*8) > number_of_words):
         print("Cover text doesn't have enough capacity to hide this message")
-        sys.exit()
+        return False
 
     path = xml_parse.split_document(binary_mes, file, "spaces")
     return path

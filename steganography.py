@@ -53,7 +53,7 @@ def updateZip(zipname, zip_file_location, outside_file_location):
    #vytvoří kopii archivu           
    with zipfile.ZipFile(zipname, 'r') as zin:
       with zipfile.ZipFile(tmpname, 'w') as zout:
-         zout.comment = zin.comment # preserve the comment
+         zout.comment = zin.comment 
          for item in zin.infolist():
                if item.filename != zip_file_location:
                   zout.writestr(item, zin.read(item.filename))
@@ -70,7 +70,6 @@ def updateZip(zipname, zip_file_location, outside_file_location):
 def split_to_words(string):
    word = string.strip().split()
    return(word)
-   # return [word for word in string.strip().split() if not word == '' and not word == ' ' ]
 
 
 #vytvoření docx kopie, včetně všech stylů
@@ -226,12 +225,16 @@ def main(argv):
    
          if(cfg.bacon is True):
             file_path = bacon.Bacon_encode(cfg.inputfile, cfg.message)
+            if file_path is False:
+               return False
          elif(cfg.whitespaces is True):
             file_path = whitespaces.Spaces_encode(cfg.inputfile, cfg.message)
+            if file_path is False:
+               return False
          elif(cfg.replace is True):
-            print(cfg.inputfile)
             file_path = synonyms.syn_encode(cfg.inputfile, cfg.message)
-
+            if file_path is False:
+               return False
 
       # print(print_text(cfg.inputfile))
       

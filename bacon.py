@@ -78,7 +78,7 @@ def Bacon_encode(file, message):
    #pro ukrytí jednoho znaku je potřeba 5 znaků cover textu
    if(len(message*5) > number_of_words):
       print("Cover text doesn't have enough capacity to hide this message")
-      sys.exit()
+      return False
    
    path = xml_parse.split_document(pattern_string, file, "bacon")
    return path
