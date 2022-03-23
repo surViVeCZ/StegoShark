@@ -76,7 +76,6 @@ def syn_encode(file, message):
     print("\n", end='')
   
     full_text = steganography.print_text(file)
-    print("YAAAAAAAAAAAAAAAAAAAAAAAY")
     word_list = full_text.split()
     number_of_words = len(re.findall(r'\w+', full_text))
 

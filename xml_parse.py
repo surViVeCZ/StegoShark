@@ -41,15 +41,17 @@ def split_document(message_pattern,file, method):
    #pro ukrytí zprávy je nejprve zapotřebí přidat vlastní styl
    if(method == "bacon"):
       bacon.add_bacon_style(font_styles)
+      nametag = 'bacon_' 
    elif(method == "spaces"):
       whitespaces.add_spaces_style(font_styles)
+      nametag = 'spaces_' 
    elif(method == "synonyms"):
+      nametag = 'synonyms_' 
       synonyms.add_skip_tag(font_styles)
-
-
+ 
    save_path = 'encoded'  
    file = os.path.split(file)
-   file_name = 'encoded_'+file[1]
+   file_name = nametag+file[1]
 
    try:
       full_path = os.path.join(save_path, file_name)
@@ -115,13 +117,11 @@ def split_document(message_pattern,file, method):
          ET.register_namespace(prefix,uri)
       except:
          ET._namespace_map[uri] = prefix
-
+   
 
    for par in tree.iter(paragraph_tag):
       new_runs = []
-      #print("<w:p>")
       for run in par.findall(run_tag): #<w:p>-><w:r>
-         #print("<w:r>")
          run_props_q_res = run.findall(run_properties) #<w:p>-><w:r>-><w:rPr>
          if len(run_props_q_res) == 0:
             run_props = None
@@ -135,7 +135,6 @@ def split_document(message_pattern,file, method):
             par.remove(run)
             continue
 
-         
          #odstranění mezer
          if(method == "bacon"):
             words = steganography.split_to_words(run_text)

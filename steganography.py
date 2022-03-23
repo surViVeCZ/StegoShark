@@ -128,7 +128,6 @@ def docx_replace(old_file,new_file,rep):
 
 
 def print_text(file):
-   print("AAAAAAAAAA" + file)
    complete_text = []
    doc = docx.Document(file)
    for paragraph in doc.paragraphs:
