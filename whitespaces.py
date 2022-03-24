@@ -26,6 +26,13 @@ import tempfile
 import steganography
 import xml_parse
 
+def count_spaces(text):
+    cnt = 0
+    for i in range(0, len(text)):
+        if text[i] == " ":
+            cnt += 1
+    return cnt
+
 def Spaces_encode(file, message):
     binary_mes = steganography.str_to_binary(message)
     print(binary_mes)
@@ -35,10 +42,10 @@ def Spaces_encode(file, message):
     full_text = steganography.print_text(file)
 
     word_list = full_text.split()
-    number_of_words = len(re.findall(r'\w+', full_text))
+    number_of_spaces = count_spaces(full_text)
 
     #pro ukrytí jednoho znaku je potřeba 8 znaků cover textu
-    if(len(message*8) > number_of_words):
+    if(len(message*8) > number_of_spaces):
         print("Cover text doesn't have enough capacity to hide this message")
         return False
 

@@ -88,8 +88,8 @@ def syn_encode(file, message):
 
     print(f"Enough data: needed {len(message)*8} available: {words_available}")
     combined = list(zip(dictionary_of_zeros, dictionary_of_synonyms))
-    # for couple in combined:
-    #     print(couple)
+    for couple in combined:
+        print(couple)
 
     path = xml_parse.split_document(binary_mes, file, "synonyms")
     return path
@@ -102,14 +102,13 @@ def syn_decode(file):
       print("Non existing file")
       sys.exit()
 
-    binary = "" #bold = 1, nonbold = 0
+    binary = "" 
     text = ""
-    #rozdělí text na tučné a obyčejné slova
+
     for paragraph in doc.paragraphs:
         text = text + paragraph.text + " "
 
         for run in paragraph.runs:
-            # #pro kódování a dekódování Baconovou šifrou nepracuji s bílými znaky (pro práci s nimi je implementována jiná metoda)
             t = run.text
             split = t.strip().split(" ")
         
