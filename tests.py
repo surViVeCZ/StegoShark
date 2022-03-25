@@ -13,17 +13,21 @@ import synonyms
 import steganography
 from contextlib import contextmanager
 
-secret_message = "hromadnytest"
+secret_message = "hromadnytesthromadnytest"
+mes_len = len(secret_message)
+
 def encode_all_covers():
-    print("encoding")
-    # encode_bacon()
-    # encode_spaces()
-    # encode_syn()
+    encode_bacon()
+    encode_spaces()
+    encode_syn()
 
 def decode_all_encodes():
+    print("\n", end='')
+    print("---------------------------------")
+    print("DECODING:")
     decode_bacon()
-    # decode_spaces()
-    # decode_syn()
+    decode_spaces()
+    decode_syn()
  
 #vypočítá maximální možnou velikost zprávy, kterou jde do určeného cover textu uložit
 def max_secret_message(file, method):    
@@ -235,10 +239,10 @@ def decode_bacon():
             head_tail = os.path.split(encoded)
             file_name = head_tail[1]
             
-        if check is False:
-            print("#%d failed ✖ (%s)" % (cnt, file_name))
-        else:
-            print("#%d decoded 🗸 (%s)" % (cnt, file_name))
+        # if check is False:
+        #     print("#%d failed ✖ (%s)" % (cnt, file_name))
+        # else:
+        #     print("#%d decoded 🗸 (%s)" % (cnt, file_name))
 
     bacon_decodes = []
     decoded_path = os.path.join(thisdir_bin, b"decoded")
@@ -250,9 +254,151 @@ def decode_bacon():
         if file.startswith("bacon"):
             bacon_decodes.append(file)
 
+    cnt = 0
+    success = 0
+    failed = 0
     for decoded in bacon_decodes:
-        f = open("decoded/" + decoded, "r")
-        print(f.read())
+        cnt += 1
+        text = steganography.print_text("decoded/"+decoded)
+        text = text[0:mes_len]
+        #zpráva zůstala zachována
+        if text.lower() == secret_message.lower():
+            success += 1
+        else:
+            failed += 1
+
+    #úspěšně se zachovaly všechny zprávy
+    if failed == 0:
+        print("All messages DECODED SUCCESSFULLY!")
+        print("\n", end='')
+    else:
+        print("DECODED %d/%d" % (success,cnt))
+        print("\n", end='')
+
+def decode_spaces():
+    thisdir_bin = os.getcwdb()
+    changed_path = os.path.join(thisdir_bin, b"encoded")
+
+    list_of_files = os.listdir(changed_path)
+    spaces_files = []
+
+    cnt = 0
+    message = 0
+    success = 0
+    print("SPACES DECODING:")
+    for file in list_of_files:
+        file = str(file, 'UTF-8')
+     
+
+        if file.startswith("spaces"):
+            spaces_files.append(file)
+       
+    for encoded in spaces_files:
+        cnt += 1
+        with suppress_stdout():
+            check = steganography.main(['-i', "encoded/" + encoded, '-d', '-s', '-w'])
+            head_tail = os.path.split(encoded)
+            file_name = head_tail[1]
+            
+        # if check is False:
+        #     print("#%d failed ✖ (%s)" % (cnt, file_name))
+        # else:
+        #     print("#%d decoded 🗸 (%s)" % (cnt, file_name))
+
+    spaces_decodes = []
+    decoded_path = os.path.join(thisdir_bin, b"decoded")
+    list_of_decoded = os.listdir(decoded_path)
+
+    #porovnání, jestli zpráva zůstala celá neporušená
+    for file in list_of_decoded:
+        file = str(file, 'UTF-8')
+        if file.startswith("spaces"):
+            spaces_decodes.append(file)
+
+    cnt = 0
+    success = 0
+    failed = 0
+    for decoded in spaces_decodes:
+        cnt += 1
+        text = steganography.print_text("decoded/"+decoded)
+        text = text[0:mes_len]
+
+        #zpráva zůstala zachována
+        if text.lower() == secret_message.lower():
+            success += 1
+        else:
+            failed += 1
+
+    #úspěšně se zachovaly všechny zprávy
+    if failed == 0:
+        print("All messages DECODED SUCCESSFULLY!")
+        print("\n", end='')
+    else:
+        print("DECODED %d/%d" % (success,cnt))
+        print("\n", end='')
+
+def decode_syn():
+    thisdir_bin = os.getcwdb()
+    changed_path = os.path.join(thisdir_bin, b"encoded")
+
+    list_of_files = os.listdir(changed_path)
+    syn_files = []
+
+    cnt = 0
+    message = 0
+    success = 0
+    print("SYNONYMS DECODING:")
+    for file in list_of_files:
+        file = str(file, 'UTF-8')
+     
+
+        if file.startswith("synonyms"):
+            syn_files.append(file)
+       
+    for encoded in syn_files:
+        cnt += 1
+        with suppress_stdout():
+            check = steganography.main(['-i', "encoded/" + encoded, '-d', '-s', '-r'])
+            head_tail = os.path.split(encoded)
+            file_name = head_tail[1]
+            
+        # if check is False:
+        #     print("#%d failed ✖ (%s)" % (cnt, file_name))
+        # else:
+        #     print("#%d decoded 🗸 (%s)" % (cnt, file_name))
+
+    syn_decodes = []
+    decoded_path = os.path.join(thisdir_bin, b"decoded")
+    list_of_decoded = os.listdir(decoded_path)
+
+    # #porovnání, jestli zpráva zůstala celá neporušená
+    for file in list_of_decoded:
+        file = str(file, 'UTF-8')
+        if file.startswith("synonyms"):
+            syn_decodes.append(file)
+
+    cnt = 0
+    success = 0
+    failed = 0
+    for decoded in syn_decodes:
+        cnt += 1
+        text = steganography.print_text("decoded/"+decoded)
+        text = text[0:mes_len]
+
+        #zpráva zůstala zachována
+        if text.lower() == secret_message.lower():
+            success += 1
+        else:
+            failed += 1
+
+    #úspěšně se zachovaly všechny zprávy
+    if failed == 0:
+        print("All messages DECODED SUCCESSFULLY!")
+        print("\n", end='')
+    else:
+        print("DECODED %d/%d" % (success,cnt))
+        print("\n", end='')
+
     
 
 if __name__ == "__main__":
