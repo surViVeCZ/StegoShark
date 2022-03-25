@@ -94,7 +94,7 @@ def split_document(message_pattern,file, method):
          'mc':"http://schemas.openxmlformats.org/markup-compatibility/2006",\
          'aink':"http://schemas.microsoft.com/office/drawing/2016/ink",\
          'am3d':"http://schemas.microsoft.com/office/drawing/2017/model3d",\
-         'o':"http://schemas.microsoft.com/office/drawing/2017/model3d",\
+         'o':"urn:schemas-microsoft-com:office:office",\
          'r':"http://schemas.openxmlformats.org/officeDocument/2006/relationships",\
          'm':"http://schemas.openxmlformats.org/officeDocument/2006/math",\
          'v':"urn:schemas-microsoft-com:vml",\

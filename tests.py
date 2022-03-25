@@ -13,14 +13,15 @@ import synonyms
 import steganography
 from contextlib import contextmanager
 
-
+secret_message = "hromadnytest"
 def encode_all_covers():
-    encode_bacon()
-    encode_spaces()
-    encode_syn()
+    print("encoding")
+    # encode_bacon()
+    # encode_spaces()
+    # encode_syn()
 
 def decode_all_encodes():
-    # decode_bacon()
+    decode_bacon()
     # decode_spaces()
     # decode_syn()
  
@@ -87,7 +88,7 @@ def encode_syn():
 
         message += max_secret_message(size_path+'/'+file_name, "synonyms")
         with suppress_stdout():
-            check = steganography.main(['-i', file, '-e', '-s', 'hromadnytest', '-r'])
+            check = steganography.main(['-i', file, '-e', '-s', secret_message, '-r'])
 
         if check is False:
             print("#%d failed ✖ (%s)" % (cnt, file_name))
@@ -137,7 +138,7 @@ def encode_spaces():
 
         message += max_secret_message(size_path+'/'+file_name, "spaces")
         with suppress_stdout():
-            check = steganography.main(['-i', file, '-e', '-s', 'hromadnytest', '-w'])
+            check = steganography.main(['-i', file, '-e', '-s', secret_message, '-w'])
         if check is False:
             print("#%d failed ✖ (%s)" % (cnt, file_name))
         else:
@@ -161,7 +162,6 @@ def encode_spaces():
 def encode_bacon():
     thisdir_bin = os.getcwdb()
     size_path = os.getcwd() + '/cover_files/bacon'
-    path = bytes('/cover_files/bacon', 'utf-8')
 
     changed_path = os.path.join(thisdir_bin, b"cover_files")
     changed_path = os.path.join(changed_path, b"bacon")
@@ -186,7 +186,7 @@ def encode_bacon():
     
         message += max_secret_message(size_path+'/'+file_name, "bacon")
         with suppress_stdout():
-            check = steganography.main(['-i', file, '-e', '-s', 'hromadnytest', '-b'])
+            check = steganography.main(['-i', file, '-e', '-s', secret_message, '-b'])
 
         if check is False:
             print("#%d failed ✖ (%s)" % (cnt, file_name))
@@ -210,20 +210,50 @@ def encode_bacon():
     print("Success rate: \t\t %d/%d 〜 %g%%" % (success,cnt,success_rate))
 
 
-# def decode_bacon():
-#     thisdir_bin = os.getcwdb()
-#     size_path = os.getcwd() + '/encoded/bacon'
-#     path = bytes('/cover_files/bacon', 'utf-8')
+def decode_bacon():
+    thisdir_bin = os.getcwdb()
+    changed_path = os.path.join(thisdir_bin, b"encoded")
 
-#     changed_path = os.path.join(thisdir_bin, b"cover_files")
-#     changed_path = os.path.join(changed_path, b"bacon")
+    list_of_files = os.listdir(changed_path)
+    bacon_files = []
 
-#     list_of_files = os.listdir(changed_path)
+    cnt = 0
+    message = 0
+    success = 0
+    print("BACON DECODING:")
+    for file in list_of_files:
+        file = str(file, 'UTF-8')
+     
 
-#     cnt = 0
-#     message = 0
-#     success = 0
-#     print("BACON DECODING:")
+        if file.startswith("bacon"):
+            bacon_files.append(file)
+       
+    for encoded in bacon_files:
+        cnt += 1
+        with suppress_stdout():
+            check = steganography.main(['-i', "encoded/" + encoded, '-d', '-s', '-b'])
+            head_tail = os.path.split(encoded)
+            file_name = head_tail[1]
+            
+        if check is False:
+            print("#%d failed ✖ (%s)" % (cnt, file_name))
+        else:
+            print("#%d decoded 🗸 (%s)" % (cnt, file_name))
+
+    bacon_decodes = []
+    decoded_path = os.path.join(thisdir_bin, b"decoded")
+    list_of_decoded = os.listdir(decoded_path)
+
+    #porovnání, jestli zpráva zůstala celá neporušená
+    for file in list_of_decoded:
+        file = str(file, 'UTF-8')
+        if file.startswith("bacon"):
+            bacon_decodes.append(file)
+
+    for decoded in bacon_decodes:
+        f = open("decoded/" + decoded, "r")
+        print(f.read())
+    
 
 if __name__ == "__main__":
     encode_all_covers()
