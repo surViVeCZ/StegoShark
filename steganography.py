@@ -72,6 +72,18 @@ def split_to_words(string):
    return(word)
 
 
+#cite: https://stackoverflow.com/questions/8733233/filtering-out-certain-bytes-in-python
+#author: https://stackoverflow.com/users/84270/john-machin
+def valid_xml_char_ordinal(c):
+    codepoint = ord(c)
+    # conditions ordered by presumed frequency
+    return (
+        0x20 <= codepoint <= 0xD7FF or
+        codepoint in (0x9, 0xA, 0xD) or
+        0xE000 <= codepoint <= 0xFFFD or
+        0x10000 <= codepoint <= 0x10FFFF
+        )
+
 #vytvoření docx kopie, včetně všech stylů
 def copy_docx(doc):
    copy_styles = deepcopy(doc)
@@ -206,17 +218,17 @@ def main(argv):
          print("\n", end='')
 
          file_path = cfg.inputfile.replace("encoded", "decoded")
-
          #vytvoření a zápis do souboru 
          try:
-            decoded_file = open(file_path, "w")
+            decoded_file = docx.Document()
          except:
             print("Non existing file")
             sys.exit()
 
          if(secret_message  is not None):
-            decoded_file.write(secret_message)
-         decoded_file.close()
+            cleaned_string = ''.join(c for c in secret_message if valid_xml_char_ordinal(c))
+            decoded_file.add_paragraph(cleaned_string)
+         decoded_file.save(file_path)
          
       elif(cfg.encode == True):
          if(cfg.message == ''):

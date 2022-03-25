@@ -192,7 +192,12 @@ def split_document(message_pattern,file, method):
 
    # file = file.split("/")
    save_path = 'encoded'
-   file_name = 'encoded_'+file[1]
+   if(method == "bacon"):
+      file_name = 'bacon_'+file[1]
+   elif(method == "spaces"):
+      file_name = 'spaces_'+file[1]
+   elif(method == "synonyms"):
+      file_name = 'synonyms_'+file[1]
 
    return full_path
 

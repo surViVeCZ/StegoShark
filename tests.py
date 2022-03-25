@@ -18,11 +18,14 @@ def encode_all_covers():
     encode_bacon()
     encode_spaces()
     encode_syn()
+
+def decode_all_encodes():
+    # decode_bacon()
+    # decode_spaces()
+    # decode_syn()
  
 #vypočítá maximální možnou velikost zprávy, kterou jde do určeného cover textu uložit
-def max_secret_message(file, method):
-    message = "abcd"
-    
+def max_secret_message(file, method):    
     full_text = steganography.print_text(file)
     if method is "synonyms":
         words_available = synonyms.count_dictionary_words(full_text)
@@ -206,5 +209,22 @@ def encode_bacon():
     print("-------------------------------------------------------------------------")
     print("Success rate: \t\t %d/%d 〜 %g%%" % (success,cnt,success_rate))
 
+
+# def decode_bacon():
+#     thisdir_bin = os.getcwdb()
+#     size_path = os.getcwd() + '/encoded/bacon'
+#     path = bytes('/cover_files/bacon', 'utf-8')
+
+#     changed_path = os.path.join(thisdir_bin, b"cover_files")
+#     changed_path = os.path.join(changed_path, b"bacon")
+
+#     list_of_files = os.listdir(changed_path)
+
+#     cnt = 0
+#     message = 0
+#     success = 0
+#     print("BACON DECODING:")
+
 if __name__ == "__main__":
     encode_all_covers()
+    decode_all_encodes()

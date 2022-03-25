@@ -97,6 +97,7 @@ def spaces_element(prop_el,bit,namespace):
         style_tag = create_tag()
         prop_el.append(style_tag)
         prop_el.append(style_el)
+        
 
 #do dokumentu docx se nahraje můj vlastní styl, který později použiji pro ukrytí zprávy
 #tento styl neobsahuje žádné vlastnosti, souží pouze jako flag, abych poznal kde je urkytá zpráva
