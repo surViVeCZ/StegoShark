@@ -13,6 +13,14 @@ import synonyms
 import steganography
 from contextlib import contextmanager
 
+
+bacon_cover_size = 0
+bacon_encoded_size = 0
+spaces_cover_size = 0
+spaces_encoded_size = 0
+syn_cover_size = 0
+syn_encoded_size = 0
+
 secret_message = "hromadnytesthromadnytest"
 mes_len = len(secret_message)
 
@@ -28,6 +36,14 @@ def decode_all_encodes():
     decode_bacon()
     decode_spaces()
     decode_syn()
+
+def calculate_SIR():
+    bacon_sir = (bacon_encoded_size-bacon_cover_size)/bacon_cover_size*100
+    spaces_sir = (spaces_encoded_size-spaces_cover_size)/spaces_cover_size*100
+    syn_sir = (syn_encoded_size-syn_cover_size)/syn_cover_size*100
+    print("BACON SIR:\t %f %%" % bacon_sir)
+    print("SPACES SIR:\t %f %%" % spaces_sir)
+    print("SYNONYMS SIR:\t %f %%" % syn_sir)
  
 #vypočítá maximální možnou velikost zprávy, kterou jde do určeného cover textu uložit
 def max_secret_message(file, method):    
@@ -65,7 +81,7 @@ def get_folder_size(full_path):
  
 def encode_syn():
     thisdir_bin = os.getcwdb()
-    size_path = os.getcwd() + '/cover_files/synonyms'
+    cover_size_path = os.getcwd() + '/cover_files/synonyms'
     path = bytes('/cover_files/synonyms', 'utf-8')
 
     changed_path = os.path.join(thisdir_bin, b"cover_files")
@@ -76,6 +92,7 @@ def encode_syn():
     cnt = 0
     message = 0
     success = 0
+    global syn_cover_size
     print("\n", end='')
     print("REPLACING SYNONYMS ENCODING:")
 
@@ -90,7 +107,7 @@ def encode_syn():
         head_tail = os.path.split(file)
         file_name = head_tail[1]
 
-        message += max_secret_message(size_path+'/'+file_name, "synonyms")
+        message += max_secret_message(cover_size_path+'/'+file_name, "synonyms")
         with suppress_stdout():
             check = steganography.main(['-i', file, '-e', '-s', secret_message, '-r'])
 
@@ -98,14 +115,15 @@ def encode_syn():
             print("#%d failed ✖ (%s)" % (cnt, file_name))
         else:
             print("#%d encoded 🗸 (%s)" % (cnt, file_name))
+            size = os.stat(file)
+            syn_cover_size += size.st_size
             success += 1
     end = timeit.default_timer()
     time = (end - start)
     print("Elapsed time: \t\t%f \t[seconds] " % time)
-    size = get_folder_size(size_path)
-    print("Cover texts size: \t%d \t[bytes]" % size)
+    print("Cover texts size: \t%d \t[bytes]" % syn_cover_size)
     
-    efficiency = time/(float(size)*0.001)
+    efficiency = time/(float(syn_cover_size)*0.001)
     success_rate = 100*(success/cnt)
     print("Efficiency: \t\t%f \t[time in seconds to encode 1KB]" % efficiency)
     print("Average capacity: \t%d \t\t[bits]" % (message/cnt))
@@ -115,7 +133,7 @@ def encode_syn():
 
 def encode_spaces():
     thisdir_bin = os.getcwdb()
-    size_path = os.getcwd() + '/cover_files/spaces'
+    cover_size_path = os.getcwd() + '/cover_files/spaces'
     path = bytes('/cover_files/spaces', 'utf-8')
 
     changed_path = os.path.join(thisdir_bin, b"cover_files")
@@ -125,6 +143,7 @@ def encode_spaces():
 
     cnt = 0
     success = 0
+    global spaces_cover_size
     print("\n", end='')
     print("ADDING WHITESPACES ENCODING:")
 
@@ -140,22 +159,24 @@ def encode_spaces():
         head_tail = os.path.split(file)
         file_name = head_tail[1]
 
-        message += max_secret_message(size_path+'/'+file_name, "spaces")
+        message += max_secret_message(cover_size_path+'/'+file_name, "spaces")
         with suppress_stdout():
             check = steganography.main(['-i', file, '-e', '-s', secret_message, '-w'])
         if check is False:
             print("#%d failed ✖ (%s)" % (cnt, file_name))
         else:
             print("#%d encoded 🗸 (%s)" % (cnt, file_name))
+            size = os.stat(file)
+            spaces_cover_size += size.st_size
             success += 1
 
     end = timeit.default_timer()
     time = (end - start)
     print("Elapsed time: \t\t%f \t[seconds] " % time)
-    size = get_folder_size(size_path)
-    print("Cover texts size: \t%d \t[bytes]" % size)
+    size = get_folder_size(cover_size_path)
+    print("Cover texts size: \t%d \t[bytes]" % spaces_cover_size)
     
-    efficiency = time/(float(size)*0.001)
+    efficiency = time/(float(spaces_cover_size)*0.001)
     success_rate = 100*(success/cnt)
     print("Efficiency: \t\t%f \t[time in seconds to encode 1KB]" % efficiency)
     print("Average capacity: \t%d \t\t[bits]" % (message/cnt))
@@ -165,7 +186,7 @@ def encode_spaces():
 
 def encode_bacon():
     thisdir_bin = os.getcwdb()
-    size_path = os.getcwd() + '/cover_files/bacon'
+    cover_size_path = os.getcwd() + '/cover_files/bacon'
 
     changed_path = os.path.join(thisdir_bin, b"cover_files")
     changed_path = os.path.join(changed_path, b"bacon")
@@ -175,6 +196,7 @@ def encode_bacon():
     cnt = 0
     message = 0
     success = 0
+    global bacon_cover_size
     print("BACON ENCODING:")
 
     #šifrování všech cover textů pomocí Baconovy šifry
@@ -188,7 +210,7 @@ def encode_bacon():
         head_tail = os.path.split(file)
         file_name = head_tail[1]
     
-        message += max_secret_message(size_path+'/'+file_name, "bacon")
+        message += max_secret_message(cover_size_path+'/'+file_name, "bacon")
         with suppress_stdout():
             check = steganography.main(['-i', file, '-e', '-s', secret_message, '-b'])
 
@@ -196,16 +218,17 @@ def encode_bacon():
             print("#%d failed ✖ (%s)" % (cnt, file_name))
         else:
             print("#%d encoded 🗸 (%s)" % (cnt, file_name))
+            size = os.stat(file)
+            bacon_cover_size += size.st_size
             success += 1
-    size = get_folder_size(size_path)
+    size = get_folder_size(cover_size_path)
 
     end = timeit.default_timer()
     time = (end - start)
     print("Elapsed time: \t\t%f \t[seconds] " % time)
-    size = get_folder_size(size_path)
-    print("Cover texts size: \t%d \t[bytes]" % size)
+    print("Cover texts size: \t%d \t[bytes]" % bacon_cover_size)
     
-    efficiency = time/(float(size)*0.001)
+    efficiency = time/(float(bacon_cover_size)*0.001)
     success_rate = 100*(success/cnt)
     print("Efficiency: \t\t%f \t[time in seconds to encode 1KB]" % efficiency)
     print("Average capacity: \t%d \t\t[bits]" % (message/cnt))
@@ -220,10 +243,12 @@ def decode_bacon():
 
     list_of_files = os.listdir(changed_path)
     bacon_files = []
+    encoded_path = os.getcwd()
 
     cnt = 0
     message = 0
     success = 0
+    global bacon_encoded_size
     print("BACON DECODING:")
     for file in list_of_files:
         file = str(file, 'UTF-8')
@@ -231,6 +256,8 @@ def decode_bacon():
 
         if file.startswith("bacon"):
             bacon_files.append(file)
+            size = os.stat(encoded_path + "/encoded/" + file)
+            bacon_encoded_size += size.st_size
        
     for encoded in bacon_files:
         cnt += 1
@@ -281,10 +308,12 @@ def decode_spaces():
 
     list_of_files = os.listdir(changed_path)
     spaces_files = []
+    encoded_path = os.getcwd()
 
     cnt = 0
     message = 0
     success = 0
+    global spaces_encoded_size
     print("SPACES DECODING:")
     for file in list_of_files:
         file = str(file, 'UTF-8')
@@ -292,6 +321,8 @@ def decode_spaces():
 
         if file.startswith("spaces"):
             spaces_files.append(file)
+            size = os.stat(encoded_path + "/encoded/" + file)
+            spaces_encoded_size += size.st_size
        
     for encoded in spaces_files:
         cnt += 1
@@ -343,10 +374,12 @@ def decode_syn():
 
     list_of_files = os.listdir(changed_path)
     syn_files = []
+    encoded_path = os.getcwd()
 
     cnt = 0
     message = 0
     success = 0
+    global syn_encoded_size
     print("SYNONYMS DECODING:")
     for file in list_of_files:
         file = str(file, 'UTF-8')
@@ -354,6 +387,8 @@ def decode_syn():
 
         if file.startswith("synonyms"):
             syn_files.append(file)
+            size = os.stat(encoded_path + "/encoded/" + file)
+            syn_encoded_size += size.st_size
        
     for encoded in syn_files:
         cnt += 1
@@ -404,3 +439,4 @@ def decode_syn():
 if __name__ == "__main__":
     encode_all_covers()
     decode_all_encodes()
+    calculate_SIR()
