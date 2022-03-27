@@ -1,3 +1,4 @@
+from codecs import encode
 import re
 import os
 import string
@@ -21,20 +22,21 @@ spaces_encoded_size = 0
 syn_cover_size = 0
 syn_encoded_size = 0
 
-secret_message = "hromadnytesthromadnytest"
+secret_message = "hromadnytesthromadny"
 mes_len = len(secret_message)
 
 def encode_all_covers():
-    encode_bacon()
-    encode_spaces()
+    # encode_bacon()
+    # encode_spaces()
     encode_syn()
+    encode_own1()
 
 def decode_all_encodes():
     print("\n", end='')
     print("---------------------------------")
     print("DECODING:")
-    decode_bacon()
-    decode_spaces()
+    # decode_bacon()
+    # decode_spaces()
     decode_syn()
 
 def calculate_SIR():
@@ -49,11 +51,11 @@ def calculate_SIR():
 def max_secret_message(file, method):    
     full_text = steganography.print_text(file)
     if method is "synonyms":
-        words_available = synonyms.count_dictionary_words(full_text)
-    elif method is "bacon":
-        words_available = len(re.findall(r'\w+', full_text))
+        words_available = synonyms.count_dictionary_words(full_text)/8
+    elif method is "bacon" or method is "own1":
+        words_available = len(full_text.split())/5
     elif method is "spaces":
-        words_available = len(re.findall(r'\w+', full_text))
+        words_available = len(full_text.split())/8
 
     return words_available
 
@@ -126,7 +128,62 @@ def encode_syn():
     efficiency = time/(float(syn_cover_size)*0.001)
     success_rate = 100*(success/cnt)
     print("Efficiency: \t\t%f \t[time in seconds to encode 1KB]" % efficiency)
-    print("Average capacity: \t%d \t\t[bits]" % (message/cnt))
+    capacity = float(message/syn_cover_size)*100.0
+    print("Average capacity: \t%f \t[bits]" % (capacity))
+
+    print("-------------------------------------------------------------------------")
+    print("Success rate: \t\t %d/%d 〜 %g%%" % (success,cnt,success_rate))
+
+def encode_own1():
+    thisdir_bin = os.getcwdb()
+    cover_size_path = os.getcwd() + '/cover_files/synonyms'
+    path = bytes('/cover_files/synonyms', 'utf-8')
+
+    changed_path = os.path.join(thisdir_bin, b"cover_files")
+    changed_path = os.path.join(changed_path, b"synonyms")
+
+    list_of_files = os.listdir(changed_path)
+
+    cnt = 0
+    message = 0
+    success = 0
+    global syn_cover_size
+    syn_cover_size = 0
+    print("\n", end='')
+    print("OWN1 ENCODING (SYN + BACON):")
+
+    #šifrování všech cover textů pomocí metody synonym
+    start = timeit.default_timer()
+    for file in list_of_files:
+        cnt += 1
+        file = os.path.join(changed_path, file)    
+        file = str(file, 'UTF-8')
+
+        #zjistím si jméno souboru (poslední soubor v cestě)
+        head_tail = os.path.split(file)
+        file_name = head_tail[1]
+
+        message += max_secret_message(cover_size_path+'/'+file_name, "own1")
+        with suppress_stdout():
+            check = steganography.main(['-i', file, '-e', '-s', secret_message, '--own1'])
+
+        if check is False:
+            print("#%d failed ✖ (%s)" % (cnt, file_name))
+        else:
+            print("#%d encoded 🗸 (%s)" % (cnt, file_name))
+            size = os.stat(file)
+            syn_cover_size += size.st_size
+            success += 1
+    end = timeit.default_timer()
+    time = (end - start)
+    print("Elapsed time: \t\t%f \t[seconds] " % time)
+    print("Cover texts size: \t%d \t[bytes]" % syn_cover_size)
+    
+    efficiency = time/(float(syn_cover_size)*0.001)
+    success_rate = 100*(success/cnt)
+    print("Efficiency: \t\t%f \t[time in seconds to encode 1KB]" % efficiency)
+    capacity = float(message/syn_cover_size)*100.0
+    print("Average capacity: \t%f \t[bits]" % (capacity))
 
     print("-------------------------------------------------------------------------")
     print("Success rate: \t\t %d/%d 〜 %g%%" % (success,cnt,success_rate))
@@ -179,7 +236,8 @@ def encode_spaces():
     efficiency = time/(float(spaces_cover_size)*0.001)
     success_rate = 100*(success/cnt)
     print("Efficiency: \t\t%f \t[time in seconds to encode 1KB]" % efficiency)
-    print("Average capacity: \t%d \t\t[bits]" % (message/cnt))
+    capacity = float(message/spaces_cover_size)*100.0
+    print("Average capacity: \t%f \t[bits]" % (capacity))
    
     print("-------------------------------------------------------------------------")
     print("Success rate: \t\t %d/%d 〜 %g%%" % (success,cnt,success_rate))
@@ -231,7 +289,8 @@ def encode_bacon():
     efficiency = time/(float(bacon_cover_size)*0.001)
     success_rate = 100*(success/cnt)
     print("Efficiency: \t\t%f \t[time in seconds to encode 1KB]" % efficiency)
-    print("Average capacity: \t%d \t\t[bits]" % (message/cnt))
+    capacity = float(message/bacon_cover_size)*100.0
+    print("Average capacity: \t%f \t[bits]" % (capacity))
   
     print("-------------------------------------------------------------------------")
     print("Success rate: \t\t %d/%d 〜 %g%%" % (success,cnt,success_rate))
@@ -438,5 +497,5 @@ def decode_syn():
 
 if __name__ == "__main__":
     encode_all_covers()
-    decode_all_encodes()
-    calculate_SIR()
+    # decode_all_encodes()
+    # calculate_SIR()

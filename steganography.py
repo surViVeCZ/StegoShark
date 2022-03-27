@@ -160,19 +160,20 @@ class Config:
    bacon = False
    whitespaces = False
    replace = False
+   own1 = False
 
 # zpracování vstupních argumentů
 def ArgumentsParsing(argv):
    #načtení defaultních hodnot
    cfg = Config()
    try:
-      opts, args = getopt.getopt(argv,"i:ed:s:bwr",['ifile=','encode','decode','message','bacon','whitespaces','replace'])
+      opts, args = getopt.getopt(argv,"i:ed:s:bwro",['ifile=','encode','decode','message','bacon','whitespaces','replace','own1'])
    except getopt.GetoptError:
-     print("steganography.py -i <inputfile> -e/-d -s <secret_message> -<b/w/r>")
+     print("steganography.py -i <inputfile> -e/-d -s <secret_message> -<b/w/r>/--own1")
      sys.exit(2)
    for opt, arg in opts:
       if opt == '-h':
-        print("test.py -i <inputfile> -o <outputfile> -e/-d")
+        rint("steganography.py -i <inputfile> -e/-d -s <secret_message> -<b/w/r>/--own1")
         sys.sys.exit()
       elif opt in ('-i', '--ifile'):
          cfg.inputfile = arg
@@ -188,13 +189,15 @@ def ArgumentsParsing(argv):
          cfg.whitespaces = True
       elif opt in ('-r','--replace'):
          cfg.replace = True
+      elif opt in ('-o','--own1'):
+         cfg.own1 = True
    return cfg
 
 def main(argv):
 
    cfg = ArgumentsParsing(argv)
 
-   if(cfg.bacon is False and cfg.whitespaces is False and cfg.replace is False):
+   if(cfg.bacon is False and cfg.whitespaces is False and cfg.replace is False and cfg.own1 is False):
       print("Wrong parameters, use -h for help")
       print("\n", end='')
       sys.exit()
@@ -213,7 +216,9 @@ def main(argv):
          elif(cfg.whitespaces is True):
             secret_message = whitespaces.Spaces_decode(cfg.inputfile)
          elif(cfg.replace is True):
-            secret_message = synonyms.syn_decode(cfg.inputfile)
+            secret_message = synonyms.syn_decode(cfg.inputfile, "default")
+         elif(cfg.own1 is True):
+            secret_message = synonyms.syn_decode(cfg.inputfile, "own1") 
          print("The secret message is:", secret_message)
          print("\n", end='')
 
@@ -244,7 +249,13 @@ def main(argv):
             if file_path is False:
                return False
          elif(cfg.replace is True):
-            file_path = synonyms.syn_encode(cfg.inputfile, cfg.message)
+            #default = klasické kódování 8bit
+            file_path = synonyms.syn_encode(cfg.inputfile, cfg.message, "default")
+            if file_path is False:
+               return False
+         elif(cfg.own1 is True):
+            #own1 = metoda synonym za využití Baconova kódování, tzn. 5bit
+            file_path = synonyms.syn_encode(cfg.inputfile, cfg.message, "own1")
             if file_path is False:
                return False
 

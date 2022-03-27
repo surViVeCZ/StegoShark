@@ -27,6 +27,9 @@ import steganography
 import xml_parse
 import collections
 
+import steganography
+import bacon
+
 
 dictionary_of_zeros =    collections.OrderedDict((("want",{0}),("easy",{0}),("still",{0}),("hardworking",{0}),("buy",{0}),("smart",{0}),("strong",{0}),("stupid",{0}),("essential",{0}),("irrelevant",{0}),
                         ("excellent",{0}),("acceptable",{0}),("awful",{0}),("interesting",{0}),("boring",{0}),("uncertain",{0}),("difficult",{0}),("weak",{0}),("many",{0}),("bit",{0}),
@@ -67,35 +70,59 @@ def count_dictionary_words(text):
     return cnt
 
 
-def syn_encode(file, message):
+def syn_encode(file, message, bits):
 
-    print(len(dictionary_of_synonyms))
-    print(len(dictionary_of_zeros))
-    binary_mes = steganography.str_to_binary(message)
-    print(binary_mes)
-    print("\n", end='')
+    # print(len(dictionary_of_synonyms))
+    # print(len(dictionary_of_zeros))
+    if(bits == "default"):
+        binary_mes = steganography.str_to_binary(message)
+    # print(binary_mes)
+    # print("\n", end='')
   
     full_text = steganography.print_text(file)
-    word_list = full_text.split()
-    number_of_words = len(re.findall(r'\w+', full_text))
-
-
     #pro ukrytí jednoho znaku je potřeba 8 znaků cover textu
     words_available = count_dictionary_words(full_text)
-    if(len(message)*8 > words_available):
-        print("Cover text doesn't have enough capacity to hide this message")
-        return False
+    if(bits == "default"):
+        if(len(message)*8 > words_available):
+            print("Cover text doesn't have enough capacity to hide this message")
+            return False
+    #pro ukrytí je zapotřebí pouhých 5 bitů
+    elif(bits == "own1"):
+        if(len(message)*5 > words_available):
+            print("Cover text doesn't have enough capacity to hide this message")
+            return False
 
-    print(f"Enough data: needed {len(message)*8} available: {words_available}")
-    combined = list(zip(dictionary_of_zeros, dictionary_of_synonyms))
-    for couple in combined:
-        print(couple)
+    #vlastní varianta metody (s využitím Baconova šifrování)
+    if(bits == "own1"):
+        message = steganography.split(message)
+    # message_string = steganography.listToString(message)
 
-    path = xml_parse.split_document(binary_mes, file, "synonyms")
+        index_array = []
+        for i in range(len(message)):
+            index_array.append(string.ascii_lowercase.index(message[i]))
+        print(index_array)
+
+        message_pattern = []
+        for k in index_array:
+            #nutné upravit hodnoty indexů, kvůli dvojicím i,j a u,v (mají stejný vzor v Baconově šifře)
+            if(k > 8 and k <= 19):
+                k -= 1
+            elif(k == 20):
+                k -= 1
+            elif(k > 20):
+                k -= 2
+            
+            message_pattern.append(bacon.bacons_table[k])
+        binary_mes = steganography.listToString(message_pattern)
+
+    if(bits == "default"):
+        path = xml_parse.split_document(binary_mes, file, "synonyms", "default")
+    elif(bits == "own1"):
+        path = xml_parse.split_document(binary_mes, file, "synonyms", "own1")
     return path
 
 
-def syn_decode(file):
+def syn_decode(file, bits):
     try:
       doc = Document(file)
     except:
@@ -119,8 +146,11 @@ def syn_decode(file):
                 elif word in dictionary_of_zeros:
                     binary += "0"
 
-    # print(binary)
-    secret_message = steganography.binary_to_str(binary)
+    if(bits == "own1"):
+        bacons_patterns = re.findall('.....',binary)
+        secret_message = bacon.bacon_pattern_to_string(bacons_patterns, bacon.bacons_table)
+    elif(bits == "default"):
+        secret_message = steganography.binary_to_str(binary)
     return secret_message
 
  

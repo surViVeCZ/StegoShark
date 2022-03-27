@@ -29,7 +29,7 @@ import whitespaces
 import synonyms
 
 #původní dokument se rozloží na odstavce,runy a slova, ty se následně s jiným stylem uloží do nového dokumentu
-def split_document(message_pattern,file, method):
+def split_document(message_pattern,file, method, bits):
    shutil.copyfile(file, "encoded.docx")    
 
    new_doc = Document("encoded.docx")
@@ -46,7 +46,10 @@ def split_document(message_pattern,file, method):
       whitespaces.add_spaces_style(font_styles)
       nametag = 'spaces_' 
    elif(method == "synonyms"):
-      nametag = 'synonyms_' 
+      if(bits == "default"):
+         nametag = 'synonyms_' 
+      elif(bits == "own1"):
+         nametag = 'own1_'
       synonyms.add_skip_tag(font_styles)
  
    save_path = 'encoded'  
@@ -197,7 +200,10 @@ def split_document(message_pattern,file, method):
    elif(method == "spaces"):
       file_name = 'spaces_'+file[1]
    elif(method == "synonyms"):
-      file_name = 'synonyms_'+file[1]
+      if(bits == "default"):
+         file_name = 'synonyms_'+file[1]
+      elif(bits == "own1"):
+         file_name = 'own_'+file[1]
 
    return full_path
 

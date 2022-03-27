@@ -49,7 +49,7 @@ def Spaces_encode(file, message):
         print("Cover text doesn't have enough capacity to hide this message")
         return False
 
-    path = xml_parse.split_document(binary_mes, file, "spaces")
+    path = xml_parse.split_document(binary_mes, file, "spaces", "default")
     return path
     
 def Spaces_decode(file):

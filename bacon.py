@@ -46,7 +46,7 @@ def Bacon_encode(file, message):
       sys.exit()
 
    message = steganography.split(message)
-   message_string = steganography.listToString(message)
+   # message_string = steganography.listToString(message)
 
    index_array = []
    for i in range(len(message)):
@@ -80,7 +80,7 @@ def Bacon_encode(file, message):
       print("Cover text doesn't have enough capacity to hide this message")
       return False
    
-   path = xml_parse.split_document(pattern_string, file, "bacon")
+   path = xml_parse.split_document(pattern_string, file, "bacon", "default")
    return path
 
       
