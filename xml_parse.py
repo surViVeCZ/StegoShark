@@ -50,6 +50,8 @@ def split_document(message_pattern,file, method, bits):
          nametag = 'synonyms_' 
       elif(bits == "own1"):
          nametag = 'own1_'
+      elif(bits == "own2"):
+         nametag = 'own2_'
       synonyms.add_skip_tag(font_styles)
  
    save_path = 'encoded'  
@@ -203,7 +205,9 @@ def split_document(message_pattern,file, method, bits):
       if(bits == "default"):
          file_name = 'synonyms_'+file[1]
       elif(bits == "own1"):
-         file_name = 'own_'+file[1]
+         file_name = 'own1_'+file[1]
+      elif(bits == "own2"):
+         file_name = 'own2_'+file[1]
 
    return full_path
 

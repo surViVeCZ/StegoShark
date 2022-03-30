@@ -160,20 +160,21 @@ class Config:
    bacon = False
    whitespaces = False
    replace = False
-   own1 = False
+   own1 = False #synonyms with bacon encoding
+   own2 = False #synonyms with Huffman
 
 # zpracování vstupních argumentů
 def ArgumentsParsing(argv):
    #načtení defaultních hodnot
    cfg = Config()
    try:
-      opts, args = getopt.getopt(argv,"i:ed:s:bwro",['ifile=','encode','decode','message','bacon','whitespaces','replace','own1'])
+      opts, args = getopt.getopt(argv,"i:ed:s:bwro",['ifile=','encode','decode','message','bacon','whitespaces','replace','own1', 'own2'])
    except getopt.GetoptError:
      print("steganography.py -i <inputfile> -e/-d -s <secret_message> -<b/w/r>/--own1")
      sys.exit(2)
    for opt, arg in opts:
       if opt == '-h':
-        rint("steganography.py -i <inputfile> -e/-d -s <secret_message> -<b/w/r>/--own1")
+        print("steganography.py -i <inputfile> -e/-d -s <secret_message> -<b/w/r>/--<own1/own2>")
         sys.sys.exit()
       elif opt in ('-i', '--ifile'):
          cfg.inputfile = arg
@@ -189,15 +190,17 @@ def ArgumentsParsing(argv):
          cfg.whitespaces = True
       elif opt in ('-r','--replace'):
          cfg.replace = True
-      elif opt in ('-o','--own1'):
+      elif opt in ('--own1'):
          cfg.own1 = True
+      elif opt in ('--own2'):
+         cfg.own2 = True
    return cfg
 
 def main(argv):
 
    cfg = ArgumentsParsing(argv)
 
-   if(cfg.bacon is False and cfg.whitespaces is False and cfg.replace is False and cfg.own1 is False):
+   if(cfg.bacon is False and cfg.whitespaces is False and cfg.replace is False and cfg.own1 is False and cfg.own2 is False):
       print("Wrong parameters, use -h for help")
       print("\n", end='')
       sys.exit()
@@ -218,7 +221,13 @@ def main(argv):
          elif(cfg.replace is True):
             secret_message = synonyms.syn_decode(cfg.inputfile, "default")
          elif(cfg.own1 is True):
-            secret_message = synonyms.syn_decode(cfg.inputfile, "own1") 
+            #own1 = metoda synonym za využití Baconova kódování, tzn. 5bit
+            secret_message = synonyms.syn_decode(cfg.inputfile, "own1")
+         elif(cfg.own2 is True):
+            #own2 = metoda synonym s využitím Huffmanova kódování
+            print("Wasn't implemented. Decoding of this method is way too complicated.")
+            sys.exit()
+
          print("The secret message is:", secret_message)
          print("\n", end='')
 
@@ -256,6 +265,11 @@ def main(argv):
          elif(cfg.own1 is True):
             #own1 = metoda synonym za využití Baconova kódování, tzn. 5bit
             file_path = synonyms.syn_encode(cfg.inputfile, cfg.message, "own1")
+            if file_path is False:
+               return False
+         elif(cfg.own2 is True):
+            #own2 = metoda synonym s využitím Huffmanova kódování
+            file_path = synonyms.syn_encode(cfg.inputfile, cfg.message, "own2")
             if file_path is False:
                return False
 

@@ -5,6 +5,8 @@ import string
 import sys
 import timeit
 import docx
+import matplotlib.pyplot as plt
+import numpy as np
 
 #moduly
 import bacon
@@ -22,14 +24,17 @@ spaces_encoded_size = 0
 syn_cover_size = 0
 syn_encoded_size = 0
 
-secret_message = "hromadnytesthromadny"
+secret_message = "hromadnytesthromadnytesthromadnytesthromadnytesthromadnytesthromadnytesthromadnytesthromadnytesthromadnytest"
 mes_len = len(secret_message)
 
 def encode_all_covers():
     # encode_bacon()
     # encode_spaces()
-    encode_syn()
-    encode_own1()
+    # encode_syn()
+    # encode_own1()
+    # encode_own2()
+    plot_graphs1()
+    plot_graphs2()
 
 def decode_all_encodes():
     print("\n", end='')
@@ -37,7 +42,46 @@ def decode_all_encodes():
     print("DECODING:")
     # decode_bacon()
     # decode_spaces()
-    decode_syn()
+    # decode_syn()
+
+def plot_graphs1():
+
+    #Přijde vám na některém z těhto souborů něco zvláštního?
+    students = [1,2,2,4,4,10]
+    cmap = plt.get_cmap('Greys')
+    colors = list(cmap(np.linspace(0.45, 0.85, len(students))))
+    # Swap in a bright blue for the Lacrosse color.
+    colors[5] = 'dodgerblue'
+    plt.rcParams.update({'font.size': 22})
+
+    
+    wierd = ['Open-space metoda', 'Open-space metoda a metoda synonym','Metoda synonym','Baconova šifra a metoda synonym', 'Baconova šifra', "Žádný"]
+    exp = [0.01,0.01,0.01,0.01,0.01,0.01]
+    fig1 = plt.figure(figsize=(11, 9))
+    patches, texts, autotexts = plt.pie(students, labels = wierd, explode = exp, autopct='%2.1f%%', colors=colors)
+    texts[0].set_color('black')
+    [autotext.set_color('white') for autotext in autotexts]
+
+    plt.savefig("first.pdf",bbox_inches='tight')
+
+def plot_graphs2():
+    #Některý ze souborů je zašifrovaný, dokážete říci který?
+    students2 = [1,2,2,4,6,8]
+    cmap = plt.get_cmap('Greys')
+    colors2 = list(cmap(np.linspace(0.45, 0.85, len(students2))))
+    plt.rcParams.update({'font.size': 22})
+
+    # Swap in a bright blue for the Lacrosse color.
+    colors2[5] = 'dodgerblue'
+    not_changed = ['Open-space metoda', 'Open-space metoda a metoda synonym', 'Baconova šifra a Open-space metoda','Baconova šifra a metoda synonym', 'Metoda synonym', 'Baconova šifra']
+    exp2 = [0.01,0.01,0.01,0.01,0.01,0.01]
+    fig2 = plt.figure(figsize=(11,9))
+    patches2, texts2, autotexts2 = plt.pie(students2, labels = not_changed, explode = exp2, autopct='%2.1f%%', colors=colors2)
+    texts2[0].set_color('black')
+    [autotext2.set_color('white') for autotext2 in autotexts2]
+
+    plt.savefig("second.pdf",bbox_inches='tight')
+
 
 def calculate_SIR():
     bacon_sir = (bacon_encoded_size-bacon_cover_size)/bacon_cover_size*100
@@ -52,7 +96,7 @@ def max_secret_message(file, method):
     full_text = steganography.print_text(file)
     if method is "synonyms":
         words_available = synonyms.count_dictionary_words(full_text)/8
-    elif method is "bacon" or method is "own1":
+    elif method is "bacon" or method is "own1" or method is "own2":
         words_available = len(full_text.split())/5
     elif method is "spaces":
         words_available = len(full_text.split())/8
@@ -166,6 +210,60 @@ def encode_own1():
         message += max_secret_message(cover_size_path+'/'+file_name, "own1")
         with suppress_stdout():
             check = steganography.main(['-i', file, '-e', '-s', secret_message, '--own1'])
+
+        if check is False:
+            print("#%d failed ✖ (%s)" % (cnt, file_name))
+        else:
+            print("#%d encoded 🗸 (%s)" % (cnt, file_name))
+            size = os.stat(file)
+            syn_cover_size += size.st_size
+            success += 1
+    end = timeit.default_timer()
+    time = (end - start)
+    print("Elapsed time: \t\t%f \t[seconds] " % time)
+    print("Cover texts size: \t%d \t[bytes]" % syn_cover_size)
+    
+    efficiency = time/(float(syn_cover_size)*0.001)
+    success_rate = 100*(success/cnt)
+    print("Efficiency: \t\t%f \t[time in seconds to encode 1KB]" % efficiency)
+    capacity = float(message/syn_cover_size)*100.0
+    print("Average capacity: \t%f \t[bits]" % (capacity))
+
+    print("-------------------------------------------------------------------------")
+    print("Success rate: \t\t %d/%d 〜 %g%%" % (success,cnt,success_rate))
+
+def encode_own2():
+    thisdir_bin = os.getcwdb()
+    cover_size_path = os.getcwd() + '/cover_files/synonyms'
+    path = bytes('/cover_files/synonyms', 'utf-8')
+
+    changed_path = os.path.join(thisdir_bin, b"cover_files")
+    changed_path = os.path.join(changed_path, b"synonyms")
+
+    list_of_files = os.listdir(changed_path)
+
+    cnt = 0
+    message = 0
+    success = 0
+    global syn_cover_size
+    syn_cover_size = 0
+    print("\n", end='')
+    print("OWN2 ENCODING (SYN + HUFFMAN):")
+
+    #šifrování všech cover textů pomocí metody synonym
+    start = timeit.default_timer()
+    for file in list_of_files:
+        cnt += 1
+        file = os.path.join(changed_path, file)    
+        file = str(file, 'UTF-8')
+
+        #zjistím si jméno souboru (poslední soubor v cestě)
+        head_tail = os.path.split(file)
+        file_name = head_tail[1]
+
+        message += max_secret_message(cover_size_path+'/'+file_name, "own2")
+        with suppress_stdout():
+            check = steganography.main(['-i', file, '-e', '-s', secret_message, '--own2'])
 
         if check is False:
             print("#%d failed ✖ (%s)" % (cnt, file_name))

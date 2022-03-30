@@ -29,6 +29,7 @@ import collections
 
 import steganography
 import bacon
+import huffman_coding
 
 
 dictionary_of_zeros =    collections.OrderedDict((("want",{0}),("easy",{0}),("still",{0}),("hardworking",{0}),("buy",{0}),("smart",{0}),("strong",{0}),("stupid",{0}),("essential",{0}),("irrelevant",{0}),
@@ -71,13 +72,14 @@ def count_dictionary_words(text):
 
 
 def syn_encode(file, message, bits):
-
-    # print(len(dictionary_of_synonyms))
-    # print(len(dictionary_of_zeros))
     if(bits == "default"):
         binary_mes = steganography.str_to_binary(message)
-    # print(binary_mes)
-    # print("\n", end='')
+
+    if(bits == "own2"):
+        binary_mes =  huffman_coding.get_frequency(message)
+        print(binary_mes)
+        print(len(binary_mes))
+    
   
     full_text = steganography.print_text(file)
     #pro ukrytí jednoho znaku je potřeba 8 znaků cover textu
@@ -91,11 +93,14 @@ def syn_encode(file, message, bits):
         if(len(message)*5 > words_available):
             print("Cover text doesn't have enough capacity to hide this message")
             return False
+    elif(bits == "own2"):
+        if(len(binary_mes) > words_available):
+            print("Cover text doesn't have enough capacity to hide this message")
+            return False
 
     #vlastní varianta metody (s využitím Baconova šifrování)
     if(bits == "own1"):
         message = steganography.split(message)
-    # message_string = steganography.listToString(message)
 
         index_array = []
         for i in range(len(message)):
@@ -119,6 +124,8 @@ def syn_encode(file, message, bits):
         path = xml_parse.split_document(binary_mes, file, "synonyms", "default")
     elif(bits == "own1"):
         path = xml_parse.split_document(binary_mes, file, "synonyms", "own1")
+    elif(bits == "own2"):
+        path = xml_parse.split_document(binary_mes, file, "synonyms", "own2")
     return path
 
 
@@ -145,12 +152,16 @@ def syn_decode(file, bits):
                     binary += "1"
                 elif word in dictionary_of_zeros:
                     binary += "0"
-
+    #bacon + synonyms
     if(bits == "own1"):
         bacons_patterns = re.findall('.....',binary)
         secret_message = bacon.bacon_pattern_to_string(bacons_patterns, bacon.bacons_table)
     elif(bits == "default"):
         secret_message = steganography.binary_to_str(binary)
+    # #synonyms + huffman
+    # elif(bits == "own2"):
+    #     huffman_coding.huffman_decode()
+    #     secret_message = steganography.binary_to_str(binary)
     return secret_message
 
  
