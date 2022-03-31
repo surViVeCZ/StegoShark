@@ -24,25 +24,37 @@ spaces_encoded_size = 0
 syn_cover_size = 0
 syn_encoded_size = 0
 
-secret_message = "hromadnytesthromadnytesthromadnytesthromadnytesthromadnytesthromadnytesthromadnytesthromadnytesthromadnytest"
+secret_message = "testicek"
 mes_len = len(secret_message)
 
 def encode_all_covers():
-    # encode_bacon()
-    # encode_spaces()
-    # encode_syn()
-    # encode_own1()
-    # encode_own2()
-    plot_graphs1()
-    plot_graphs2()
+    encode_bacon()
+    encode_spaces()
+    encode_syn()
+    encode_own1()
+    encode_own2()
+
 
 def decode_all_encodes():
     print("\n", end='')
     print("---------------------------------")
     print("DECODING:")
-    # decode_bacon()
-    # decode_spaces()
-    # decode_syn()
+    decode_bacon()
+    decode_spaces()
+    decode_syn()
+
+def calculate_SIR():
+    bacon_sir = (bacon_encoded_size-bacon_cover_size)/bacon_cover_size*100
+    spaces_sir = (spaces_encoded_size-spaces_cover_size)/spaces_cover_size*100
+    syn_sir = (syn_encoded_size-syn_cover_size)/syn_cover_size*100
+    print("BACON SIR:\t %f %%" % bacon_sir)
+    print("SPACES SIR:\t %f %%" % spaces_sir)
+    print("SYNONYMS SIR:\t %f %%" % syn_sir)
+
+def plot_all():
+    plot_graphs1()
+    plot_graphs2()
+
 
 def plot_graphs1():
 
@@ -81,15 +93,6 @@ def plot_graphs2():
     [autotext2.set_color('white') for autotext2 in autotexts2]
 
     plt.savefig("second.pdf",bbox_inches='tight')
-
-
-def calculate_SIR():
-    bacon_sir = (bacon_encoded_size-bacon_cover_size)/bacon_cover_size*100
-    spaces_sir = (spaces_encoded_size-spaces_cover_size)/spaces_cover_size*100
-    syn_sir = (syn_encoded_size-syn_cover_size)/syn_cover_size*100
-    print("BACON SIR:\t %f %%" % bacon_sir)
-    print("SPACES SIR:\t %f %%" % spaces_sir)
-    print("SYNONYMS SIR:\t %f %%" % syn_sir)
  
 #vypočítá maximální možnou velikost zprávy, kterou jde do určeného cover textu uložit
 def max_secret_message(file, method):    
@@ -597,3 +600,4 @@ if __name__ == "__main__":
     encode_all_covers()
     # decode_all_encodes()
     # calculate_SIR()
+    # plot_all()

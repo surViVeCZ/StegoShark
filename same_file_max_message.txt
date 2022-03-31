@@ -1,0 +1,44 @@
+BACON ENCODING:
+#1 encoded 🗸 (old_man_and_the_sea.docx)
+Elapsed time: 		1.455285 	[seconds] 
+Cover texts size: 	81768 	[bytes]
+Efficiency: 		0.017798 	[time in seconds to encode 1KB]
+Average capacity: 	6.516975 	[bits]
+-------------------------------------------------------------------------
+Success rate: 		 1/1 〜 100%
+
+ADDING WHITESPACES ENCODING:
+#1 encoded 🗸 (old_man_and_the_sea.docx)
+Elapsed time: 		2.948156 	[seconds] 
+Cover texts size: 	81768 	[bytes]
+Efficiency: 		0.036055 	[time in seconds to encode 1KB]
+Average capacity: 	3.937971 	[bits]
+-------------------------------------------------------------------------
+Success rate: 		 1/1 〜 100%
+
+REPLACING SYNONYMS ENCODING:
+#1 encoded 🗸 (old_man_and_the_sea.docx)
+Elapsed time: 		1.488609 	[seconds] 
+Cover texts size: 	81768 	[bytes]
+Efficiency: 		0.018205 	[time in seconds to encode 1KB]
+Average capacity: 	0.167241 	[bits]
+-------------------------------------------------------------------------
+Success rate: 		 1/1 〜 100%
+
+OWN1 ENCODING (SYN + BACON):
+#1 encoded 🗸 (old_man_and_the_sea.docx)
+Elapsed time: 		1.831123 	[seconds] 
+Cover texts size: 	81768 	[bytes]
+Efficiency: 		0.022394 	[time in seconds to encode 1KB]
+Average capacity: 	0.256824 	[bits]
+-------------------------------------------------------------------------
+Success rate: 		 1/1 〜 100%
+
+OWN2 ENCODING (SYN + HUFFMAN):
+#1 encoded 🗸 (old_man_and_the_sea.docx)
+Elapsed time: 		1.618656 	[seconds] 
+Cover texts size: 	81768 	[bytes]
+Efficiency: 		0.019796 	[time in seconds to encode 1KB]
+Average capacity: 	0.611486 	[bits]
+-------------------------------------------------------------------------
+Success rate: 		 1/1 〜 100%
