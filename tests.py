@@ -12,6 +12,7 @@ import numpy as np
 import bacon
 import whitespaces
 import xml_parse
+import robustness
 import synonyms
 import steganography
 from contextlib import contextmanager
@@ -24,15 +25,15 @@ spaces_encoded_size = 0
 syn_cover_size = 0
 syn_encoded_size = 0
 
-secret_message = "testicek"
+secret_message = "hromadnytest"
 mes_len = len(secret_message)
 
 def encode_all_covers():
     encode_bacon()
-    encode_spaces()
-    encode_syn()
-    encode_own1()
-    encode_own2()
+    # encode_spaces()
+    # encode_syn()
+    # encode_own1()
+    # encode_own2()
 
 
 def decode_all_encodes():
@@ -40,8 +41,8 @@ def decode_all_encodes():
     print("---------------------------------")
     print("DECODING:")
     decode_bacon()
-    decode_spaces()
-    decode_syn()
+    # decode_spaces()
+    # decode_syn()
 
 def calculate_SIR():
     bacon_sir = (bacon_encoded_size-bacon_cover_size)/bacon_cover_size*100
@@ -166,7 +167,7 @@ def encode_syn():
             print("#%d encoded 🗸 (%s)" % (cnt, file_name))
             size = os.stat(file)
             syn_cover_size += size.st_size
-            success += 1
+            success += 1    
     end = timeit.default_timer()
     time = (end - start)
     print("Elapsed time: \t\t%f \t[seconds] " % time)
@@ -420,6 +421,7 @@ def decode_bacon():
             bacon_encoded_size += size.st_size
        
     for encoded in bacon_files:
+        robustness.change_font_style("encoded/" + encoded, "bacon")
         cnt += 1
         with suppress_stdout():
             check = steganography.main(['-i', "encoded/" + encoded, '-d', '-s', '-b'])
@@ -513,6 +515,7 @@ def decode_spaces():
         cnt += 1
         text = steganography.print_text("decoded/"+decoded)
         text = text[0:mes_len]
+        print(decoded + ":" + text)
 
         #zpráva zůstala zachována
         if text.lower() == secret_message.lower():
@@ -579,6 +582,7 @@ def decode_syn():
         cnt += 1
         text = steganography.print_text("decoded/"+decoded)
         text = text[0:mes_len]
+        print(decoded + ":" + text)
 
         #zpráva zůstala zachována
         if text.lower() == secret_message.lower():
@@ -598,6 +602,6 @@ def decode_syn():
 
 if __name__ == "__main__":
     encode_all_covers()
-    # decode_all_encodes()
-    # calculate_SIR()
-    # plot_all()
+    decode_all_encodes()
+    calculate_SIR()
+    plot_all()

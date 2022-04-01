@@ -1,0 +1,177 @@
+BACON ENCODING:
+#1 encoded 🗸 (adele.docx)
+#2 encoded 🗸 (al-green.docx)
+#3 encoded 🗸 (alicia-keys.docx)
+#4 encoded 🗸 (amy-winehouse.docx)
+#5 encoded 🗸 (beatles.docx)
+#6 encoded 🗸 (bieber.docx)
+#7 encoded 🗸 (bjork.docx)
+#8 encoded 🗸 (blink-182.docx)
+#9 encoded 🗸 (cover_1.docx)
+#10 encoded 🗸 (cover_10.docx)
+#11 encoded 🗸 (cover_2.docx)
+#12 encoded 🗸 (cover_3.docx)
+#13 encoded 🗸 (cover_4.docx)
+#14 encoded 🗸 (cover_5.docx)
+#15 encoded 🗸 (cover_6.docx)
+#16 encoded 🗸 (cover_7.docx)
+#17 encoded 🗸 (cover_8.docx)
+#18 encoded 🗸 (cover_9.docx)
+#19 encoded 🗸 (data.docx)
+#20 encoded 🗸 (data2.docx)
+#21 encoded 🗸 (data3.docx)
+#22 encoded 🗸 (old_man_and_the_sea.docx)
+#23 encoded 🗸 (romeo_and_juliet.docx)
+#24 encoded 🗸 (The_little_prince.docx)
+Elapsed time: 		19.096342 	[seconds] 
+Cover texts size: 	1668360 	[bytes]
+Efficiency: 		0.011446 	[time in seconds to encode 1KB]
+Average capacity: 	2.758973 	[bits]
+-------------------------------------------------------------------------
+Success rate: 		 24/24 〜 100%
+
+ADDING WHITESPACES ENCODING:
+#1 encoded 🗸 (adele.docx)
+#2 encoded 🗸 (al-green.docx)
+#3 encoded 🗸 (alicia-keys.docx)
+#4 encoded 🗸 (amy-winehouse.docx)
+#5 encoded 🗸 (beatles.docx)
+#6 encoded 🗸 (bieber.docx)
+#7 encoded 🗸 (bjork.docx)
+#8 encoded 🗸 (blink-182.docx)
+#9 encoded 🗸 (cover_1.docx)
+#10 encoded 🗸 (cover_10.docx)
+#11 encoded 🗸 (cover_2.docx)
+#12 encoded 🗸 (cover_3.docx)
+#13 encoded 🗸 (cover_4.docx)
+#14 encoded 🗸 (cover_5.docx)
+#15 encoded 🗸 (cover_6.docx)
+#16 encoded 🗸 (cover_7.docx)
+#17 failed ✖ (cover_8.docx)
+#18 failed ✖ (cover_9.docx)
+#19 encoded 🗸 (data.docx)
+#20 encoded 🗸 (data2.docx)
+#21 encoded 🗸 (data3.docx)
+#22 encoded 🗸 (old_man_and_the_sea.docx)
+#23 encoded 🗸 (romeo_and_juliet.docx)
+#24 encoded 🗸 (The_little_prince.docx)
+Elapsed time: 		28.799616 	[seconds] 
+Cover texts size: 	1644196 	[bytes]
+Efficiency: 		0.017516 	[time in seconds to encode 1KB]
+Average capacity: 	1.749700 	[bits]
+-------------------------------------------------------------------------
+Success rate: 		 22/24 〜 91.6667%
+
+REPLACING SYNONYMS ENCODING:
+#1 encoded 🗸 (adele.docx)
+#2 encoded 🗸 (al-green.docx)
+#3 encoded 🗸 (alicia-keys.docx)
+#4 encoded 🗸 (amy-winehouse.docx)
+#5 encoded 🗸 (beatles.docx)
+#6 encoded 🗸 (bieber.docx)
+#7 encoded 🗸 (bjork.docx)
+#8 encoded 🗸 (blink-182.docx)
+#9 failed ✖ (data.docx)
+#10 failed ✖ (data2.docx)
+#11 failed ✖ (data3.docx)
+#12 encoded 🗸 (old_man_and_the_sea.docx)
+#13 encoded 🗸 (romeo_and_juliet.docx)
+#14 encoded 🗸 (The_little_prince.docx)
+Elapsed time: 		18.007644 	[seconds] 
+Cover texts size: 	1495958 	[bytes]
+Efficiency: 		0.012038 	[time in seconds to encode 1KB]
+Average capacity: 	0.061700 	[bits]
+-------------------------------------------------------------------------
+Success rate: 		 11/14 〜 78.5714%
+
+OWN1 ENCODING (SYN + BACON):
+#1 encoded 🗸 (adele.docx)
+#2 encoded 🗸 (al-green.docx)
+#3 encoded 🗸 (alicia-keys.docx)
+#4 encoded 🗸 (amy-winehouse.docx)
+#5 encoded 🗸 (beatles.docx)
+#6 encoded 🗸 (bieber.docx)
+#7 encoded 🗸 (bjork.docx)
+#8 encoded 🗸 (blink-182.docx)
+#9 failed ✖ (data.docx)
+#10 failed ✖ (data2.docx)
+#11 failed ✖ (data3.docx)
+#12 encoded 🗸 (old_man_and_the_sea.docx)
+#13 encoded 🗸 (romeo_and_juliet.docx)
+#14 encoded 🗸 (The_little_prince.docx)
+Elapsed time: 		17.265230 	[seconds] 
+Cover texts size: 	1495958 	[bytes]
+Efficiency: 		0.011541 	[time in seconds to encode 1KB]
+Average capacity: 	2.912782 	[bits]
+-------------------------------------------------------------------------
+Success rate: 		 11/14 〜 78.5714%
+
+OWN2 ENCODING (SYN + HUFFMAN):
+#1 encoded 🗸 (adele.docx)
+#2 encoded 🗸 (al-green.docx)
+#3 encoded 🗸 (alicia-keys.docx)
+#4 encoded 🗸 (amy-winehouse.docx)
+#5 encoded 🗸 (beatles.docx)
+#6 encoded 🗸 (bieber.docx)
+#7 encoded 🗸 (bjork.docx)
+#8 encoded 🗸 (blink-182.docx)
+#9 failed ✖ (data.docx)
+#10 failed ✖ (data2.docx)
+#11 failed ✖ (data3.docx)
+#12 encoded 🗸 (old_man_and_the_sea.docx)
+#13 encoded 🗸 (romeo_and_juliet.docx)
+#14 encoded 🗸 (The_little_prince.docx)
+Elapsed time: 		15.574655 	[seconds] 
+Cover texts size: 	1495958 	[bytes]
+Efficiency: 		0.010411 	[time in seconds to encode 1KB]
+Average capacity: 	2.912782 	[bits]
+-------------------------------------------------------------------------
+Success rate: 		 11/14 〜 78.5714%
+
+---------------------------------
+DECODING:
+BACON DECODING:
+All messages DECODED SUCCESSFULLY!
+
+SPACES DECODING:
+spaces_adele.docx:hromadnytest
+spaces_al-green.docx:hromadnytest
+spaces_alicia-keys.docx:hromadnytest
+spaces_amy-winehouse.docx:hromadnytest
+spaces_beatles.docx:hromadnytest
+spaces_bieber.docx:hromadnytest
+spaces_bjork.docx:hromadnytest
+spaces_blink-182.docx:hromadnytest
+spaces_cover_1.docx:hromadnytest
+spaces_cover_10.docx:hromadnytest
+spaces_cover_2.docx:hromadnytest
+spaces_cover_3.docx:hromadnytest
+spaces_cover_4.docx:hromadnytest
+spaces_cover_5.docx:hromadnytest
+spaces_cover_6.docx:hromadnytest
+spaces_cover_7.docx:hromadnytest
+spaces_data.docx:hromadnytest
+spaces_data2.docx:hromadnytest
+spaces_data3.docx:hromadnytest
+spaces_old_man_and_the_sea.docx:hromadnytest
+spaces_romeo_and_juliet.docx:hromadnytest
+spaces_The_little_prince.docx:hromadnytest
+All messages DECODED SUCCESSFULLY!
+
+SYNONYMS DECODING:
+synonyms_adele.docx:hromadnytest
+synonyms_al-green.docx:hromadnytest
+synonyms_alicia-keys.docx:hromadnytest
+synonyms_amy-winehouse.docx:hromadnytest
+synonyms_beatles.docx:hromadnytest
+synonyms_bieber.docx:hromadnytest
+synonyms_bjork.docx:hromadnytest
+synonyms_blink-182.docx:hromadnytest
+synonyms_old_man_and_the_sea.docx:hromadnytest
+synonyms_romeo_and_juliet.docx:hromadnytest
+synonyms_The_little_prince.docx:hromadnytest
+All messages DECODED SUCCESSFULLY!
+
+BACON SIR:	 19.212700 %
+SPACES SIR:	 56.027566 %
+SYNONYMS SIR:	 22.673096 %

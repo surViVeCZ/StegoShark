@@ -238,7 +238,7 @@ def new_run_element(word, bit, properties_to_inherit, method):
       prop_el = deepcopy(properties_to_inherit)
 
 
-   #přidání stylů do xml souboru docx
+   #přidání stylů do xml souboru docx, odstranění původních (těch, které způsobují kolizi)
    if(method == "bacon"):
       bacon.bacon_element(prop_el, bit, namespace)
    elif(method == "spaces"):
