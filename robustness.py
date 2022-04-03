@@ -15,7 +15,7 @@ import xml_parse
 import steganography
 import tests
 
-def change_font_style(doc_path, method):
+def change_font_style(doc_path):
     doc = Document(doc_path)
     new_doc = Document()
     obj_styles = new_doc.styles
@@ -41,7 +41,6 @@ def change_font_style(doc_path, method):
 
     file = os.path.split(doc_path)
     file_name = file[1]
-    print(file_name)
 
     try:
         full_path = os.path.join(save_path, file_name)

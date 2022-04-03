@@ -1,0 +1,49 @@
+BACON ENCODING:
+#1 encoded 🗸 (adele.docx)
+#2 encoded 🗸 (al-green.docx)
+#3 encoded 🗸 (alicia-keys.docx)
+#4 encoded 🗸 (amy-winehouse.docx)
+#5 encoded 🗸 (beatles.docx)
+#6 encoded 🗸 (bieber.docx)
+#7 encoded 🗸 (bjork.docx)
+#8 encoded 🗸 (blink-182.docx)
+#9 encoded 🗸 (old_man_and_the_sea.docx)
+#10 encoded 🗸 (romeo_and_juliet.docx)
+#11 encoded 🗸 (The_little_prince.docx)
+Elapsed time: 		16.561239 	[seconds] 
+Cover texts size: 	1495958 	[bytes]
+Efficiency: 		0.011071 	[time in seconds to encode 1KB]
+
+ADDING WHITESPACES ENCODING:
+#1 encoded 🗸 (adele.docx)
+#2 encoded 🗸 (al-green.docx)
+#3 encoded 🗸 (alicia-keys.docx)
+#4 encoded 🗸 (amy-winehouse.docx)
+#5 encoded 🗸 (beatles.docx)
+#6 encoded 🗸 (bieber.docx)
+#7 encoded 🗸 (bjork.docx)
+#8 encoded 🗸 (blink-182.docx)
+#9 encoded 🗸 (old_man_and_the_sea.docx)
+#10 encoded 🗸 (romeo_and_juliet.docx)
+#11 encoded 🗸 (The_little_prince.docx)
+Elapsed time: 		23.422397 	[seconds] 
+Cover texts size: 	1495958 	[bytes]
+Efficiency: 		0.015657 	[time in seconds to encode 1KB]
+Average capacity: 	18967 		[bits]
+
+REPLACING SYNONYMS ENCODING:
+#1 encoded 🗸 (adele.docx)
+#2 encoded 🗸 (al-green.docx)
+#3 encoded 🗸 (alicia-keys.docx)
+#4 encoded 🗸 (amy-winehouse.docx)
+#5 encoded 🗸 (beatles.docx)
+#6 encoded 🗸 (bieber.docx)
+#7 encoded 🗸 (bjork.docx)
+#8 encoded 🗸 (blink-182.docx)
+#9 encoded 🗸 (old_man_and_the_sea.docx)
+#10 encoded 🗸 (romeo_and_juliet.docx)
+#11 encoded 🗸 (The_little_prince.docx)
+Elapsed time: 		14.787664 	[seconds] 
+Cover texts size: 	1495958 	[bytes]
+Efficiency: 		0.009885 	[time in seconds to encode 1KB]
+Average capacity: 	614 		[bits]

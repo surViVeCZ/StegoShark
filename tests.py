@@ -25,15 +25,15 @@ spaces_encoded_size = 0
 syn_cover_size = 0
 syn_encoded_size = 0
 
-secret_message = "hromadnytest"
+secret_message = "hromadnytesthromadnytesthromadnytest"
 mes_len = len(secret_message)
 
 def encode_all_covers():
-    encode_bacon()
+    # encode_bacon()
     # encode_spaces()
-    # encode_syn()
-    # encode_own1()
-    # encode_own2()
+    encode_syn()
+    encode_own1()
+    encode_own2()
 
 
 def decode_all_encodes():
@@ -41,8 +41,13 @@ def decode_all_encodes():
     print("---------------------------------")
     print("DECODING:")
     decode_bacon()
-    # decode_spaces()
-    # decode_syn()
+    decode_spaces()
+    decode_syn()
+
+def check_robustness():
+    bacon_robustness_check()
+    spaces_robustness_check()
+    syn_robustness_check()
 
 def calculate_SIR():
     bacon_sir = (bacon_encoded_size-bacon_cover_size)/bacon_cover_size*100
@@ -55,6 +60,8 @@ def calculate_SIR():
 def plot_all():
     plot_graphs1()
     plot_graphs2()
+    plot_graphs3()
+    plot_graphs4()
 
 
 def plot_graphs1():
@@ -421,17 +428,12 @@ def decode_bacon():
             bacon_encoded_size += size.st_size
        
     for encoded in bacon_files:
-        robustness.change_font_style("encoded/" + encoded, "bacon")
+        robustness.change_font_style("encoded/" + encoded)
         cnt += 1
         with suppress_stdout():
             check = steganography.main(['-i', "encoded/" + encoded, '-d', '-s', '-b'])
             head_tail = os.path.split(encoded)
             file_name = head_tail[1]
-            
-        # if check is False:
-        #     print("#%d failed ✖ (%s)" % (cnt, file_name))
-        # else:
-        #     print("#%d decoded 🗸 (%s)" % (cnt, file_name))
 
     bacon_decodes = []
     decoded_path = os.path.join(thisdir_bin, b"decoded")
@@ -515,7 +517,6 @@ def decode_spaces():
         cnt += 1
         text = steganography.print_text("decoded/"+decoded)
         text = text[0:mes_len]
-        print(decoded + ":" + text)
 
         #zpráva zůstala zachována
         if text.lower() == secret_message.lower():
@@ -582,7 +583,6 @@ def decode_syn():
         cnt += 1
         text = steganography.print_text("decoded/"+decoded)
         text = text[0:mes_len]
-        print(decoded + ":" + text)
 
         #zpráva zůstala zachována
         if text.lower() == secret_message.lower():
@@ -599,9 +599,244 @@ def decode_syn():
         print("\n", end='')
 
     
+def bacon_robustness_check():
+    thisdir_bin = os.getcwdb()
+    changed_path = os.path.join(thisdir_bin, b"encoded")
+    robustness_path = os.path.join(thisdir_bin, b"robustness")
+
+    list_of_files = os.listdir(changed_path)
+    bacon_changed_files = []
+    changed_files = []
+    bacon_files = []
+    list_of_changed_styles = os.listdir(robustness_path)
+
+    encoded_path = os.getcwd()
+
+    print("BACON ROBBUSTNESS CHECK:")
+    for file in list_of_files:
+        file = str(file, 'UTF-8')
+     
+        if file.startswith("bacon"):
+            bacon_files.append(file)
+
+    #změna formátování
+    for encoded in bacon_files:
+        robustness.change_font_style("encoded/" + encoded)
+
+    #vyberu pouze souboru pro tuto metodu
+    for changed in list_of_changed_styles:
+        file = str(changed, 'UTF-8')
+        if file.startswith("bacon"):
+            bacon_changed_files.append(file)
+
+    decoded_path = os.path.join(thisdir_bin, b"decoded")
+    list_of_decoded = os.listdir(decoded_path)
+
+    cnt = 0
+    success = 0
+    failed = 0
+    for bacon_chnaged in bacon_changed_files:
+        cnt += 1
+
+        #dekodování souboru se změněným stylem
+        with suppress_stdout():
+            steganography.main(['-i', "robustness/" + bacon_chnaged, '-d', '-s', '-b'])
+        text = steganography.print_text("robustness/"+bacon_chnaged)
+
+        #ořezání zprávy
+        text = text[0:mes_len]
+        #zpráva zůstala zachována
+        if text.lower() == secret_message.lower():
+            success += 1
+            print(text.lower())
+
+        else:
+            failed += 1
+
+    #úspěšně se zachovaly všechny zprávy
+    if failed == 0:
+        print("After FONT CHANGES all messages DECODED SUCCESSFULLY!")
+        print("\n", end='')
+    else:
+        print("After FONT CHANGES %d/%d messages sucesfully decoded" % (success,cnt))
+        print("\n", end='')
+
+
+
+def spaces_robustness_check():
+    thisdir_bin = os.getcwdb()
+    changed_path = os.path.join(thisdir_bin, b"encoded")
+    robustness_path = os.path.join(thisdir_bin, b"robustness")
+
+    list_of_files = os.listdir(changed_path)
+    spaces_changed_files = []
+    spaces_files = []
+    list_of_changed_styles = os.listdir(robustness_path)
+
+
+    print("SPACES ROBBUSTNESS CHECK:")
+    for file in list_of_files:
+        file = str(file, 'UTF-8')
+     
+        if file.startswith("spaces"):
+            spaces_files.append(file)
+
+    #změna formátování
+    for encoded in spaces_files:
+        robustness.change_font_style("encoded/" + encoded)
+
+    #vyberu pouze souboru pro tuto metodu
+    for changed in list_of_changed_styles:
+        file = str(changed, 'UTF-8')
+        if file.startswith("spaces"):
+            spaces_changed_files.append(file)
+
+    decoded_path = os.path.join(thisdir_bin, b"decoded")
+    list_of_decoded = os.listdir(decoded_path)
+
+    cnt = 0
+    success = 0
+    failed = 0
+    for spaces_chnaged in spaces_changed_files:
+        cnt += 1
+
+        #dekodování souboru se změněným stylem
+        with suppress_stdout():
+            steganography.main(['-i', "robustness/" + spaces_chnaged, '-d', '-s', '-b'])
+        text = steganography.print_text("robustness/"+ spaces_chnaged)
+
+        #ořezání zprávy
+        text = text[0:mes_len]
+        #zpráva zůstala zachována
+        if text.lower() == secret_message.lower():
+            success += 1
+            print(text.lower())
+
+        else:
+            failed += 1
+
+    #úspěšně se zachovaly všechny zprávy
+    if failed == 0:
+        print("After FONT CHANGES all messages DECODED SUCCESSFULLY!")
+        print("\n", end='')
+    else:
+        print("After FONT CHANGES %d/%d messages sucesfully decoded" % (success,cnt))
+        print("\n", end='')
+
+
+def syn_robustness_check():
+    thisdir_bin = os.getcwdb()
+    changed_path = os.path.join(thisdir_bin, b"encoded")
+    robustness_path = os.path.join(thisdir_bin, b"robustness")
+
+    list_of_files = os.listdir(changed_path)
+    syn_changed_files = []
+    syn_files = []
+    list_of_changed_styles = os.listdir(robustness_path)
+
+
+    print("SYNONYMS ROBBUSTNESS CHECK:")
+    for file in list_of_files:
+        file = str(file, 'UTF-8')
+     
+        if file.startswith("syn"):
+            syn_files.append(file)
+
+    #změna formátování
+    for encoded in syn_files:
+        robustness.change_font_style("encoded/" + encoded)
+
+    #vyberu pouze souboru pro tuto metodu
+    for changed in list_of_changed_styles:
+        file = str(changed, 'UTF-8')
+        if file.startswith("syn"):
+            syn_changed_files.append(file)
+
+    decoded_path = os.path.join(thisdir_bin, b"decoded")
+
+    cnt = 0
+    success = 0
+    failed = 0
+    for syn_chnaged in syn_changed_files:
+        cnt += 1
+
+        #dekodování souboru se změněným stylem
+        with suppress_stdout():
+            steganography.main(['-i', "robustness/" + syn_chnaged, '-d', '-s', '-b'])
+        text = steganography.print_text("robustness/"+ syn_chnaged)
+
+        #ořezání zprávy
+        text = text[0:mes_len]
+        #zpráva zůstala zachována
+        if text.lower() == secret_message.lower():
+            success += 1
+            print(text.lower())
+
+        else:
+            failed += 1
+
+    #úspěšně se zachovaly všechny zprávy
+    if failed == 0:
+        print("After FONT CHANGES all messages DECODED SUCCESSFULLY!")
+        print("\n", end='')
+    else:
+        print("After FONT CHANGES %d/%d messages sucesfully decoded" % (success,cnt))
+        print("\n", end='')
+
+def plot_graphs3():
+    #metoda synonym
+    y = [0.0065,0.023,0.017,0.021]
+    x = [12,40,80,120]
+
+    #baconova šifra
+    y2 = [0.005,0.021,0.018,0.026]
+
+    #open-space
+    y3 = [0.007,0.036,0.032,0.035]
+    fig3 = plt.figure(figsize=(11,9))
+
+    plt.plot(x,y)
+    plt.plot(x,y2)
+    plt.plot(x,y3)
+    plt.title("Efektivita jednotlivých metod")
+    plt.ylabel("Čas potřebný k zašifrování 1kB dat [s]")
+    plt.xlabel("Velikost cover souboru [kB]")
+
+    ax = plt.gca()
+    ax.legend(['Metoda synonym', 'Baconova šifra', 'Ope-space'])
+
+    plt.savefig("effectivness.pdf",bbox_inches='tight')
+
+
+def plot_graphs4():
+    #metoda synonym
+    y = [0.0065,0.023,0.017,0.021]
+    x = [12,40,80,120]
+
+    #baconova šifra
+    y2 = [0.012,0.022,0.018,0.022]
+
+    #open-space
+    y3 = [0.009,0.02,0.019,0.023]
+    fig4 = plt.figure(figsize=(11,9))
+
+    plt.plot(x,y)
+    plt.plot(x,y2)
+    plt.plot(x,y3)
+    plt.title("Efektivita jednotlivých metod")
+    plt.ylabel("Čas potřebný k zašifrování 1kB dat [s]")
+    plt.xlabel("Velikost cover souboru [kB]")
+
+    ax = plt.gca()
+    ax.legend(['Metoda synonym', 'Metoda synonym + Baconovo šifrování', 'Metoda synonym + Huffmanovo kódování'])
+
+    plt.savefig("own_methods_comparison.pdf",bbox_inches='tight')
+
 
 if __name__ == "__main__":
     encode_all_covers()
-    decode_all_encodes()
-    calculate_SIR()
+    # decode_all_encodes()
+    # check_robustness()
+
+    # calculate_SIR()
     plot_all()
