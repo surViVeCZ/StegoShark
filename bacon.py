@@ -27,15 +27,14 @@ import xml_parse
 
 bacons_table = ["00000", "00001", "00010", "00011", "00100", "00101", "00110", "00111", "01000",
                "01001", "01010", "01011", "01100", "01101", "01110", "01111", "10000", "10001", "10010",
-               "10011", "10100", "10101", "10110", "10111"]
+               "10011", "10100", "10101", "10110", "10111", "11111"]
 
 alphabet = ["A", "B", "C", "D", "E", "F", "G", "H", "(I,J)", "K", "L", "M", "N", "O", "P","Q",
-            "R", "S", "T", "(U/V)", "W", "X", "Y", "Z"]
+            "R", "S", "T", "(U/V)", "W", "X", "Y", "Z", "."]
 
 
 #ukrytí tajné zprávy pomocí Baconovy šifry
 def Bacon_encode(file, message):
-  
    fileDir = os.path.dirname(os.path.realpath(__file__))
    filename = os.path.join(fileDir, file)
 
@@ -44,25 +43,25 @@ def Bacon_encode(file, message):
    except:
       print("Non existing file")
       sys.exit()
-
    message = steganography.split(message)
    # message_string = steganography.listToString(message)
 
    index_array = []
    for i in range(len(message)):
-      index_array.append(string.ascii_lowercase.index(message[i]))
-   print(index_array)
+      try:
+         index_array.append(string.ascii_lowercase.index(message[i]))
+      except:
+         index_array.append(alphabet.index(message[i])+2)
+ 
 
    message_pattern = []
+   print(index_array)
    for k in index_array:
       #nutné upravit hodnoty indexů, kvůli dvojicím i,j a u,v (mají stejný vzor v Baconově šifře)
-      if(k > 8 and k <= 19):
-         k -= 1
-      elif(k == 20):
+      if(k > 8 and k <= 20):
          k -= 1
       elif(k > 20):
          k -= 2
-      
       message_pattern.append(bacons_table[k])
 
    pattern_string = steganography.listToString(message_pattern)
@@ -97,12 +96,15 @@ def Bacon_decode(file):
    non_bold = []
    binary = "" #bold = 1, nonbold = 0
    text = ""
-
+   end_of_message = 0
    #rozdělí text na tučné a obyčejné slova
    for paragraph in doc.paragraphs:
       text = text + paragraph.text + " "
 
       for run in paragraph.runs:
+         #ukončení zprávy
+         if(end_of_message == 5):
+            break
          # #pro kódování a dekódování Baconovou šifrou nepracuji s bílými znaky (pro práci s nimi je implementována jiná metoda)
          t = run.text
          split = t.strip().split(" ")
@@ -111,10 +113,13 @@ def Bacon_decode(file):
             if run.style.name == "baconstyle":
                bold_words.append(word)
                binary += '1';
+               end_of_message += 1
             elif run:
                if run.text != ' ':
                   non_bold.append(word)
                   binary += '0';
+                  end_of_message = 0
+           
 
 
    #rozdělení na vzory po 5
@@ -122,7 +127,7 @@ def Bacon_decode(file):
    message = bacon_pattern_to_string(bacons_patterns, bacons_table)
 
    #binární podoba texta
-   print("The binary value is:", bacons_patterns)
+   # print("The binary value is:", bacons_patterns)
 
    # #zpráva převedena z binární podoby
    # message = binary_to_str(binary)
@@ -130,9 +135,10 @@ def Bacon_decode(file):
 
    #převede vzory z cover textu do stringové podoby (tajné zprávy)
 def bacon_pattern_to_string(bacons_patterns, bacons_table):
-   bacons_decoded_message = ""    
+   bacons_decoded_message = ""
    for k in range(len(bacons_patterns)):
       for l in range(len(bacons_table)):
+         #11111 je ukončovací znak, zprávu ukončujeme "."
          if(bacons_patterns[k] == bacons_table[l]):
             bacons_decoded_message += alphabet[l]
    return bacons_decoded_message

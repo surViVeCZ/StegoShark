@@ -25,12 +25,12 @@ spaces_encoded_size = 0
 syn_cover_size = 0
 syn_encoded_size = 0
 
-secret_message = "hromadnytesthromadnytesthromadnytest"
+secret_message = "hromadnytesthromadnytesthromadnytesthromadnytesthromadnytesthromadnytest"
 mes_len = len(secret_message)
 
 def encode_all_covers():
-    # encode_bacon()
-    # encode_spaces()
+    encode_bacon()
+    encode_spaces()
     encode_syn()
     encode_own1()
     encode_own2()
@@ -103,8 +103,13 @@ def plot_graphs2():
     plt.savefig("second.pdf",bbox_inches='tight')
  
 #vypočítá maximální možnou velikost zprávy, kterou jde do určeného cover textu uložit
-def max_secret_message(file, method):    
-    full_text = steganography.print_text(file)
+def max_secret_message(file, method, file_format): 
+    if file_format == "docx": 
+        full_text = steganography.print_text(file)
+    elif file_format == "txt":
+        text_file = open(file)
+        full_text = text_file.read()
+ 
     if method is "synonyms":
         words_available = synonyms.count_dictionary_words(full_text)/8
     elif method is "bacon" or method is "own1" or method is "own2":
@@ -152,7 +157,7 @@ def encode_syn():
     global syn_cover_size
     print("\n", end='')
     print("REPLACING SYNONYMS ENCODING:")
-
+    file_format = ""
     #šifrování všech cover textů pomocí metody synonym
     start = timeit.default_timer()
     for file in list_of_files:
@@ -163,8 +168,12 @@ def encode_syn():
         #zjistím si jméno souboru (poslední soubor v cestě)
         head_tail = os.path.split(file)
         file_name = head_tail[1]
+        if file_name.endswith('.txt'):
+            file_format = "txt"
+        elif file_name.endswith('.docx'):
+            file_format = "docx"
 
-        message += max_secret_message(cover_size_path+'/'+file_name, "synonyms")
+        message += max_secret_message(cover_size_path+'/'+file_name, "synonyms", file_format)
         with suppress_stdout():
             check = steganography.main(['-i', file, '-e', '-s', secret_message, '-r'])
 
@@ -204,6 +213,7 @@ def encode_own1():
     success = 0
     global syn_cover_size
     syn_cover_size = 0
+    file_format = ""
     print("\n", end='')
     print("OWN1 ENCODING (SYN + BACON):")
 
@@ -217,8 +227,12 @@ def encode_own1():
         #zjistím si jméno souboru (poslední soubor v cestě)
         head_tail = os.path.split(file)
         file_name = head_tail[1]
+        if file_name.endswith('.txt'):
+            file_format = "txt"
+        elif file_name.endswith('.docx'):
+            file_format = "docx"
 
-        message += max_secret_message(cover_size_path+'/'+file_name, "own1")
+        message += max_secret_message(cover_size_path+'/'+file_name, "own1", file_format)
         with suppress_stdout():
             check = steganography.main(['-i', file, '-e', '-s', secret_message, '--own1'])
 
@@ -259,6 +273,7 @@ def encode_own2():
     global syn_cover_size
     syn_cover_size = 0
     print("\n", end='')
+    file_format = ""
     print("OWN2 ENCODING (SYN + HUFFMAN):")
 
     #šifrování všech cover textů pomocí metody synonym
@@ -271,8 +286,12 @@ def encode_own2():
         #zjistím si jméno souboru (poslední soubor v cestě)
         head_tail = os.path.split(file)
         file_name = head_tail[1]
+        if file_name.endswith('.txt'):
+            file_format = "txt"
+        elif file_name.endswith('.docx'):
+            file_format = "docx"
 
-        message += max_secret_message(cover_size_path+'/'+file_name, "own2")
+        message += max_secret_message(cover_size_path+'/'+file_name, "own2", file_format)
         with suppress_stdout():
             check = steganography.main(['-i', file, '-e', '-s', secret_message, '--own2'])
 
@@ -312,7 +331,7 @@ def encode_spaces():
     global spaces_cover_size
     print("\n", end='')
     print("ADDING WHITESPACES ENCODING:")
-
+    file_format = ""
      #šifrování všech cover textů pomocí vkládání mezislovních mezer
     message = 0
     start = timeit.default_timer()
@@ -324,8 +343,12 @@ def encode_spaces():
         #zjistím si jméno souboru (poslední soubor v cestě)
         head_tail = os.path.split(file)
         file_name = head_tail[1]
+        if file_name.endswith('.txt'):
+            file_format = "txt"
+        elif file_name.endswith('.docx'):
+            file_format = "docx"
 
-        message += max_secret_message(cover_size_path+'/'+file_name, "spaces")
+        message += max_secret_message(cover_size_path+'/'+file_name, "spaces",file_format)
         with suppress_stdout():
             check = steganography.main(['-i', file, '-e', '-s', secret_message, '-w'])
         if check is False:
@@ -365,6 +388,7 @@ def encode_bacon():
     success = 0
     global bacon_cover_size
     print("BACON ENCODING:")
+    file_format = ""
 
     #šifrování všech cover textů pomocí Baconovy šifry
     start = timeit.default_timer()
@@ -372,14 +396,18 @@ def encode_bacon():
         cnt += 1
         file = os.path.join(changed_path, file)    
         file = str(file, 'UTF-8')
-
         #zjistím si jméno souboru (poslední soubor v cestě)
         head_tail = os.path.split(file)
         file_name = head_tail[1]
+        if file_name.endswith('.txt'):
+            file_format = "txt"
+        elif file_name.endswith('.docx'):
+            file_format = "docx"
     
-        message += max_secret_message(cover_size_path+'/'+file_name, "bacon")
+        message += max_secret_message(cover_size_path+'/'+file_name, "bacon", file_format)
         with suppress_stdout():
             check = steganography.main(['-i', file, '-e', '-s', secret_message, '-b'])
+     
 
         if check is False:
             print("#%d failed ✖ (%s)" % (cnt, file_name))
@@ -835,8 +863,8 @@ def plot_graphs4():
 
 if __name__ == "__main__":
     encode_all_covers()
-    # decode_all_encodes()
+    decode_all_encodes()
     # check_robustness()
 
-    # calculate_SIR()
+    calculate_SIR()
     plot_all()

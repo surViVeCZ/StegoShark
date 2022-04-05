@@ -45,6 +45,71 @@ class SplitDocument:
    paragraphs = []
    secret_message = ""
 
+def encode_decode(cfg, file):
+      #Dekódování Baconovou šifrou
+   if(cfg.decode is True):
+      if(cfg.bacon is True):
+         secret_message = bacon.Bacon_decode(file)
+      elif(cfg.whitespaces is True):
+         secret_message = whitespaces.Spaces_decode(file)
+      elif(cfg.replace is True):
+         secret_message = synonyms.syn_decode(file, "default")
+      elif(cfg.own1 is True):
+         #own1 = metoda synonym za využití Baconova kódování, tzn. 5bit
+         secret_message = synonyms.syn_decode(file, "own1")
+      elif(cfg.own2 is True):
+         #own2 = metoda synonym s využitím Huffmanova kódování
+         print("Wasn't implemented. Decoding of this method is way too complicated.")
+         sys.exit()
+
+      print("The secret message is:", secret_message)
+      print("\n", end='')
+
+      file_path = cfg.inputfile.replace("encoded", "decoded")
+      #vytvoření a zápis do souboru 
+      try:
+         decoded_file = docx.Document()
+      except:
+         print("Non existing file")
+         sys.exit()
+
+      if(secret_message  is not None):
+         cleaned_string = ''.join(c for c in secret_message if valid_xml_char_ordinal(c))
+         decoded_file.add_paragraph(cleaned_string)
+      decoded_file.save(file_path)
+      return file_path
+      
+   elif(cfg.encode == True):
+      if(cfg.message == ''):
+         print("To encode you need to use parameter -s for secret message")
+         sys.exit()
+
+      if(cfg.bacon is True):
+         file_path = bacon.Bacon_encode(file, cfg.message)
+         print(file_path)
+         if file_path is False:
+            return False
+      elif(cfg.whitespaces is True):
+         file_path = whitespaces.Spaces_encode(file, cfg.message)
+         if file_path is False:
+            return False
+      elif(cfg.replace is True):
+         #default = klasické kódování 8bit
+         file_path = synonyms.syn_encode(file, cfg.message, "default")
+         if file_path is False:
+            return False
+      elif(cfg.own1 is True):
+         #own1 = metoda synonym za využití Baconova kódování, tzn. 5bit
+         file_path = synonyms.syn_encode(file, cfg.message, "own1")
+         if file_path is False:
+            return False
+      elif(cfg.own2 is True):
+         #own2 = metoda synonym s využitím Huffmanova kódování
+         file_path = synonyms.syn_encode(file, cfg.message, "own2")
+         if file_path is False:
+            return False
+      return file_path
+
 def updateZip(zipname, zip_file_location, outside_file_location):
    # generate a temp file
    tmpfd, tmpname = tempfile.mkstemp(dir=os.path.dirname(zipname))
@@ -197,98 +262,41 @@ def ArgumentsParsing(argv):
    return cfg
 
 def main(argv):
-
    cfg = ArgumentsParsing(argv)
-
    if(cfg.bacon is False and cfg.whitespaces is False and cfg.replace is False and cfg.own1 is False and cfg.own2 is False):
       print("Wrong parameters, use -h for help")
       print("\n", end='')
       sys.exit()
 
+   
    print("\n", end='')
    print ("Input file: {0}" .format(cfg.inputfile))
 
    #vstupní cover text je docs
    if(cfg.inputfile.endswith('.docx')):
-      print("\n", end='')
-
-      #Dekódování Baconovou šifrou
-      if(cfg.decode is True):
-         if(cfg.bacon is True):
-            secret_message = bacon.Bacon_decode(cfg.inputfile)
-         elif(cfg.whitespaces is True):
-            secret_message = whitespaces.Spaces_decode(cfg.inputfile)
-         elif(cfg.replace is True):
-            secret_message = synonyms.syn_decode(cfg.inputfile, "default")
-         elif(cfg.own1 is True):
-            #own1 = metoda synonym za využití Baconova kódování, tzn. 5bit
-            secret_message = synonyms.syn_decode(cfg.inputfile, "own1")
-         elif(cfg.own2 is True):
-            #own2 = metoda synonym s využitím Huffmanova kódování
-            print("Wasn't implemented. Decoding of this method is way too complicated.")
-            sys.exit()
-
-         print("The secret message is:", secret_message)
-         print("\n", end='')
-
-         file_path = cfg.inputfile.replace("encoded", "decoded")
-         #vytvoření a zápis do souboru 
-         try:
-            decoded_file = docx.Document()
-         except:
-            print("Non existing file")
-            sys.exit()
-
-         if(secret_message  is not None):
-            cleaned_string = ''.join(c for c in secret_message if valid_xml_char_ordinal(c))
-            decoded_file.add_paragraph(cleaned_string)
-         decoded_file.save(file_path)
-         
-      elif(cfg.encode == True):
-         if(cfg.message == ''):
-            print("To encode you need to use parameter -s for secret message")
-            sys.exit()
    
-         if(cfg.bacon is True):
-            file_path = bacon.Bacon_encode(cfg.inputfile, cfg.message)
-            if file_path is False:
-               return False
-         elif(cfg.whitespaces is True):
-            file_path = whitespaces.Spaces_encode(cfg.inputfile, cfg.message)
-            if file_path is False:
-               return False
-         elif(cfg.replace is True):
-            #default = klasické kódování 8bit
-            file_path = synonyms.syn_encode(cfg.inputfile, cfg.message, "default")
-            if file_path is False:
-               return False
-         elif(cfg.own1 is True):
-            #own1 = metoda synonym za využití Baconova kódování, tzn. 5bit
-            file_path = synonyms.syn_encode(cfg.inputfile, cfg.message, "own1")
-            if file_path is False:
-               return False
-         elif(cfg.own2 is True):
-            #own2 = metoda synonym s využitím Huffmanova kódování
-            file_path = synonyms.syn_encode(cfg.inputfile, cfg.message, "own2")
-            if file_path is False:
-               return False
-
+      print("\n", end='')
+      print(cfg.inputfile)
+      file_path = encode_decode(cfg, cfg.inputfile)
+      if file_path is False:
+         return False
       # print(print_text(cfg.inputfile))
       
 
    #vstupní cover text je txt, txt soubor je nahrát a zpracován jako dokument docx
    elif(cfg.inputfile.endswith('.txt')):
-      text = Reading_txt(cfg.inputfile)
-      print(text)
+      document = Document()
+      with open(cfg.inputfile) as f:
+         for line in f:
+            document.add_paragraph(line)
 
-      #převedení
-      txt_to_docx = docx.Document()
-      txt_to_docx.add_paragraph(text)
+      new_file = cfg.inputfile.replace(".txt", ".docx")
+      document.save(new_file)
       
-      name_docx = cfg.inputfile.split('.txt')
-      txt_to_docx.save(name_docx[0]+'.docx')
-
-      bacon.Bacon_encode(name_docx[0]+'.docx', cfg.message)
+      file_path = encode_decode(cfg, new_file)
+      os.remove(new_file)
+      if file_path is False:
+             return False
    else:
       print("Wrong input file")
       sys.exit()

@@ -104,19 +104,24 @@ def syn_encode(file, message, bits):
 
         index_array = []
         for i in range(len(message)):
-            index_array.append(string.ascii_lowercase.index(message[i]))
+            try:
+                index_array.append(string.ascii_lowercase.index(message[i]))
+            except:
+                index_array.append(bacon.alphabet.index(message[i]))
         print(index_array)
 
         message_pattern = []
         for k in index_array:
-            #nutné upravit hodnoty indexů, kvůli dvojicím i,j a u,v (mají stejný vzor v Baconově šifře)
-            if(k > 8 and k <= 19):
-                k -= 1
-            elif(k == 20):
-                k -= 1
-            elif(k > 20):
-                k -= 2
-            
+            if(k == 24):
+                pass
+            else:
+                #nutné upravit hodnoty indexů, kvůli dvojicím i,j a u,v (mají stejný vzor v Baconově šifře)
+                if(k > 8 and k <= 19):
+                    k -= 1
+                elif(k == 20):
+                    k -= 1
+                elif(k > 20 < 24):
+                    k -= 2
             message_pattern.append(bacon.bacons_table[k])
         binary_mes = steganography.listToString(message_pattern)
 
