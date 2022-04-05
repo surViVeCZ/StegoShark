@@ -153,7 +153,7 @@ def syn_decode(file, bits):
         
             for word in split:
                 word = word.lower()
-                if ((word in dictionary_of_synonyms) and (run.style.name != "skip")):
+                if word in dictionary_of_synonyms:
                     binary += "1"
                 elif word in dictionary_of_zeros:
                     binary += "0"
@@ -182,27 +182,26 @@ def create_syn_tag():
 # returns <w:rStyle w:val="skip"/>
 #pokud je nějaké slovo z původního cover textu již obsaženo v mém slovníku dictionary_of_synonym, je zapotřebí tohle slovo vynechat,
 #aby nevznikaly jedničkové bity na nechtěných místech
-def skip_tag():
-   namespace = '{http://schemas.openxmlformats.org/wordprocessingml/2006/main}'
-   tag = namespace + 'rStyle'
-   ns_val = namespace + 'val'
-   el = xml.etree.ElementTree.Element(tag)
-   el.attrib[ns_val] = "skip"
-   return el
+# def skip_tag():
+#    namespace = '{http://schemas.openxmlformats.org/wordprocessingml/2006/main}'
+#    tag = namespace + 'rStyle'
+#    ns_val = namespace + 'val'
+#    el = xml.etree.ElementTree.Element(tag)
+#    el.attrib[ns_val] = "skip"
+#    return el
 
-def add_skip_tag(font_styles):
-   custom_style_present = False
-   for style in font_styles:
-      if 'skip' == style.name:
-        custom_style_present = True
-   #nastavení custom stylu
-   if not custom_style_present:
-      font_charstyle = font_styles.add_style('skip', WD_STYLE_TYPE.CHARACTER)
+# def add_skip_tag(font_styles):
+#    custom_style_present = False
+#    for style in font_styles:
+#       if 'skip' == style.name:
+#         custom_style_present = True
+#    #nastavení custom stylu
+#    if not custom_style_present:
+#       font_charstyle = font_styles.add_style('skip', WD_STYLE_TYPE.CHARACTER)
 
-#nahraje styl do elementu, který se má přeskočit
+#nahrazování slov
 def syn_element(prop_el,bit,namespace, word, run):
     syn_word = word
-
     #na všechny slova, která se vyzkytují ve slovníku přiřadím tag, pouze těmto slovům budu přidělovat bity
     if(word.lower() in dictionary_of_zeros):
         index = list(dictionary_of_zeros.keys()).index(word.lower())
@@ -228,9 +227,21 @@ def syn_element(prop_el,bit,namespace, word, run):
         tag = create_syn_tag()
         prop_el.append(tag)
     elif(word.lower() in dictionary_of_synonyms):
-        # apply <w:rStyle w:val="skip"/>  
-        tag = skip_tag()
-        prop_el.append(tag)
+        index = list(dictionary_of_synonyms.keys()).index(word.lower())
+        if bit == '0':
+            print("\n", end='')
+            print("replacing....")  
+
+            #nalezení příslušného synonyma ve druhém slovníku, podle indexu
+            syn_word = list(dictionary_of_zeros.keys())[index]
+            
+            print("index in dict: %d (%s)" % (index, word))
+            print("syn in dict: %d (%s)" % (index, syn_word))
+            print("\n", end='')
+
+            #pokud bylo původní slovo napsané velkými písmeny, nové musí být také
+            if (word.isupper()):
+                syn_word = syn_word.upper()
 
     return syn_word
 

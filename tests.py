@@ -25,15 +25,15 @@ spaces_encoded_size = 0
 syn_cover_size = 0
 syn_encoded_size = 0
 
-secret_message = "hromadnytesthromadnytesthromadnytesthromadnytesthromadnytesthromadnytest"
+secret_message = "hromadnytest"
 mes_len = len(secret_message)
 
 def encode_all_covers():
-    encode_bacon()
-    encode_spaces()
+    # encode_bacon()
+    # encode_spaces()
     encode_syn()
-    encode_own1()
-    encode_own2()
+    # encode_own1()
+    # encode_own2()
 
 
 def decode_all_encodes():
@@ -44,9 +44,9 @@ def decode_all_encodes():
     decode_spaces()
     decode_syn()
 
-def check_robustness():
-    bacon_robustness_check()
-    spaces_robustness_check()
+def check_robustness(): 
+    # bacon_robustness_check()
+    # spaces_robustness_check()
     syn_robustness_check()
 
 def calculate_SIR():
@@ -517,7 +517,6 @@ def decode_spaces():
             spaces_encoded_size += size.st_size
        
     for encoded in spaces_files:
-        cnt += 1
         with suppress_stdout():
             check = steganography.main(['-i', "encoded/" + encoded, '-d', '-s', '-w'])
             head_tail = os.path.split(encoded)
@@ -583,7 +582,6 @@ def decode_syn():
             syn_encoded_size += size.st_size
        
     for encoded in syn_files:
-        cnt += 1
         with suppress_stdout():
             check = steganography.main(['-i', "encoded/" + encoded, '-d', '-s', '-r'])
             head_tail = os.path.split(encoded)
@@ -663,30 +661,33 @@ def bacon_robustness_check():
     cnt = 0
     success = 0
     failed = 0
-    for bacon_chnaged in bacon_changed_files:
-        cnt += 1
+    if bacon_changed_files:
+        for bacon_chnaged in bacon_changed_files:
+            cnt += 1
+            #dekodování souboru se změněným stylem
+            with suppress_stdout():
+                steganography.main(['-i', "robustness/" + bacon_chnaged, '-d', '-s', '-b'])
+                text = steganography.print_text("robustness/"+bacon_chnaged)
 
-        #dekodování souboru se změněným stylem
-        with suppress_stdout():
-            steganography.main(['-i', "robustness/" + bacon_chnaged, '-d', '-s', '-b'])
-        text = steganography.print_text("robustness/"+bacon_chnaged)
+            #ořezání zprávy
+            text = text[0:mes_len]
+            #zpráva zůstala zachována
+            if text.lower() == secret_message.lower():
+                success += 1
+                print(text.lower())
 
-        #ořezání zprávy
-        text = text[0:mes_len]
-        #zpráva zůstala zachována
-        if text.lower() == secret_message.lower():
-            success += 1
-            print(text.lower())
+            else:
+                failed += 1
 
+        #úspěšně se zachovaly všechny zprávy
+        if failed == 0:
+            print("After ALL FORMAT CHANGES all messages DECODED SUCCESSFULLY!")
+            print("\n", end='')
         else:
-            failed += 1
-
-    #úspěšně se zachovaly všechny zprávy
-    if failed == 0:
-        print("After FONT CHANGES all messages DECODED SUCCESSFULLY!")
-        print("\n", end='')
+            print("After ALL FORMAT CHANGES %d/%d messages sucesfully decoded" % (success,cnt))
+            print("\n", end='')
     else:
-        print("After FONT CHANGES %d/%d messages sucesfully decoded" % (success,cnt))
+        print("After ALL FORMAT CHANGES NO messages decoded!")
         print("\n", end='')
 
 
@@ -710,6 +711,7 @@ def spaces_robustness_check():
             spaces_files.append(file)
 
     #změna formátování
+    print(spaces_files)
     for encoded in spaces_files:
         robustness.change_font_style("encoded/" + encoded)
 
@@ -725,30 +727,34 @@ def spaces_robustness_check():
     cnt = 0
     success = 0
     failed = 0
-    for spaces_chnaged in spaces_changed_files:
-        cnt += 1
+    if spaces_changed_files:
+        for spaces_chnaged in spaces_changed_files:
+            cnt += 1
 
-        #dekodování souboru se změněným stylem
-        with suppress_stdout():
-            steganography.main(['-i', "robustness/" + spaces_chnaged, '-d', '-s', '-b'])
-        text = steganography.print_text("robustness/"+ spaces_chnaged)
+            #dekodování souboru se změněným stylem
+            with suppress_stdout():
+                steganography.main(['-i', "robustness/" + spaces_chnaged, '-d', '-s', '-w'])
+                text = steganography.print_text("robustness/"+ spaces_chnaged)
 
-        #ořezání zprávy
-        text = text[0:mes_len]
-        #zpráva zůstala zachována
-        if text.lower() == secret_message.lower():
-            success += 1
-            print(text.lower())
+            #ořezání zprávy
+            text = text[0:mes_len]
+            #zpráva zůstala zachována
+            if text.lower() == secret_message.lower():
+                success += 1
+                print(text.lower())
 
+            else:
+                failed += 1
+
+        #úspěšně se zachovaly všechny zprávy
+        if failed == 0:
+            print("After ALL FORMAT CHANGES all messages DECODED SUCCESSFULLY!")
+            print("\n", end='')
         else:
-            failed += 1
-
-    #úspěšně se zachovaly všechny zprávy
-    if failed == 0:
-        print("After FONT CHANGES all messages DECODED SUCCESSFULLY!")
-        print("\n", end='')
+            print("After ALL FORMAT CHANGES %d/%d messages sucesfully decoded" % (success,cnt))
+            print("\n", end='')
     else:
-        print("After FONT CHANGES %d/%d messages sucesfully decoded" % (success,cnt))
+        print("After ALL FORMAT CHANGES NO messages decoded!")
         print("\n", end='')
 
 
@@ -775,41 +781,42 @@ def syn_robustness_check():
         robustness.change_font_style("encoded/" + encoded)
 
     #vyberu pouze souboru pro tuto metodu
+    print(list_of_changed_styles)
     for changed in list_of_changed_styles:
         file = str(changed, 'UTF-8')
         if file.startswith("syn"):
             syn_changed_files.append(file)
 
-    decoded_path = os.path.join(thisdir_bin, b"decoded")
+    # decoded_path = os.path.join(thisdir_bin, b"decoded")
 
-    cnt = 0
-    success = 0
-    failed = 0
-    for syn_chnaged in syn_changed_files:
-        cnt += 1
+    # cnt = 0
+    # success = 0
+    # failed = 0
+    # for syn_chnaged in syn_changed_files:
+    #     cnt += 1
 
-        #dekodování souboru se změněným stylem
-        with suppress_stdout():
-            steganography.main(['-i', "robustness/" + syn_chnaged, '-d', '-s', '-b'])
-        text = steganography.print_text("robustness/"+ syn_chnaged)
+    #     #dekodování souboru se změněným stylem
+   
+    #     steganography.main(['-i', "robustness/" + syn_chnaged, '-d', '-s', '-r'])
+    #     text = steganography.print_text("robustness/"+ syn_chnaged)
 
-        #ořezání zprávy
-        text = text[0:mes_len]
-        #zpráva zůstala zachována
-        if text.lower() == secret_message.lower():
-            success += 1
-            print(text.lower())
+    #     #ořezání zprávy
+    #     text = text[0:mes_len]
+    #     #zpráva zůstala zachována
+    #     if text.lower() == secret_message.lower():
+    #         success += 1
+    #         print(text.lower())
 
-        else:
-            failed += 1
+    #     else:
+    #         failed += 1
 
-    #úspěšně se zachovaly všechny zprávy
-    if failed == 0:
-        print("After FONT CHANGES all messages DECODED SUCCESSFULLY!")
-        print("\n", end='')
-    else:
-        print("After FONT CHANGES %d/%d messages sucesfully decoded" % (success,cnt))
-        print("\n", end='')
+    # #úspěšně se zachovaly všechny zprávy
+    # if failed == 0:
+    #     print("After ALL FORMAT CHANGES all messages DECODED SUCCESSFULLY!")
+    #     print("\n", end='')
+    # else:
+    #     print("After ALL FORMAT CHANGES %d/%d messages sucesfully decoded" % (success,cnt))
+    #     print("\n", end='')
 
 def plot_graphs3():
     #metoda synonym
@@ -863,8 +870,8 @@ def plot_graphs4():
 
 if __name__ == "__main__":
     encode_all_covers()
-    decode_all_encodes()
-    # check_robustness()
+    # decode_all_encodes()
+    check_robustness()
 
-    calculate_SIR()
-    plot_all()
+    # calculate_SIR()
+    # plot_all()

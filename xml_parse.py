@@ -30,6 +30,9 @@ import synonyms
 
 #původní dokument se rozloží na odstavce,runy a slova, ty se následně s jiným stylem uloží do nového dokumentu
 def split_document(message_pattern,file, method, bits):
+       
+   #pro ukončení zprávy používám counter
+   cnt = 0
    shutil.copyfile(file, "encoded.docx")    
 
    new_doc = Document("encoded.docx")
@@ -52,7 +55,6 @@ def split_document(message_pattern,file, method, bits):
          nametag = 'own1_'
       elif(bits == "own2"):
          nametag = 'own2_'
-      synonyms.add_skip_tag(font_styles)
  
    save_path = 'encoded'  
    file = os.path.split(file)
@@ -160,13 +162,21 @@ def split_document(message_pattern,file, method, bits):
                new_runs.append(new_run)
          elif(method == "synonyms"):
             words = steganography.split_to_words(run_text)
-
+            #kvůli ukončení dekodovani
             #todo bity pouze ke slovníkovým slovům
             for word in words:
-               if word.lower() in synonyms.dictionary_of_zeros:
-                  bit = next(msg_iter, None)
+               if cnt >= message_len:
+                  print("aaaa")
+                  break
                else:
-                  bit = "x"
+                  if word.lower() in synonyms.dictionary_of_zeros:
+                     cnt += 1 
+                     bit = next(msg_iter, None)
+                  elif word.lower() in synonyms.dictionary_of_synonyms:
+                     cnt += 1 
+                     bit = next(msg_iter, None) 
+                  else:
+                     bit = "x"
                new_run = new_run_element(word, bit, run_props, method)
                new_runs.append(new_run)
 
