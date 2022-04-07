@@ -47,5 +47,4 @@ def change_font_style(doc_path):
     except:
         print("Non existing path")
         sys.exit()
-
     new_doc.save(full_path)

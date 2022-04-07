@@ -766,7 +766,7 @@ def syn_robustness_check():
     list_of_files = os.listdir(changed_path)
     syn_changed_files = []
     syn_files = []
-    list_of_changed_styles = os.listdir(robustness_path)
+ 
 
 
     print("SYNONYMS ROBBUSTNESS CHECK:")
@@ -780,43 +780,41 @@ def syn_robustness_check():
     for encoded in syn_files:
         robustness.change_font_style("encoded/" + encoded)
 
+    list_of_changed_styles = os.listdir(robustness_path)
+
     #vyberu pouze souboru pro tuto metodu
-    print(list_of_changed_styles)
     for changed in list_of_changed_styles:
         file = str(changed, 'UTF-8')
         if file.startswith("syn"):
             syn_changed_files.append(file)
 
-    # decoded_path = os.path.join(thisdir_bin, b"decoded")
+    decoded_path = os.path.join(thisdir_bin, b"decoded")
 
-    # cnt = 0
-    # success = 0
-    # failed = 0
-    # for syn_chnaged in syn_changed_files:
-    #     cnt += 1
+    cnt = 0
+    success = 0
+    failed = 0
+    for syn_chnaged in syn_changed_files:
+        cnt += 1
+        with suppress_stdout():
+            #dekodování souboru se změněným stylem
+            steganography.main(['-i', "robustness/" + syn_chnaged, '-d', '-s', '-r'])
+            text = steganography.print_text("robustness/"+ syn_chnaged)
 
-    #     #dekodování souboru se změněným stylem
-   
-    #     steganography.main(['-i', "robustness/" + syn_chnaged, '-d', '-s', '-r'])
-    #     text = steganography.print_text("robustness/"+ syn_chnaged)
+        #ořezání zprávy
+        text = text[0:mes_len]
+        #zpráva zůstala zachována
+        if text.lower() == secret_message.lower():
+            success += 1
+        else:
+            failed += 1
 
-    #     #ořezání zprávy
-    #     text = text[0:mes_len]
-    #     #zpráva zůstala zachována
-    #     if text.lower() == secret_message.lower():
-    #         success += 1
-    #         print(text.lower())
-
-    #     else:
-    #         failed += 1
-
-    # #úspěšně se zachovaly všechny zprávy
-    # if failed == 0:
-    #     print("After ALL FORMAT CHANGES all messages DECODED SUCCESSFULLY!")
-    #     print("\n", end='')
-    # else:
-    #     print("After ALL FORMAT CHANGES %d/%d messages sucesfully decoded" % (success,cnt))
-    #     print("\n", end='')
+    #úspěšně se zachovaly všechny zprávy
+    if failed == 0:
+        print("After ALL FORMAT CHANGES all messages DECODED SUCCESSFULLY!")
+        print("\n", end='')
+    else:
+        print("After ALL FORMAT CHANGES %d/%d messages sucesfully decoded" % (success,cnt))
+        print("\n", end='')
 
 def plot_graphs3():
     #metoda synonym
