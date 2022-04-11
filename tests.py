@@ -29,11 +29,11 @@ secret_message = "hromadnytest"
 mes_len = len(secret_message)
 
 def encode_all_covers():
-    # encode_bacon()
-    # encode_spaces()
+    encode_bacon()
+    encode_spaces()
     encode_syn()
-    # encode_own1()
-    # encode_own2()
+    encode_own1()
+    encode_own2()
 
 
 def decode_all_encodes():
@@ -45,8 +45,8 @@ def decode_all_encodes():
     decode_syn()
 
 def check_robustness(): 
-    # bacon_robustness_check()
-    # spaces_robustness_check()
+    bacon_robustness_check()
+    spaces_robustness_check()
     syn_robustness_check()
 
 def calculate_SIR():
@@ -867,9 +867,13 @@ def plot_graphs4():
 
 
 if __name__ == "__main__":
+    #šifrování všech souborů ve složce cover_files
     encode_all_covers()
-    # decode_all_encodes()
-    check_robustness()
-
+    #dešifrování a kontrola, zda zůstala zachována tajná zpráva
+    decode_all_encodes()
+    #změna formátování a kontrola změny tajné zprávy
+    # check_robustness()
+    # #výpočet změny velikosti souborů po vložení tajné zprávy
     # calculate_SIR()
+    # #vykreslení grafů 
     # plot_all()
