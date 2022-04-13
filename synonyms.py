@@ -163,10 +163,6 @@ def syn_decode(file, bits):
         secret_message = bacon.bacon_pattern_to_string(bacons_patterns, bacon.bacons_table)
     elif(bits == "default"):
         secret_message = steganography.binary_to_str(binary)
-    # #synonyms + huffman
-    # elif(bits == "own2"):
-    #     huffman_coding.huffman_decode()
-    #     secret_message = steganography.binary_to_str(binary)
     return secret_message
 
  
@@ -178,26 +174,6 @@ def create_syn_tag():
    el = xml.etree.ElementTree.Element(tag)
    el.attrib[ns_val] = "synonym_element"
    return el
-
-# returns <w:rStyle w:val="skip"/>
-#pokud je nějaké slovo z původního cover textu již obsaženo v mém slovníku dictionary_of_synonym, je zapotřebí tohle slovo vynechat,
-#aby nevznikaly jedničkové bity na nechtěných místech
-# def skip_tag():
-#    namespace = '{http://schemas.openxmlformats.org/wordprocessingml/2006/main}'
-#    tag = namespace + 'rStyle'
-#    ns_val = namespace + 'val'
-#    el = xml.etree.ElementTree.Element(tag)
-#    el.attrib[ns_val] = "skip"
-#    return el
-
-# def add_skip_tag(font_styles):
-#    custom_style_present = False
-#    for style in font_styles:
-#       if 'skip' == style.name:
-#         custom_style_present = True
-#    #nastavení custom stylu
-#    if not custom_style_present:
-#       font_charstyle = font_styles.add_style('skip', WD_STYLE_TYPE.CHARACTER)
 
 #nahrazování slov
 def syn_element(prop_el,bit,namespace, word, run):

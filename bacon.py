@@ -78,7 +78,6 @@ def Bacon_encode(file, message):
    if(len(message*5) > number_of_words):
       print("Cover text doesn't have enough capacity to hide this message")
       return False
-   
    path = xml_parse.split_document(pattern_string, file, "bacon", "default")
    return path
 

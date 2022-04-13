@@ -35,8 +35,6 @@ def change_font_style(doc_path):
                 par.alignment = WD_ALIGN_PARAGRAPH.RIGHT
                 par.add_run(word +" ", style='new_font_style')
 
-
-
     save_path = 'robustness' 
 
     file = os.path.split(doc_path)

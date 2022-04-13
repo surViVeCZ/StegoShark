@@ -25,7 +25,7 @@ spaces_encoded_size = 0
 syn_cover_size = 0
 syn_encoded_size = 0
 
-secret_message = "hromadnytest"
+secret_message = "hromadnytesthromadnytest."
 mes_len = len(secret_message)
 
 def encode_all_covers():
@@ -40,9 +40,9 @@ def decode_all_encodes():
     print("\n", end='')
     print("---------------------------------")
     print("DECODING:")
-    decode_bacon()
-    decode_spaces()
     decode_syn()
+    decode_spaces()
+    decode_bacon()
 
 def check_robustness(): 
     bacon_robustness_check()
@@ -522,10 +522,6 @@ def decode_spaces():
             head_tail = os.path.split(encoded)
             file_name = head_tail[1]
             
-        # if check is False:
-        #     print("#%d failed ✖ (%s)" % (cnt, file_name))
-        # else:
-        #     print("#%d decoded 🗸 (%s)" % (cnt, file_name))
 
     spaces_decodes = []
     decoded_path = os.path.join(thisdir_bin, b"decoded")
@@ -874,6 +870,6 @@ if __name__ == "__main__":
     #změna formátování a kontrola změny tajné zprávy
     # check_robustness()
     # #výpočet změny velikosti souborů po vložení tajné zprávy
-    # calculate_SIR()
-    # #vykreslení grafů 
-    # plot_all()
+    calculate_SIR()
+    #vykreslení grafů 
+    plot_all()

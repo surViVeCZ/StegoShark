@@ -60,7 +60,7 @@ def Spaces_decode(file):
         sys.exit()
 
     font_styles = doc.styles
-    binary = "" #bold = 1, nonbold = 0
+    binary = ""
     for paragraph in doc.paragraphs:
         for run in paragraph.runs:
             if run.style.name == "spaces_style":

@@ -1,32 +1,49 @@
+# -*- coding: utf-8 -*-
 from base64 import encode
 from cProfile import label
 import sys
 import tkinter as tk
 from tkinter import LEFT, RIDGE, RIGHT, Button, Entry, filedialog, Text, Label
 from tkinter import ttk
+from tkinter import messagebox
 import os
 from tkinter.messagebox import showinfo
 
 from matplotlib.pyplot import text
 
+
 def month_changed(event):
-    method = selected_method.get()
-    print("You selected: " + method)
-    # showinfo(
-    #     title='Result',
-    #     message=f'You selected {selected_method.get()}!'
-    # )
+    global method
+    method = combo.current()
+    
 
 def choose_input():
+    global filepath
     inputfile = filedialog.askopenfile(initialdir="/", title="Select file to encode",
     filetypes=(("documents", "*.docx"), ("text files", "*.txt")))
+    if inputfile:
+        filepath = os.path.abspath(inputfile.name)
+        
 
 def encode():
+    global method
     secret_mes = message.get('1.0', 'end-1c')
-    print("Secret message: " + secret_mes)
+    try:
+        print('Message index is: {}\n'.format(method),  end = '')
+    except:
+        messagebox.showerror("Error", "You need to choose a method!")
+
+    print("Secret message is: " + secret_mes)
+    try:
+        print("The File is located at : " + str(filepath))
+    except:
+        messagebox.showerror("Error", "You need to choose a cover file!")
+
 
 root = tk.Tk()
 root.geometry("640x500")
+root.maxsize(640,500)
+root.minsize(640,500)
 root.configure(background='#DCDFE0')
 # Steganography tool for text encoding and decoding
 heading = Label(text="STEGOSHARK 2000 ^^", bg="black", fg="white", height="3", width="800")
@@ -61,7 +78,7 @@ selected_method = tk.StringVar()
 combo = ttk.Combobox(root,textvariable=selected_method, width=35)
 combo['values'] = ["Baconova šifra", "Open-space metoda", "Metoda synonym", "Metoda synonym s baconovým šifrováním", "Huffmanovo kódování"]
 combo['state'] = 'readonly'
-combo.set('Choose steganographic method')
+combo.set('---')
 combo.place(x = 20, y = 300)
 combo.bind('<<ComboboxSelected>>', month_changed)
 

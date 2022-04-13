@@ -166,7 +166,6 @@ def split_document(message_pattern,file, method, bits):
             #todo bity pouze ke slovníkovým slovům
             for word in words:
                if cnt >= message_len:
-                  print("aaaa")
                   break
                else:
                   if word.lower() in synonyms.dictionary_of_zeros:
