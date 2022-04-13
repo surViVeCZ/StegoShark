@@ -10,7 +10,7 @@ import os
 from tkinter.messagebox import showinfo
 
 from matplotlib.pyplot import text
-from steganography import test
+from steganography import main
 
 def method_changed(event):
     global method
@@ -26,8 +26,8 @@ def choose_input():
         
 
 def encode():
-    test()
     global method
+    method_name = ""
     secret_mes = message.get('1.0', 'end-1c')
     try:
         print('Message index is: {}\n'.format(method),  end = '')
@@ -36,10 +36,21 @@ def encode():
 
     print("Secret message is: " + secret_mes)
     try:
-        print("The File is located at : " + str(filepath))
+        str(filepath)
     except:
         messagebox.showerror("Error", "You need to choose a cover file!")
-
+    if method == 0:
+        method_name = '-b'
+    elif method == 1:
+        method_name = '-w'
+    elif method == 2:
+        method_name = '-r'
+    elif method == 3:
+        method_name = '--own1'
+    elif method == 4:
+        method_name = '--own2'
+    
+    main(['-i', str(filepath), '-e', '-s', secret_mes, method_name])
 
 root = tk.Tk()
 root.geometry("640x500")

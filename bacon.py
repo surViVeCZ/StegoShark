@@ -35,10 +35,7 @@ alphabet = ["A", "B", "C", "D", "E", "F", "G", "H", "(I,J)", "K", "L", "M", "N",
 
 #ukrytí tajné zprávy pomocí Baconovy šifry
 def Bacon_encode(file, message):
-   fileDir = os.path.dirname(os.path.realpath(__file__))
-   filename = os.path.join(fileDir, file)
-
-   print(filename)
+   filename = file
    try:
       doc = docx.Document(filename)
    except:
