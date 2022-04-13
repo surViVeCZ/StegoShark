@@ -76,6 +76,13 @@ def encode_decode(cfg, file):
       if(secret_message  is not None):
          cleaned_string = ''.join(c for c in secret_message if valid_xml_char_ordinal(c))
          decoded_file.add_paragraph(cleaned_string)
+
+      current_dir = os. getcwd()
+      isdir = os.path.isdir(current_dir + "/decoded")
+
+      #složka encoded neexistuje
+      if isdir is False:
+         os.mkdir(current_dir + "/decoded") 
       decoded_file.save(file_path)
       return file_path
       
