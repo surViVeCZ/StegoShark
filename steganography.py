@@ -33,7 +33,7 @@ import xml.etree.ElementTree
 import lxml
 import xml.dom.minidom
 import tempfile
-
+import tkinter
 #moduly
 import bacon
 import whitespaces
@@ -44,6 +44,9 @@ class SplitDocument:
    doc_ref = ""
    paragraphs = []
    secret_message = ""
+
+def test():
+      print("ALOOO")
 
 def encode_decode(cfg, file):
       #Dekódování Baconovou šifrou

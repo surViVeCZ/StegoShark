@@ -38,6 +38,7 @@ def Bacon_encode(file, message):
    fileDir = os.path.dirname(os.path.realpath(__file__))
    filename = os.path.join(fileDir, file)
 
+   print(filename)
    try:
       doc = docx.Document(filename)
    except:

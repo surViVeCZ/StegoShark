@@ -10,9 +10,9 @@ import os
 from tkinter.messagebox import showinfo
 
 from matplotlib.pyplot import text
+from steganography import test
 
-
-def month_changed(event):
+def method_changed(event):
     global method
     method = combo.current()
     
@@ -26,6 +26,7 @@ def choose_input():
         
 
 def encode():
+    test()
     global method
     secret_mes = message.get('1.0', 'end-1c')
     try:
@@ -80,6 +81,6 @@ combo['values'] = ["Baconova šifra", "Open-space metoda", "Metoda synonym", "Me
 combo['state'] = 'readonly'
 combo.set('---')
 combo.place(x = 20, y = 300)
-combo.bind('<<ComboboxSelected>>', month_changed)
+combo.bind('<<ComboboxSelected>>', method_changed)
 
 root.mainloop()
