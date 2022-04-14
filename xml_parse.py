@@ -66,12 +66,12 @@ def split_document(message_pattern,file, method, bits):
       print("Non existing path")
       sys.exit()
 
-   current_dir = os. getcwd()
-   isdir = os.path.isdir(current_dir + "/encoded")
+   # current_dir = os. getcwd()
+   # isdir = os.path.isdir(current_dir + "/encoded")
 
-   #složka encoded neexistuje
-   if isdir is False:
-      os.mkdir(current_dir + "/encoded") 
+   # #složka encoded neexistuje
+   # if isdir is False:
+   #    os.mkdir(current_dir + "/encoded") 
    
    new_doc.save(full_path)
 

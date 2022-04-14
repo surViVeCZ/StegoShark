@@ -24,7 +24,9 @@ def choose_input():
     filetypes=(("documents", "*.docx"), ("text files", "*.txt")))
     if inputfile:
         filepath = os.path.abspath(inputfile.name)
-    text_path = Label(text = filepath, background="#DCDFE0", foreground="#8B9092")
+
+    head_tail = os.path.split(filepath)
+    text_path = Label(text = head_tail[1], background="#DCDFE0", foreground="#8B9092")
     text_path.place(x = 280, y = 90)
         
 
@@ -55,11 +57,12 @@ def encode():
     
     main(['-i', str(filepath), '-e', '-s', secret_mes, method_name])
     message.delete(1.0,"end")
+    messagebox.showinfo("ENCODED!", "Zpráva byla úspěšně zašifrována do zvoleného souboru!")
 
 def decode():
     global method
+    global message
     method_name = ""
-    secret_mes = message.get('1.0', 'end-1c')
     try:
         print('Message index is: {}\n'.format(method),  end = '')
     except:
@@ -78,7 +81,12 @@ def decode():
         method_name = '--own1'
     elif method == 4:
         method_name = '--own2'
-    main(['-i', str(filepath), '-d', '-s', method_name])
+
+    secret = main(['-i', str(filepath), '-d', '-s', method_name])
+    print(secret)
+    message.delete(1.0,"end")
+    message.insert('1.0', "secret")
+    messagebox.showinfo("DECODED!", "Soubor byl dešifrován")
 
 root = tk.Tk()
 root.geometry("640x500")
@@ -105,10 +113,10 @@ message = Text(root, bg="white", height="5", width="60")
 message.place(x = 20, y = 170)
 
 #encode button
-encode_button = Button(root, text="ENCODE", command=encode, padx=85, pady=1)
+encode_button = Button(root, text="ENCODE", command=encode, padx=85, bg="#4173EA", fg="#FFFFFF", activebackground="#1C3A83", activeforeground="#FFFFFF")
 encode_button.place(x = 70, y = 450)
 
-decode_button = Button(root, text="DECODE", command=decode, padx=85, pady=1)
+decode_button = Button(root, text="DECODE", command=decode, padx=85, bg="#4173EA", fg="#FFFFFF", activebackground="#1C3A83", activeforeground="#FFFFFF")
 decode_button.place(x = 320, y = 450)
 
 

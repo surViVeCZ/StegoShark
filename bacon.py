@@ -35,9 +35,8 @@ alphabet = ["A", "B", "C", "D", "E", "F", "G", "H", "(I,J)", "K", "L", "M", "N",
 
 #ukrytí tajné zprávy pomocí Baconovy šifry
 def Bacon_encode(file, message):
-   filename = file
    try:
-      doc = docx.Document(filename)
+      doc = docx.Document(file)
    except:
       print("Non existing file")
       sys.exit()
@@ -76,6 +75,7 @@ def Bacon_encode(file, message):
    if(len(message*5) > number_of_words):
       print("Cover text doesn't have enough capacity to hide this message")
       return False
+   
    path = xml_parse.split_document(pattern_string, file, "bacon", "default")
    return path
 
