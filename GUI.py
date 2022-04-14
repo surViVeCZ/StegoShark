@@ -18,11 +18,14 @@ def method_changed(event):
     
 
 def choose_input():
+    global text_path
     global filepath
     inputfile = filedialog.askopenfile(initialdir="/", title="Select file to encode",
     filetypes=(("documents", "*.docx"), ("text files", "*.txt")))
     if inputfile:
         filepath = os.path.abspath(inputfile.name)
+    text_path = Label(text = filepath, background="#DCDFE0", foreground="#8B9092")
+    text_path.place(x = 280, y = 90)
         
 
 def encode():
@@ -51,6 +54,31 @@ def encode():
         method_name = '--own2'
     
     main(['-i', str(filepath), '-e', '-s', secret_mes, method_name])
+    message.delete(1.0,"end")
+
+def decode():
+    global method
+    method_name = ""
+    secret_mes = message.get('1.0', 'end-1c')
+    try:
+        print('Message index is: {}\n'.format(method),  end = '')
+    except:
+        messagebox.showerror("Error", "You need to choose a method!")
+    try:
+        str(filepath)
+    except:
+        messagebox.showerror("Error", "You need to choose a cover file!")
+    if method == 0:
+        method_name = '-b'
+    elif method == 1:
+        method_name = '-w'
+    elif method == 2:
+        method_name = '-r'
+    elif method == 3:
+        method_name = '--own1'
+    elif method == 4:
+        method_name = '--own2'
+    main(['-i', str(filepath), '-d', '-s', method_name])
 
 root = tk.Tk()
 root.geometry("640x500")
@@ -68,11 +96,9 @@ open_file = tk.Button(root, text = "Choose input file", padx=5,pady=5, bg="#4173
             activebackground="#1C3A83", activeforeground="#FFFFFF", command=choose_input)
 open_file.place(x = 120, y = 80)
 
-
-
-
 l2 = Label(text = "Insert secret message you want to hide:", background="#DCDFE0")
 l2.place(x = 20, y = 140)
+
 
 #entry secret message
 message = Text(root, bg="white", height="5", width="60")
@@ -82,7 +108,7 @@ message.place(x = 20, y = 170)
 encode_button = Button(root, text="ENCODE", command=encode, padx=85, pady=1)
 encode_button.place(x = 70, y = 450)
 
-decode_button = Button(root, text="DECODE", command=encode, padx=85, pady=1)
+decode_button = Button(root, text="DECODE", command=decode, padx=85, pady=1)
 decode_button.place(x = 320, y = 450)
 
 
