@@ -11,6 +11,11 @@ from tkinter.messagebox import showinfo
 
 from matplotlib.pyplot import text
 from steganography import main
+import steganography
+import bacon
+import whitespaces
+import synonyms
+import huffman_coding
 
 
 ## @brief zjistí zvolenou metodu v combo box
@@ -57,9 +62,12 @@ def encode():
     elif method == 4:
         method_name = '--own2'
     
-    main(['-i', str(filepath), '-e', '-s', secret_mes, method_name])
+    check = main(['-i', str(filepath), '-e', '-s', secret_mes, method_name])
+    if check is False:
+        messagebox.showerror("ERROR!", "Soubor nemá dostatečnou kapacitu na ukrytí této zprávy.")
+    else:
+        messagebox.showinfo("ENCODED!", "Zpráva byla úspěšně zašifrována do zvoleného souboru!")
     message.delete(1.0,"end")
-    messagebox.showinfo("ENCODED!", "Zpráva byla úspěšně zašifrována do zvoleného souboru!")
 
 ## @brief dešifrování zvoleného souboru, zvolenou metodou
 #@note soubor musí být dešifrován metodou, kterou byl zašifrován
@@ -76,20 +84,20 @@ def decode():
     except:
         messagebox.showerror("Error", "You need to choose a cover file!")
     if method == 0:
-        method_name = '-b'
+        secret = bacon.Bacon_decode(str(filepath))
     elif method == 1:
-        method_name = '-w'
+         secret = whitespaces.Spaces_decode(str(filepath))
     elif method == 2:
-        method_name = '-r'
+        secret = synonyms.syn_decode(str(filepath), "default")
     elif method == 3:
-        method_name = '--own1'
+        secret = synonyms.syn_decode(str(filepath), "own1")
     elif method == 4:
-        method_name = '--own2'
+        secret = synonyms.syn_decode(str(filepath), "own2")
 
-    secret = main(['-i', str(filepath), '-d', '-s', method_name])
-    print(secret)
+    text = steganography.print_text(str(filepath))
+    print(text)
     message.delete(1.0,"end")
-    message.insert('1.0', "secret")
+    message.insert('1.0', secret)
     messagebox.showinfo("DECODED!", "Soubor byl dešifrován")
 
 root = tk.Tk()

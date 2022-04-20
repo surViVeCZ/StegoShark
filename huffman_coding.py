@@ -76,7 +76,6 @@ def get_frequency(message):
     print('----------------------')
     for (char, frequency) in freq:
         print(' %-4r |%12s' % (char, huffmanCode[char]))
-        huffman_combinations[char] = huffmanCode[char]
 
     for character in message:
         huffman_message += huffmanCode[character]
