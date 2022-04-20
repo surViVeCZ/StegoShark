@@ -12,11 +12,13 @@ from tkinter.messagebox import showinfo
 from matplotlib.pyplot import text
 from steganography import main
 
+
+## @brief zjistí zvolenou metodu v combo box
 def method_changed(event):
     global method
     method = combo.current()
     
-
+## @brief volba vstupního souboru
 def choose_input():
     global text_path
     global filepath
@@ -29,7 +31,7 @@ def choose_input():
     text_path = Label(text = head_tail[1], background="#DCDFE0", foreground="#8B9092")
     text_path.place(x = 280, y = 90)
         
-
+## @brief šifrování zvoleného souboru, zvolenou metodou a tajnou zprávou
 def encode():
     global method
     method_name = ""
@@ -59,6 +61,8 @@ def encode():
     message.delete(1.0,"end")
     messagebox.showinfo("ENCODED!", "Zpráva byla úspěšně zašifrována do zvoleného souboru!")
 
+## @brief dešifrování zvoleného souboru, zvolenou metodou
+#@note soubor musí být dešifrován metodou, kterou byl zašifrován
 def decode():
     global method
     global message

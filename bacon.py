@@ -25,15 +25,22 @@ import tempfile
 import steganography
 import xml_parse
 
+## @brief každý binární vzor Baconovy metody představuje jeden znak abecedy
+#@note jako terminační znak jsem zvolil "." = "11111"
 bacons_table = ["00000", "00001", "00010", "00011", "00100", "00101", "00110", "00111", "01000",
                "01001", "01010", "01011", "01100", "01101", "01110", "01111", "10000", "10001", "10010",
                "10011", "10100", "10101", "10110", "10111", "11111"]
 
+## @brief textové interpretace Baconových vzorů (z bacons_table)
 alphabet = ["A", "B", "C", "D", "E", "F", "G", "H", "(I,J)", "K", "L", "M", "N", "O", "P","Q",
             "R", "S", "T", "(U/V)", "W", "X", "Y", "Z", "."]
 
 
-#ukrytí tajné zprávy pomocí Baconovy šifry
+
+## @brief ukrytí tajné zprávy pomocí Baconovy šifry
+#@param file vstupní cover soubor
+#@param message tajná zpráva, kterou si přejeme ukrýt
+#@return cesta k zašifrovanému souboru
 def Bacon_encode(file, message):
    try:
       doc = docx.Document(file)
@@ -79,7 +86,10 @@ def Bacon_encode(file, message):
    path = xml_parse.split_document(pattern_string, file, "bacon", "default")
    return path
 
-      
+## @brief dešifrování pomocí Baconovy šifry
+#@param file zašifrovaný soubor
+#@return tajná zpráva
+#@note správně dešifrovat můžeme pouze soubory zašifrované stejnou metodou
 def Bacon_decode(file):
    try:
       doc = Document(file)
@@ -123,14 +133,14 @@ def Bacon_decode(file):
    bacons_patterns = re.findall('.....',binary)
    message = bacon_pattern_to_string(bacons_patterns, bacons_table)
 
-   #binární podoba texta
-   # print("The binary value is:", bacons_patterns)
-
-   # #zpráva převedena z binární podoby
-   # message = binary_to_str(binary)
    return message
 
-   #převede vzory z cover textu do stringové podoby (tajné zprávy)
+
+## @brief převedení Baconových vzorů do stringové podoby (tajné zprávy)
+#@param bacons_patterns pětimístné vzory v binární podobě získané z dešifrování souboru
+#@param bacons_table list Baconových vzorů
+#@return tajná zpráva
+#@note každý Baconův vzor má přiřazenou svoji textovou interpretaci 
 def bacon_pattern_to_string(bacons_patterns, bacons_table):
    bacons_decoded_message = ""
    for k in range(len(bacons_patterns)):
@@ -140,7 +150,10 @@ def bacon_pattern_to_string(bacons_patterns, bacons_table):
             bacons_decoded_message += alphabet[l]
    return bacons_decoded_message
 
-# returns <w:rStyle w:val="baconstyle"/>
+
+##@brief XML elementu přiřadí můj vlastní styl
+#@details přiřazený styl značí bit "1"
+#@return <w:rStyle w:val="baconstyle"/>
 def create_baconstyle_el():
    namespace = '{http://schemas.openxmlformats.org/wordprocessingml/2006/main}'
    tag = namespace + 'rStyle'
@@ -149,7 +162,12 @@ def create_baconstyle_el():
    el.attrib[ns_val] = "baconstyle"
    return el
 
-#nahraje styl do elementu, který má bit = 1
+
+## @brief nahraje styl do elementu, který má bit = 1
+#@param prop_el element XML interpretace dokumentu
+#@param bit 1 bit zprávy
+#@param namespace odkaz na registraci XML tagu
+#@note každý XML namespace je nejprve potřeba zaregistrovat, to provádím v souboru xml_parse.py funkcí ET.register_namespace
 def bacon_element(prop_el,bit,namespace):
    if bit == "1":
 # apply <w:rStyle w:val="baconstyle"/>  
@@ -166,7 +184,9 @@ def bacon_element(prop_el,bit,namespace):
       style_el = create_baconstyle_el()
       prop_el.append(style_el)
 
-#do dokumentu docx se nahraje můj vlastní styl, který později použiji pro ukrytí zprávy
+## @brief do dokumentu docx se nahraje můj vlastní styl, který později použiji pro ukrytí zprávy
+#@param font_styles základní styly dokumentu .docx
+#@note abych mohl v XML přiřazovat elementům můj vlastní styl, musí nejprve tento styl v dokumentu existovat
 def add_bacon_style(font_styles):
    #check jestli styl již existuje, nelze přidat 2x
    custom_style_present = False

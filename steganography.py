@@ -1,3 +1,5 @@
+## @package pyexample
+
 #!/usr/bin/python
 
 #----------------------------------------------------------------------
@@ -40,14 +42,11 @@ import whitespaces
 import xml_parse
 import synonyms
 
-class SplitDocument:
-   doc_ref = ""
-   paragraphs = []
-   secret_message = ""
 
-def test():
-      print("ALOOO")
-
+## @brief v této funkci rozhodujeme, která šifrovací,nebo dešifrovací metoda se použije
+#@param file vstupní cover soubor
+#@param cfg uživatelské vstupy (vstupní argumenty)
+#@return cestu k nově vzniklému souboru
 def encode_decode(cfg, file):
       #Dekódování Baconovou šifrou
    if(cfg.decode is True):
@@ -120,8 +119,12 @@ def encode_decode(cfg, file):
             return False
       return file_path
 
+##@brief nahradí XML původního .docx souboru za mé vlastní XML
+#@param path cesta k souboru
+#@param zip_file_location cesta k word/document.xml
+#@param outside_file_locatio document.xml
+#@return nově vzniklý dokument
 def updateZip(zipname, zip_file_location, outside_file_location):
-   # generate a temp file
    tmpfd, tmpname = tempfile.mkstemp(dir=os.path.dirname(zipname))
    os.close(tmpfd)
 
@@ -141,17 +144,24 @@ def updateZip(zipname, zip_file_location, outside_file_location):
    with zipfile.ZipFile(zipname, mode='a', compression=zipfile.ZIP_DEFLATED) as zf:
       zf.write(outside_file_location, zip_file_location)
 
-# todo zkontrolovat mezery
+
+## @brief naparsuje vstupní řetězec na slova a odstraní mezery
+#@param string vstupní řetězec
+#@return slovo
+#@note tato funkce je volána Baconovou metodou a metodou synonym, jelikož nepracují s mezerami
 def split_to_words(string):
    word = string.strip().split()
    return(word)
 
 
-#cite: https://stackoverflow.com/questions/8733233/filtering-out-certain-bytes-in-python
-#author: https://stackoverflow.com/users/84270/john-machin
+## @brief funkce nám zajistí, že skrytá zpráva je XML compatible
+#@cite https://stackoverflow.com/questions/8733233/filtering-out-certain-bytes-in-python
+#@author https://stackoverflow.com/users/84270/john-machin
+#@param c znak tajné zprávy
+#@return TRUE pokud je znak validní v XML
+#@return FALSE pokud znak není validní
 def valid_xml_char_ordinal(c):
     codepoint = ord(c)
-    # conditions ordered by presumed frequency
     return (
         0x20 <= codepoint <= 0xD7FF or
         codepoint in (0x9, 0xA, 0xD) or
@@ -159,29 +169,35 @@ def valid_xml_char_ordinal(c):
         0x10000 <= codepoint <= 0x10FFFF
         )
 
-#vytvoření docx kopie, včetně všech stylů
-def copy_docx(doc):
-   copy_styles = deepcopy(doc)
-   return copy_styles
-
-
-def listToString(s): 
+## @brief převede list na textový řetězec
+#@param l vstupní list
+#@return textový řetězec
+def listToString(l): 
     string = ""
-    for ch in s: 
+    for ch in l: 
         string += ch  
     return string 
 
-#převedení textového řetězce na binární podobu
+
+## @brief převedení textového řetězce na binární podobu
+#@param message vstupní tajná zpráva zadaná uživatelem
+#@return binární podoba této zprávy
 def str_to_binary(message):
    binary_message = ''.join(format(ord(i), '08b') for i in message)
    print("Message is: " + message)
    return binary_message
-   
+
+## @brief rozdělí slovo na jednotivé znaky
+#@param word slovo, které si přejeme rozdělit
+#@return znak slova
 def split(word):
    return [char for char in word]
 
 
-#převedení binárních dat do čitelné podoby
+
+## @brief převedení binárních dat do čitelné podoby
+#@param binary binární podoba tajné zprávy
+#@return textová podoba
 def binary_to_str(binary):
    binary_length = len(binary)
    data = [binary[i:i+8] for i in range(0,binary_length,8)]
@@ -194,25 +210,10 @@ def binary_to_str(binary):
       character_form = character_form + chr(i)
    return character_form
 
-#cite: https://stackoverflow.com/questions/
-# 17850227/text-replace-in-docx-and-save-the-changed-
-# file-with-python-docx?fbclid=IwAR1UW4I7x9NqECjwN-
-# 1dk2Ysy1HCagCHX-iDkKqUcmWTd1RykxF7th3LcCA
-def docx_replace(old_file,new_file,rep):
-   zin = zipfile.ZipFile (old_file, 'r')
-   zout = zipfile.ZipFile (new_file, 'w')
-   for item in zin.infolist():
-      buffer = zin.read(item.filename)
-      if (item.filename == 'word/document.xml'):
-         res = buffer.decode("utf-8")
-         for r in rep:
-               res = res.replace(r,rep[r])
-         buffer = res.encode("utf-8")
-      zout.writestr(item, buffer)
-   zout.close()
-   zin.close()
-
-
+## @brief tisknutí textu dokumentu
+#@param file vstupní soubor
+#@return obsah tohoto souboru
+#@note funkci používám pouze pro .docx soubory
 def print_text(file):
    complete_text = []
    doc = docx.Document(file)
@@ -221,11 +222,8 @@ def print_text(file):
    cover_text = '\n'.join(complete_text)
    return cover_text
 
-def Reading_txt(file):
-   with open(file) as f:
-      text = f.read()
-   return text
 
+## @brief uživatelské vstupy
 class Config:
    inputfile = ''
    outputfile = ''
@@ -238,14 +236,17 @@ class Config:
    own1 = False #synonyms with bacon encoding
    own2 = False #synonyms with Huffman
 
-# zpracování vstupních argumentů
+## @brief zpracování vstupních argumentů
+#@param argv list vstupních argumentů
+#@return instance třídy Config, obsahující hodnoty všech argumentů
+#@note argumentům jsou přiřezeny hodnoty TRUE, pokud jsou použity
 def ArgumentsParsing(argv):
    #načtení defaultních hodnot
    cfg = Config()
    try:
       opts, args = getopt.getopt(argv,"i:ed:s:bwro",['ifile=','encode','decode','message','bacon','whitespaces','replace','own1', 'own2'])
    except getopt.GetoptError:
-     print("steganography.py -i <inputfile> -e/-d -s <secret_message> -<b/w/r>/--own1")
+     print("steganography.py -i <inputfile> -e/-d -s <secret_message> -<b/w/r>/--own1/--own2")
      sys.exit(2)
    for opt, arg in opts:
       if opt == '-h':

@@ -17,17 +17,26 @@ import synonyms
 import steganography
 from contextlib import contextmanager
 
-
+## @brief celková velikost původních cover souborů
 bacon_cover_size = 0
+## @brief celková velikost zašifrovaných úspěšně zašifrovaných soborů Baconovým šifrováním
 bacon_encoded_size = 0
+## @brief celková velikost původních cover souborů
 spaces_cover_size = 0
+## @brief celková velikost zašifrovaných úspěšně zašifrovaných soborů Open-space metodou
 spaces_encoded_size = 0
+## @brief celková velikost původních cover souborů
 syn_cover_size = 0
+## @brief celková velikost zašifrovaných úspěšně zašifrovaných soborů metodou synonym
 syn_encoded_size = 0
 
-secret_message = "hromadnytesthromadnytest."
+## @brief zpráva, která se během testů zašifruje do všech souborů
+secret_message = "hromadnytest."
 mes_len = len(secret_message)
 
+## @brief zašifruje všechny soubory nacházející se ve složce cover_files
+#@details každý soubor je šifrován každou steganografickou metodou 
+#@note postupně jsou volány funkce encode_bacon(), encode_spaces(), encode_syn(), encode_own1(), encode_own2()
 def encode_all_covers():
     encode_bacon()
     encode_spaces()
@@ -36,6 +45,7 @@ def encode_all_covers():
     encode_own2()
 
 
+## @brief dešifruje všechny soubory nacházející se ve složce decodes
 def decode_all_encodes():
     print("\n", end='')
     print("---------------------------------")
@@ -44,11 +54,14 @@ def decode_all_encodes():
     decode_spaces()
     decode_bacon()
 
+## @brief testy na robustnost pro 3 základní steganografické metody
+#@note postupně jsou volány funkce bacon_robustness_check(), spaces_robustness_check(), syn_robustness_check()
 def check_robustness(): 
     bacon_robustness_check()
     spaces_robustness_check()
     syn_robustness_check()
 
+## @brief počítá o kolik % jsou zašifrované soubory vetší než původní
 def calculate_SIR():
     bacon_sir = (bacon_encoded_size-bacon_cover_size)/bacon_cover_size*100
     spaces_sir = (spaces_encoded_size-spaces_cover_size)/spaces_cover_size*100
@@ -57,13 +70,16 @@ def calculate_SIR():
     print("SPACES SIR:\t %f %%" % spaces_sir)
     print("SYNONYMS SIR:\t %f %%" % syn_sir)
 
-def plot_all():
+## @brief funkce vytváří grafy
+#@note postupně jsou volány funkce plot_graphs1(), plot_graphs2(), plot_graphs3(),plot_graphs4()
+def plot_all(): 
     plot_graphs1()
     plot_graphs2()
     plot_graphs3()
     plot_graphs4()
 
-
+## @brief vytvoření koláčového grafu 
+#@note graf představuje odpovědi lidí na otázku: "Přijde vám na některém z těhto souborů něco zvláštního?"
 def plot_graphs1():
 
     #Přijde vám na některém z těhto souborů něco zvláštního?
@@ -84,6 +100,8 @@ def plot_graphs1():
 
     plt.savefig("first.pdf",bbox_inches='tight')
 
+## @brief vytvoření koláčového grafu 
+#@note graf představuje odpovědi lidí na otázku: "Některý ze souborů je zašifrovaný, dokážete říci který?"
 def plot_graphs2():
     #Některý ze souborů je zašifrovaný, dokážete říci který?
     students2 = [1,2,2,4,6,8]
@@ -102,7 +120,12 @@ def plot_graphs2():
 
     plt.savefig("second.pdf",bbox_inches='tight')
  
-#vypočítá maximální možnou velikost zprávy, kterou jde do určeného cover textu uložit
+
+## @vypočítá maximální možnou velikost zprávy, kterou jde do určeného cover textu uložit
+#@param file vstupní soubor
+#@param method vybraná steganografická metoda
+#@param file_format formát souboru (.docx/.txt)
+#@return maximální počet znaků, který jsem schopen do textu ukrýt
 def max_secret_message(file, method, file_format): 
     if file_format == "docx": 
         full_text = steganography.print_text(file)
@@ -119,7 +142,9 @@ def max_secret_message(file, method, file_format):
 
     return words_available
 
-#cite: https://stackoverflow.com/questions/2125702/how-to-suppress-console-output-in-python
+
+## @breaf při běhu testů vypne nechtěný výpis v konzoli (výpis u jednotlivých metod)
+#@cite https://stackoverflow.com/questions/2125702/how-to-suppress-console-output-in-python
 @contextmanager
 def suppress_stdout():
     with open(os.devnull, "w") as devnull:
@@ -130,7 +155,9 @@ def suppress_stdout():
         finally:
             sys.stdout = old_stdout
 
-
+## @vypočítá zjistí velikost složky
+#@param full_path cesta ke složce
+#@return velikost
 def get_folder_size(full_path):
     size = 0
     for path, dirs, files in os.walk(full_path):
@@ -140,7 +167,8 @@ def get_folder_size(full_path):
     return size
 
 
- 
+## @brief zašifruje všechny soubory nacházející se ve složce /cover_files/synonyms
+#@details ve funkci dále počítám efektivitu,kapacitu a celkovou úspěšnost metody
 def encode_syn():
     thisdir_bin = os.getcwdb()
     cover_size_path = os.getcwd() + '/cover_files/synonyms'
@@ -198,6 +226,9 @@ def encode_syn():
     print("-------------------------------------------------------------------------")
     print("Success rate: \t\t %d/%d 〜 %g%%" % (success,cnt,success_rate))
 
+## @brief zašifruje všechny soubory nacházející se ve složce /cover_files/synonyms
+#@details ve funkci dále počítám efektivitu,kapacitu a celkovou úspěšnost metody
+#@note při volání této funkce musím nastavit šifrování na --own1 (steganography.main(['-i', file, '-e', '-s', secret_message, '--own1']))
 def encode_own1():
     thisdir_bin = os.getcwdb()
     cover_size_path = os.getcwd() + '/cover_files/synonyms'
@@ -257,6 +288,9 @@ def encode_own1():
     print("-------------------------------------------------------------------------")
     print("Success rate: \t\t %d/%d 〜 %g%%" % (success,cnt,success_rate))
 
+## @brief zašifruje všechny soubory nacházející se ve složce /cover_files/synonyms
+#@details ve funkci dále počítám efektivitu,kapacitu a celkovou úspěšnost metody
+#@note při volání této funkce musím nastavit šifrování na --own2 (steganography.main(['-i', file, '-e', '-s', secret_message, '--own2']))
 def encode_own2():
     thisdir_bin = os.getcwdb()
     cover_size_path = os.getcwd() + '/cover_files/synonyms'
@@ -316,6 +350,8 @@ def encode_own2():
     print("-------------------------------------------------------------------------")
     print("Success rate: \t\t %d/%d 〜 %g%%" % (success,cnt,success_rate))
 
+## @brief zašifruje všechny soubory nacházející se ve složce /cover_files/spaces
+#@details ve funkci dále počítám efektivitu,kapacitu a celkovou úspěšnost metody
 def encode_spaces():
     thisdir_bin = os.getcwdb()
     cover_size_path = os.getcwd() + '/cover_files/spaces'
@@ -374,6 +410,8 @@ def encode_spaces():
     print("-------------------------------------------------------------------------")
     print("Success rate: \t\t %d/%d 〜 %g%%" % (success,cnt,success_rate))
 
+## @brief zašifruje všechny soubory nacházející se ve složce /cover_files/bacon
+#@details ve funkci dále počítám efektivitu,kapacitu a celkovou úspěšnost metody
 def encode_bacon():
     thisdir_bin = os.getcwdb()
     cover_size_path = os.getcwd() + '/cover_files/bacon'
@@ -432,7 +470,9 @@ def encode_bacon():
     print("-------------------------------------------------------------------------")
     print("Success rate: \t\t %d/%d 〜 %g%%" % (success,cnt,success_rate))
 
-
+## @brief dešifruje všechny soubory nacházející se ve složce /encoded
+#@details dešifruji pouze soubory zašifrované touto metodou - file.startswith("bacon")
+#@note při šifrování metodou přidám k k názvu souboru název steganografické metody (např. bacon_cover1.docx)
 def decode_bacon():
     thisdir_bin = os.getcwdb()
     changed_path = os.path.join(thisdir_bin, b"encoded")
@@ -494,6 +534,9 @@ def decode_bacon():
         print("DECODED %d/%d" % (success,cnt))
         print("\n", end='')
 
+## @brief dešifruje všechny soubory nacházející se ve složce /encoded
+#@details dešifruji pouze soubory zašifrované touto metodou - file.startswith("spaces")
+#@note při šifrování metodou přidám k k názvu souboru název steganografické metody (např. spaces_cover1.docx)
 def decode_spaces():
     thisdir_bin = os.getcwdb()
     changed_path = os.path.join(thisdir_bin, b"encoded")
@@ -555,6 +598,10 @@ def decode_spaces():
         print("DECODED %d/%d" % (success,cnt))
         print("\n", end='')
 
+
+## @brief dešifruje všechny soubory nacházející se ve složce /encoded
+#@details dešifruji pouze soubory zašifrované touto metodou - file.startswith("synonyms")
+#@note při šifrování metodou přidám k k názvu souboru název steganografické metody (např. synonyms_cover1.docx)
 def decode_syn():
     thisdir_bin = os.getcwdb()
     changed_path = os.path.join(thisdir_bin, b"encoded")
@@ -620,7 +667,8 @@ def decode_syn():
         print("DECODED %d/%d" % (success,cnt))
         print("\n", end='')
 
-    
+## @brief "baconovým" souborům (file.startswith("bacon") ve složce /encoded postupně pomocí funkce change_font_style() měním formátování
+#@details soubory se změněným formátováním se uloží do složky /robustness kterou následně dešifruji a kontroluji, zda-li zůstala tajná zpráva zachována
 def bacon_robustness_check():
     thisdir_bin = os.getcwdb()
     changed_path = os.path.join(thisdir_bin, b"encoded")
@@ -687,7 +735,8 @@ def bacon_robustness_check():
         print("\n", end='')
 
 
-
+## @brief "open-space" souborům (file.startswith("spaces") ve složce /encoded postupně pomocí funkce change_font_style() měním formátování
+#@details soubory se změněným formátováním se uloží do složky /robustness kterou následně dešifruji a kontroluji, zda-li zůstala tajná zpráva zachována
 def spaces_robustness_check():
     thisdir_bin = os.getcwdb()
     changed_path = os.path.join(thisdir_bin, b"encoded")
@@ -753,7 +802,8 @@ def spaces_robustness_check():
         print("After ALL FORMAT CHANGES NO messages decoded!")
         print("\n", end='')
 
-
+## @brief "synonyms" souborům (file.startswith("synonyms") ve složce /encoded postupně pomocí funkce change_font_style() měním formátování
+#@details soubory se změněným formátováním se uloží do složky /robustness kterou následně dešifruji a kontroluji, zda-li zůstala tajná zpráva zachována
 def syn_robustness_check():
     thisdir_bin = os.getcwdb()
     changed_path = os.path.join(thisdir_bin, b"encoded")
@@ -812,6 +862,8 @@ def syn_robustness_check():
         print("After ALL FORMAT CHANGES %d/%d messages sucesfully decoded" % (success,cnt))
         print("\n", end='')
 
+## @brief vytvoření grafu
+#@note graf představuje porovnání efektivity 3 základních steganografických metod 
 def plot_graphs3():
     #metoda synonym
     y = [0.0065,0.023,0.017,0.021]
@@ -836,7 +888,9 @@ def plot_graphs3():
 
     plt.savefig("effectivness.pdf",bbox_inches='tight')
 
-
+## @brief vytvoření grafu
+#@note graf představuje porovnání metody synonym a mých 2 upravených metod
+#@note cílem modifikací bylo zvýšení kapacity, jak je z grafu vidět, tato modifikace neměla vliv na výkon metody
 def plot_graphs4():
     #metoda synonym
     y = [0.0065,0.023,0.017,0.021]

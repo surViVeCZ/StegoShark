@@ -28,19 +28,24 @@ import bacon
 import whitespaces
 import synonyms
 
-#původní dokument se rozloží na odstavce,runy a slova, ty se následně s jiným stylem uloží do nového dokumentu
+## @brief původní dokument se rozloží na odstavce,runy a slova, ty se následně s jiným stylem uloží do nového dokumentu
+#@param message_pattern binární podoba tajné zprávy
+#@param file cesta ke cover souboru
+#@param method vybraná steganografická metoda
+#@param bits druh šifrování (pouze u metody synonym)
+#@return cesta k změněnému souboru
 def split_document(message_pattern,file, method, bits):
        
    #pro ukončení zprávy používám counter
    cnt = 0
-   shutil.copyfile(file, "encoded.docx")    
+   shutil.copyfile(file, "copy.docx")    
 
-   new_doc = Document("encoded.docx")
+   new_doc = Document("copy.docx")
    message_len = len(message_pattern)
    msg_iter = iter(message_pattern)
 
    font_styles = new_doc.styles
-
+   
    #pro ukrytí zprávy je nejprve zapotřebí přidat vlastní styl
    if(method == "bacon"):
       bacon.add_bacon_style(font_styles)
@@ -59,22 +64,22 @@ def split_document(message_pattern,file, method, bits):
    save_path = 'encoded'  
    file = os.path.split(file)
    file_name = nametag+file[1]
-
+   
    try:
       full_path = os.path.join(save_path, file_name)
    except:
       print("Non existing path")
       sys.exit()
+  
+   current_dir = os. getcwd()
+   isdir = os.path.isdir(current_dir + "/encoded")
 
-   # current_dir = os. getcwd()
-   # isdir = os.path.isdir(current_dir + "/encoded")
-
-   # #složka encoded neexistuje
-   # if isdir is False:
-   #    os.mkdir(current_dir + "/encoded") 
+   #složka encoded neexistuje
+   if isdir is False:
+      os.mkdir(current_dir + "/encoded") 
+   
    
    new_doc.save(full_path)
-
    property_start = "<w:rPr>"
    property_end = "</w:rPr>"
 
@@ -225,11 +230,21 @@ def split_document(message_pattern,file, method, bits):
       elif(bits == "own2"):
          file_name = 'own2_'+file[1]
 
+   os.remove("copy.docx")
    return full_path
 
 #vytvoření elementů, včetně zachovaného stylu
 #u slov, které nesou šifrovanou informaci mažu styl fontu a jeho velikost, neboť
 #informaci ukrývám právě pomocí těhto 2 vlastností
+
+## @brief vytvoření elementů, včetně zachovaného stylu
+#@details funkce je volána v split_document() pro každé slovo původního textu
+#@param word jedno slovo z celého textu
+#@param bit konkrétní bit tajné zprávy
+#@param properties_to_inherit zděděné XML styly (aby .docx dokument měl stejné formátování jako původní soubor)
+#@param method vybraná steganografická metoda
+#@return změněný run
+#@pokud šifruji Baconovou šifrou,  mažu u slov které nesou šifrovanou informaci styl fontu a jeho velikost, neboť informaci ukrývám právě pomocí těhto 2 vlastností
 def new_run_element(word, bit, properties_to_inherit, method):
    namespace = '{http://schemas.openxmlformats.org/wordprocessingml/2006/main}'
    run_tag = namespace + 'r'

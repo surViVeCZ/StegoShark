@@ -31,7 +31,7 @@ import steganography
 import bacon
 import huffman_coding
 
-
+##@brief slovník slov, které představují "0" bit
 dictionary_of_zeros =    collections.OrderedDict((("want",{0}),("easy",{0}),("still",{0}),("hardworking",{0}),("buy",{0}),("smart",{0}),("strong",{0}),("stupid",{0}),("essential",{0}),("irrelevant",{0}),
                         ("excellent",{0}),("acceptable",{0}),("awful",{0}),("interesting",{0}),("boring",{0}),("uncertain",{0}),("difficult",{0}),("weak",{0}),("many",{0}),("bit",{0}),
                         ("huge",{0}),("tiny",{0}),("new",{0}),("old",{0}),("excess",{0}),("alert",{0}),("short",{0}),("abuse",{0}),("unreliable",{0}),("puzzle",{0}),("lethargy",{0}),
@@ -47,6 +47,7 @@ dictionary_of_zeros =    collections.OrderedDict((("want",{0}),("easy",{0}),("st
                         ("negotiate",{0}),("violate",{0}),("stubborn",{0}),("adjust",{0}),("dry",{0}),("experimental",{0}),("important",{0}),("see",{0}),("also",{0}),("rude",{0}),("hot",{0}),
                         ("poor",{0}),("shy",{0}),("decline",{0}),("fake",{0}),("tasty",{0}),("prolong",{0}),("clever",{0})))
 
+##@brief slovník synonym představující "1" bit
 dictionary_of_synonyms = collections.OrderedDict((("wish",{1}),("uncomplicated",{1}),("perennially",{1}),("assiduous",{1}),("purchase",{1}),("wise",{1}),("firm",{1}),("dimwitted",{1}),("indispensable",{1}),("insignificant",{1}),
                         ("magnificent",{1}),("adequate",{1}),("atrocious",{1}),("intriguing",{1}),("tiresome",{1}),("dubious",{1}),("daunting",{1}),("feeble",{1}),("ample",{1}),("smitgen",{1}),
                         ("immense",{1}),("dinky",{1}),("contemporary",{1}),("obsolete",{1}),("surplus",{1}),("watchful",{1}),("brief",{1}),("vituperate",{1}),("incredulous",{1}),("enigma",{1}),
@@ -62,6 +63,10 @@ dictionary_of_synonyms = collections.OrderedDict((("wish",{1}),("uncomplicated",
                         ("furtive",{1}),("settle",{1}),("infringe",{1}),("contumacy",{1}),("reconcile",{1}),("arid",{1}),("tentative",{1}),("vital",{1}),("observe",{1}),("furthermore",{1}),("vulgar",{1}),
                         ("scalding",{1}),("destitute",{1}),("bashful",{1}),("wane",{1}),("sham",{1}),("scrumptious",{1}),("prolix",{1}),("canny",{1})))
 
+## @brief spočítá kolik slov v textu je součástí mých slovníků
+#@param text text souboru
+#@return počet slovníkových slov
+#@note funkci používám, abych zjistil, zda-li má text dostatek slov na ukrytí zvolené tajné zprávy
 def count_dictionary_words(text):
     cnt = 0
     words = text.split()
@@ -70,7 +75,11 @@ def count_dictionary_words(text):
             cnt += 1
     return cnt
 
-
+## @brief ukrytí tajné zprávy pomocí metody Synonym
+#@param file vstupní cover soubor
+#@param message tajná zpráva, kterou si přejeme ukrýt
+#@param bits určuje druh šifrování (8-bit ASCII, Bacon, Huffman)
+#@return cesta k zašifrovanému souboru
 def syn_encode(file, message, bits):
     if(bits == "default"):
         binary_mes = steganography.str_to_binary(message)
@@ -134,6 +143,11 @@ def syn_encode(file, message, bits):
     return path
 
 
+## @brief dešifrování pomocí metody synonym
+#@param file zašifrovaný soubor
+#@param bits určuje druh šifrování (8-bit ASCII, Bacon, Huffman)
+#@return tajná zpráva
+#@note správně dešifrovat můžeme pouze soubory zašifrované stejnou metodou
 def syn_decode(file, bits):
     try:
       doc = Document(file)
@@ -166,7 +180,9 @@ def syn_decode(file, bits):
     return secret_message
 
  
-# returns <w:rStyle w:val="synonym_element"/>
+##@brief XML elementu přiřadí můj vlastní styl
+#@details přiřazený styl značí bit "1"
+#@return <w:rStyle w:val="synonym_element"/>
 def create_syn_tag():
    namespace = '{http://schemas.openxmlformats.org/wordprocessingml/2006/main}'
    tag = namespace + 'rStyle'
@@ -175,7 +191,12 @@ def create_syn_tag():
    el.attrib[ns_val] = "synonym_element"
    return el
 
-#nahrazování slov
+##@brief funkce nahrazuje slova na základě hodnoty bitu, který si přeji ukrýt
+#@param prop_el element XML interpretace dokumentu
+#@param bit 1 bit zprávy
+#@param namespace odkaz na registraci XML tagu
+#@param word slovo u kterého zjišťuji, zda-li se vyzkytuje ve slovnících (s neslovníkovými slovy nemanipuluji)
+#@return vyměněné slovo / nezměněné slovo
 def syn_element(prop_el,bit,namespace, word, run):
     syn_word = word
     #na všechny slova, která se vyzkytují ve slovníku přiřadím tag, pouze těmto slovům budu přidělovat bity

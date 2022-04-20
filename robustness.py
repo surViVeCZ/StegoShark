@@ -15,6 +15,10 @@ import xml_parse
 import steganography
 import tests
 
+
+## @brief funkce mění formátování dokumentu
+#@param doc_path cesta k dokumentu
+#@note funkce je volána v souboru tests.py ve funkci check_robustness()
 def change_font_style(doc_path):
     doc = Document(doc_path)
     new_doc = Document()

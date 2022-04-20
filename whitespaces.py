@@ -26,6 +26,10 @@ import tempfile
 import steganography
 import xml_parse
 
+## @brief počítá počet mezer v textu
+#@param text textová část souboru
+#@return počet mezer
+#@note funkce je nezbytná, pro určení, zda-li má text dostatečnou kapacitu na ukrytí tajné zprávy
 def count_spaces(text):
     cnt = 0
     for i in range(0, len(text)):
@@ -33,6 +37,10 @@ def count_spaces(text):
             cnt += 1
     return cnt
 
+## @brief ukrytí tajné zprávy pomocí Open-space metody
+#@param file vstupní cover soubor
+#@param message tajná zpráva, kterou si přejeme ukrýt
+#@return cesta k zašifrovanému souboru
 def Spaces_encode(file, message):
     binary_mes = steganography.str_to_binary(message)
     print(binary_mes)
@@ -51,7 +59,11 @@ def Spaces_encode(file, message):
 
     path = xml_parse.split_document(binary_mes, file, "spaces", "default")
     return path
-    
+
+## @brief dešifrování pomocí Open-space metody
+#@param file zašifrovaný soubor
+#@return tajná zpráva
+#@note správně dešifrovat můžeme pouze soubory zašifrované stejnou metodou
 def Spaces_decode(file):
     try:
         doc = Document(file)
@@ -71,6 +83,10 @@ def Spaces_decode(file):
     secret_message = steganography.binary_to_str(binary)
     return secret_message
 
+
+##@brief nastavení mezery na určitou hodnotu
+#@return XML element se změněnou hodnotou mezery
+#@note hodnota mezery odpovídá fontu velikosti 9,5
 def create_whitespace_el():
    namespace = '{http://schemas.openxmlformats.org/wordprocessingml/2006/main}'
    tag = namespace + 'sz'
@@ -79,6 +95,10 @@ def create_whitespace_el():
    el.attrib[ns_val] = "19" #hodnota mezery odpovídá fontu velikosti 9,5
    return el
 
+##@brief XML elementu přiřadí můj vlastní styl
+#@details přiřazený styl značí bit "1"
+#@return <w:rStyle w:val="spaces_style"/>
+#@note styl slouží pouze jako tag indikující jedničkový bit, neobsahuje žádné vlastnosti
 def create_tag():
     namespace = '{http://schemas.openxmlformats.org/wordprocessingml/2006/main}'
     tag = namespace + 'rStyle'
@@ -87,7 +107,10 @@ def create_tag():
     el.attrib[ns_val] = "spaces_style"
     return el
 
-#nahraje styl do elementu, který má bit = 1
+## @brief nahraje styl do elementu, který má bit = 1
+#@param prop_el element XML interpretace dokumentu
+#@param bit 1 bit zprávy
+#@param namespace odkaz na registraci XML tagu
 def spaces_element(prop_el,bit,namespace):
     if bit == "1":
         for subelement in prop_el[:]:
@@ -99,8 +122,10 @@ def spaces_element(prop_el,bit,namespace):
         prop_el.append(style_el)
         
 
-#do dokumentu docx se nahraje můj vlastní styl, který později použiji pro ukrytí zprávy
-#tento styl neobsahuje žádné vlastnosti, souží pouze jako flag, abych poznal kde je urkytá zpráva
+
+## @brief do dokumentu docx se nahraje můj vlastní styl, který později použiji pro ukrytí zprávy
+#@param font_styles základní styly dokumentu .docx
+#@note abych mohl v XML přiřazovat elementům můj vlastní styl, musí nejprve tento styl v dokumentu existovat
 def add_spaces_style(font_styles):
    #check jestli styl již existuje, nelze přidat 2x
    custom_style_present = False
