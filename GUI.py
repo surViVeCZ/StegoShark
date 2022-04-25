@@ -105,8 +105,8 @@ root.geometry("640x500")
 root.maxsize(640,500)
 root.minsize(640,500)
 root.configure(background='#DCDFE0')
-# Steganography tool for text encoding and decoding
-heading = Label(text="STEGOSHARK 2000 ^^", bg="black", fg="white", height="3", width="800")
+
+heading = Label(text="STEGOSHARK 2000", bg="black", fg="white", height="3", width="800")
 heading.pack()
 
 l1 = Label(text = "Input file:", background="#DCDFE0")

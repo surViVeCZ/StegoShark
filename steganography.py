@@ -246,11 +246,11 @@ def ArgumentsParsing(argv):
    try:
       opts, args = getopt.getopt(argv,"i:ed:s:bwro",['ifile=','encode','decode','message','bacon','whitespaces','replace','own1', 'own2'])
    except getopt.GetoptError:
-     print("steganography.py -i <inputfile> -e/-d -s <secret_message> -<b/w/r>/--own1/--own2")
+     print("steganography.py -i <inputfile> [-e/-d] -s <secret_message> [-b/-w/-r/--own1/--own2]")
      sys.exit(2)
    for opt, arg in opts:
       if opt == '-h':
-        print("steganography.py -i <inputfile> -e/-d -s <secret_message> -<b/w/r>/--<own1/own2>")
+        print("steganography.py -i <inputfile> [-e/-d] -s <secret_message> [-b/-w/-r/--own1/--own2]")
         sys.sys.exit()
       elif opt in ('-i', '--ifile'):
          cfg.inputfile = arg

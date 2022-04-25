@@ -40,10 +40,15 @@ def change_font_style(doc_path):
                 par.add_run(word +" ", style='new_font_style')
 
     save_path = 'robustness' 
-
     file = os.path.split(doc_path)
     file_name = file[1]
 
+    current_dir = os. getcwd()
+    isdir = os.path.isdir(current_dir + "/"+save_path)
+
+    #složka robustness neexistuje
+    if isdir is False:
+        os.mkdir(current_dir + "/"+save_path) 
     try:
         full_path = os.path.join(save_path, file_name)
     except:
