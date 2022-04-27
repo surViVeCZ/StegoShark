@@ -1,3 +1,11 @@
+__Autor:__ Petr Pouč
+
+__Datum:__ 25. 4. 2022
+
+Tento projekt je součástí bakalářské práce "Digitální textová steganografie".
+
+***
+
 # Instalace
 
 ```

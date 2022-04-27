@@ -1,3 +1,11 @@
+#----------------------------------------------------------------------
+# Autor:          Petr Pouč                                           
+# Login:          xpoucp01
+# Datum:          27.04.2022
+# Název práce:    Digitální textová steganografie 
+# Cíl práce:      Implementace 4 vybraných steganografických metod
+#----------------------------------------------------------------------
+
 import re
 import os
 import string
