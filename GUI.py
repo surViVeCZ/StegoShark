@@ -1,4 +1,12 @@
 # -*- coding: utf-8 -*-
+
+#----------------------------------------------------------------------
+# Autor:          Petr Pouč                                           
+# Login:          xpoucp01
+# Datum:          27.04.2022
+# Název práce:    Digitální textová steganografie 
+# Cíl práce:      Implementace 4 vybraných steganografických metod
+#----------------------------------------------------------------------
 from base64 import encode
 from cProfile import label
 import sys
@@ -17,7 +25,7 @@ import whitespaces
 import synonyms
 import huffman_coding
 
-
+text_path = None
 ## @brief zjistí zvolenou metodu v combo box
 def method_changed(event):
     global method
@@ -27,16 +35,15 @@ def method_changed(event):
 def choose_input():
     global text_path
     global filepath
-    inputfile = filedialog.askopenfile(initialdir="/", title="Select file to encode",
+    inputfile = filedialog.askopenfile(initialdir="/", title="Zvol soubor k zašifrování",
     filetypes=(("documents", "*.docx"), ("text files", "*.txt")))
     if inputfile:
         filepath = os.path.abspath(inputfile.name)
 
     head_tail = os.path.split(filepath)
-    text_path = Label(text = head_tail[1], background="#DCDFE0", foreground="#8B9092")
-    text_path.place(x = 280, y = 90)
+    text_path.configure(text=head_tail[1])
         
-## @brief šifrování zvoleného souboru, zvolenou metodou a tajnou zprávou
+## @brief vložení tajné zprávy do vstupního souboru na základě zvolené steganografické metody
 def encode():
     global method
     method_name = ""
@@ -44,13 +51,13 @@ def encode():
     try:
         print('Message index is: {}\n'.format(method),  end = '')
     except:
-        messagebox.showerror("Error", "You need to choose a method!")
+        messagebox.showerror("Error", "Je potřeba vybrat steganografickou metodu.")
 
     print("Secret message is: " + secret_mes)
     try:
         str(filepath)
     except:
-        messagebox.showerror("Error", "You need to choose a cover file!")
+        messagebox.showerror("Error", "Musíš zvolit vstupní soubor.")
     if method == 0:
         method_name = '-b'
     elif method == 1:
@@ -62,14 +69,17 @@ def encode():
     elif method == 4:
         method_name = '--own2'
     
-    check = main(['-i', str(filepath), '-e', '-s', secret_mes, method_name])
+    try:
+        check = main(['-i', str(filepath), '-e', '-s', secret_mes, method_name])
+    except:
+        messagebox.showerror("ERROR!", "Chybně zadané parametry! (Baconova šifra beze pouze znaky A-Z (bez mezer a speciálních znaků), totéž platí pro metodu synonym vužívající tohoto šifrování")
     if check is False:
         messagebox.showerror("ERROR!", "Soubor nemá dostatečnou kapacitu na ukrytí této zprávy.")
     else:
         messagebox.showinfo("ENCODED!", "Zpráva byla úspěšně zašifrována do zvoleného souboru!")
     message.delete(1.0,"end")
 
-## @brief dešifrování zvoleného souboru, zvolenou metodou
+## @brief dešifrování zvoleného souboru zvolenou metodou
 #@note soubor musí být dešifrován metodou, kterou byl zašifrován
 def decode():
     global method
@@ -78,11 +88,11 @@ def decode():
     try:
         print('Message index is: {}\n'.format(method),  end = '')
     except:
-        messagebox.showerror("Error", "You need to choose a method!")
+        messagebox.showerror("Error", "Je potřeba vybrat steganografickou metodu.")
     try:
         str(filepath)
     except:
-        messagebox.showerror("Error", "You need to choose a cover file!")
+        messagebox.showerror("Error", "Nutno zlovit vstupní soubor.")
     if method == 0:
         secret = bacon.Bacon_decode(str(filepath))
     elif method == 1:
@@ -92,7 +102,10 @@ def decode():
     elif method == 3:
         secret = synonyms.syn_decode(str(filepath), "own1")
     elif method == 4:
-        secret = synonyms.syn_decode(str(filepath), "own2")
+        try:
+            secret = synonyms.syn_decode(str(filepath), "own2")
+        except:
+            messagebox.showerror("ERROR!", "Dešifrování Huffmanova kódování nebylo implementováno. Huffmanův strom musí být vložen do textu, nebo domluven mezi komunikujícími stranami předem.")
 
     text = steganography.print_text(str(filepath))
     print(text)
@@ -109,14 +122,14 @@ root.configure(background='#DCDFE0')
 heading = Label(text="STEGOSHARK 2000", bg="black", fg="white", height="3", width="800")
 heading.pack()
 
-l1 = Label(text = "Input file:", background="#DCDFE0")
+l1 = Label(text = "Vstupní soubor:", background="#DCDFE0")
 l1.place(x = 20, y = 90)
 #input file button
-open_file = tk.Button(root, text = "Choose input file", padx=5,pady=5, bg="#4173EA", fg="#FFFFFF", 
+open_file = tk.Button(root, text = "Vybrat vstupní soubor", padx=5,pady=5, bg="#4173EA", fg="#FFFFFF", 
             activebackground="#1C3A83", activeforeground="#FFFFFF", command=choose_input)
-open_file.place(x = 120, y = 80)
+open_file.place(x = 140, y = 80)
 
-l2 = Label(text = "Insert secret message you want to hide:", background="#DCDFE0")
+l2 = Label(text = "Vlož tajnou zprávu, kterou si přeješ ukrýt:", background="#DCDFE0")
 l2.place(x = 20, y = 140)
 
 
@@ -124,12 +137,15 @@ l2.place(x = 20, y = 140)
 message = Text(root, bg="white", height="5", width="60")
 message.place(x = 20, y = 170)
 
-#encode button
-encode_button = Button(root, text="ENCODE", command=encode, padx=85, bg="#4173EA", fg="#FFFFFF", activebackground="#1C3A83", activeforeground="#FFFFFF")
-encode_button.place(x = 70, y = 450)
+text_path = Label(text = " ", background="#DCDFE0", foreground="#8B9092")
+text_path.place(x = 320, y = 90)
 
-decode_button = Button(root, text="DECODE", command=decode, padx=85, bg="#4173EA", fg="#FFFFFF", activebackground="#1C3A83", activeforeground="#FFFFFF")
-decode_button.place(x = 320, y = 450)
+#encode button
+encode_button = Button(root, text="ŠIFROVAT", command=encode, padx=85, bg="#4173EA", fg="#FFFFFF", activebackground="#1C3A83", activeforeground="#FFFFFF")
+encode_button.place(x = 60, y = 450)
+
+decode_button = Button(root, text="DEŠIFROVAT", command=decode, padx=85, bg="#4173EA", fg="#FFFFFF", activebackground="#1C3A83", activeforeground="#FFFFFF")
+decode_button.place(x = 330, y = 450)
 
 
 selected_method = tk.StringVar()

@@ -163,7 +163,7 @@ def suppress_stdout():
         finally:
             sys.stdout = old_stdout
 
-## @vypočítá zjistí velikost složky
+## @brief zjistí velikost složky
 #@param full_path cesta ke složce
 #@return velikost
 def get_folder_size(full_path):
@@ -480,7 +480,7 @@ def encode_bacon():
 
 ## @brief dešifruje všechny soubory nacházející se ve složce /encoded
 #@details dešifruji pouze soubory zašifrované touto metodou - file.startswith("bacon")
-#@note při šifrování metodou přidám k k názvu souboru název steganografické metody (např. bacon_cover1.docx)
+#@note při šifrování metodou přidám k názvu souboru název steganografické metody (např. bacon_cover1.docx)
 def decode_bacon():
     thisdir_bin = os.getcwdb()
     changed_path = os.path.join(thisdir_bin, b"encoded")
@@ -544,7 +544,7 @@ def decode_bacon():
 
 ## @brief dešifruje všechny soubory nacházející se ve složce /encoded
 #@details dešifruji pouze soubory zašifrované touto metodou - file.startswith("spaces")
-#@note při šifrování metodou přidám k k názvu souboru název steganografické metody (např. spaces_cover1.docx)
+#@note při šifrování metodou přidám k názvu souboru název steganografické metody (např. spaces_cover1.docx)
 def decode_spaces():
     thisdir_bin = os.getcwdb()
     changed_path = os.path.join(thisdir_bin, b"encoded")
@@ -609,7 +609,7 @@ def decode_spaces():
 
 ## @brief dešifruje všechny soubory nacházející se ve složce /encoded
 #@details dešifruji pouze soubory zašifrované touto metodou - file.startswith("synonyms")
-#@note při šifrování metodou přidám k k názvu souboru název steganografické metody (např. synonyms_cover1.docx)
+#@note při šifrování metodou přidám k názvu souboru název steganografické metody (např. synonyms_cover1.docx)
 def decode_syn():
     thisdir_bin = os.getcwdb()
     changed_path = os.path.join(thisdir_bin, b"encoded")
@@ -731,7 +731,7 @@ def bacon_robustness_check():
         print("After ALL FORMAT CHANGES all messages DECODED SUCCESSFULLY!")
         print("\n", end='')
     else:
-        print("After ALL FORMAT CHANGES %d/%d messages sucesfully decoded" % (success,cnt-1))
+        print("After ALL FORMAT CHANGES %d/%d messages sucesfully decoded" % (success,cnt))
         print("\n", end='')
 
 
@@ -792,7 +792,7 @@ def spaces_robustness_check():
         print("After ALL FORMAT CHANGES all messages DECODED SUCCESSFULLY!")
         print("\n", end='')
     else:
-        print("After ALL FORMAT CHANGES %d/%d messages sucesfully decoded" % (success,cnt-1))
+        print("After ALL FORMAT CHANGES %d/%d messages sucesfully decoded" % (success,cnt))
         print("\n", end='')
 
 ## @brief "synonyms" souborům (file.startswith("synonyms") ve složce /encoded postupně pomocí funkce change_font_style() měním formátování
@@ -851,7 +851,7 @@ def syn_robustness_check():
         print("After ALL FORMAT CHANGES all messages DECODED SUCCESSFULLY!")
         print("\n", end='')
     else:
-        print("After ALL FORMAT CHANGES %d/%d messages sucesfully decoded" % (success,cnt-1))
+        print("After ALL FORMAT CHANGES %d/%d messages sucesfully decoded" % (success,cnt))
         print("\n", end='')
 
 ## @brief vytvoření grafu

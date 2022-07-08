@@ -40,7 +40,7 @@ def change_font_style(doc_path):
     for paragraph in doc.paragraphs:
         par = new_doc.add_paragraph()
         for run in paragraph.runs:
-            words = run.text.strip().split(" ") # tady
+            words = run.text.strip().split(" ") 
 
             #kvůli zipu se nedopíše zbytek
             for word in words:
@@ -54,7 +54,7 @@ def change_font_style(doc_path):
     current_dir = os. getcwd()
     isdir = os.path.isdir(current_dir + "/"+save_path)
 
-    #složka robustness neexistuje
+    #složka robustness neexistuje, je potřeba ji vytvořit
     if isdir is False:
         os.mkdir(current_dir + "/"+save_path) 
     try:

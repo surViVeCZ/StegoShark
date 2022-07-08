@@ -46,7 +46,7 @@ import synonyms
 ## @brief v této funkci rozhodujeme, která šifrovací,nebo dešifrovací metoda se použije
 #@param file vstupní cover soubor
 #@param cfg uživatelské vstupy (vstupní argumenty)
-#@return cestu k nově vzniklému souboru
+#@return cesta k nově vzniklému souboru
 def encode_decode(cfg, file):
       #Dekódování Baconovou šifrou
    if(cfg.decode is True):
@@ -119,10 +119,10 @@ def encode_decode(cfg, file):
             return False
       return file_path
 
-##@brief nahradí XML původního .docx souboru za mé vlastní XML
+##@brief funkce nahradí XML původního .docx souboru za mé vlastní XML
 #@param path cesta k souboru
 #@param zip_file_location cesta k word/document.xml
-#@param outside_file_locatio document.xml
+#@param outside_file_location document.xml
 #@return nově vzniklý dokument
 def updateZip(zipname, zip_file_location, outside_file_location):
    tmpfd, tmpname = tempfile.mkstemp(dir=os.path.dirname(zipname))
@@ -283,7 +283,7 @@ def main(argv):
    print("\n", end='')
    print ("Input file: {0}" .format(cfg.inputfile))
 
-   #vstupní cover text je docs
+   #vstupní cover text je docx
    if(cfg.inputfile.endswith('.docx')):
    
       print("\n", end='')
@@ -294,7 +294,7 @@ def main(argv):
       # print(print_text(cfg.inputfile))
       
 
-   #vstupní cover text je txt, txt soubor je nahrát a zpracován jako dokument docx
+   #vstupní cover text je txt, txt soubor je nahrán a zpracován jako dokument docx
    elif(cfg.inputfile.endswith('.txt')):
       document = Document()
       with open(cfg.inputfile) as f:

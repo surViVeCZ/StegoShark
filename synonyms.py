@@ -83,7 +83,7 @@ def count_dictionary_words(text):
             cnt += 1
     return cnt
 
-## @brief ukrytí tajné zprávy pomocí metody Synonym
+## @brief ukrytí tajné zprávy pomocí metody synonym
 #@param file vstupní cover soubor
 #@param message tajná zpráva, kterou si přejeme ukrýt
 #@param bits určuje druh šifrování (8-bit ASCII, Bacon, Huffman)
@@ -201,7 +201,7 @@ def create_syn_tag():
 
 ##@brief funkce nahrazuje slova na základě hodnoty bitu, který si přeji ukrýt
 #@param prop_el element XML interpretace dokumentu
-#@param bit 1 bit zprávy
+#@param bit jeden bit zprávy
 #@param namespace odkaz na registraci XML tagu
 #@param word slovo u kterého zjišťuji, zda-li se vyzkytuje ve slovnících (s neslovníkovými slovy nemanipuluji)
 #@return vyměněné slovo / nezměněné slovo

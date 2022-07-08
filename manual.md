@@ -50,5 +50,6 @@ python3 tests.py
 ```
 Spuštění aplikace
 ```
-python3 GUI.py
+pomocí tlačítka run code
+například ve Visual studio code pomocí - ctrl + alt + N
 ```

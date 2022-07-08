@@ -45,7 +45,7 @@ alphabet = ["A", "B", "C", "D", "E", "F", "G", "H", "(I,J)", "K", "L", "M", "N",
 
 
 
-## @brief ukrytí tajné zprávy pomocí Baconovy šifry
+## @brief funkce k ukrytí tajné zprávy pomocí Baconovy šifry
 #@param file vstupní cover soubor
 #@param message tajná zpráva, kterou si přejeme ukrýt
 #@return cesta k zašifrovanému souboru
@@ -94,7 +94,7 @@ def Bacon_encode(file, message):
    path = xml_parse.split_document(pattern_string, file, "bacon", "default")
    return path
 
-## @brief dešifrování pomocí Baconovy šifry
+## @brief funkce k dešifrování pomocí Baconovy šifry
 #@param file zašifrovaný soubor
 #@return tajná zpráva
 #@note správně dešifrovat můžeme pouze soubory zašifrované stejnou metodou
@@ -173,7 +173,7 @@ def create_baconstyle_el():
 
 ## @brief nahraje styl do elementu, který má bit = 1
 #@param prop_el element XML interpretace dokumentu
-#@param bit 1 bit zprávy
+#@param bit jeden bit zprávy
 #@param namespace odkaz na registraci XML tagu
 #@note každý XML namespace je nejprve potřeba zaregistrovat, to provádím v souboru xml_parse.py funkcí ET.register_namespace
 def bacon_element(prop_el,bit,namespace):
