@@ -47,7 +47,7 @@ import synonyms
 #@param file vstupní cover soubor
 #@param cfg uživatelské vstupy (vstupní argumenty)
 #@return cesta k nově vzniklému souboru
-def encode_decode(cfg, file):
+def encode_decode(cfg: object, file: str) -> 'filepath':
       #Dekódování Baconovou šifrou
    if(cfg.decode is True):
       if(cfg.bacon is True):
@@ -124,7 +124,7 @@ def encode_decode(cfg, file):
 #@param zip_file_location cesta k word/document.xml
 #@param outside_file_location document.xml
 #@return nově vzniklý dokument
-def updateZip(zipname, zip_file_location, outside_file_location):
+def updateZip(zipname: str, zip_file_location: str, outside_file_location: str) -> 'newDoc':
    tmpfd, tmpname = tempfile.mkstemp(dir=os.path.dirname(zipname))
    os.close(tmpfd)
 
@@ -149,7 +149,7 @@ def updateZip(zipname, zip_file_location, outside_file_location):
 #@param string vstupní řetězec
 #@return slovo
 #@note tato funkce je volána Baconovou metodou a metodou synonym, jelikož nepracují s mezerami
-def split_to_words(string):
+def split_to_words(string: str) -> str:
    word = string.strip().split()
    return(word)
 
@@ -160,7 +160,7 @@ def split_to_words(string):
 #@param c znak tajné zprávy
 #@return TRUE pokud je znak validní v XML
 #@return FALSE pokud znak není validní
-def valid_xml_char_ordinal(c):
+def valid_xml_char_ordinal(c: chr) -> 'ordChr':
     codepoint = ord(c)
     return (
         0x20 <= codepoint <= 0xD7FF or
@@ -172,7 +172,7 @@ def valid_xml_char_ordinal(c):
 ## @brief převede list na textový řetězec
 #@param l vstupní list
 #@return textový řetězec
-def listToString(l): 
+def listToString(l: str) -> str: 
     string = ""
     for ch in l: 
         string += ch  
@@ -182,7 +182,7 @@ def listToString(l):
 ## @brief převedení textového řetězce na binární podobu
 #@param message vstupní tajná zpráva zadaná uživatelem
 #@return binární podoba této zprávy
-def str_to_binary(message):
+def str_to_binary(message: str) -> str:
    binary_message = ''.join(format(ord(i), '08b') for i in message)
    print("Message is: " + message)
    return binary_message
@@ -190,7 +190,7 @@ def str_to_binary(message):
 ## @brief rozdělí slovo na jednotivé znaky
 #@param word slovo, které si přejeme rozdělit
 #@return znak slova
-def split(word):
+def split(word: str) -> chr:
    return [char for char in word]
 
 
@@ -198,7 +198,7 @@ def split(word):
 ## @brief převedení binárních dat do čitelné podoby
 #@param binary binární podoba tajné zprávy
 #@return textová podoba
-def binary_to_str(binary):
+def binary_to_str(binary: int) -> str:
    binary_length = len(binary)
    data = [binary[i:i+8] for i in range(0,binary_length,8)]
    integer_form = []
@@ -214,7 +214,7 @@ def binary_to_str(binary):
 #@param file vstupní soubor
 #@return obsah tohoto souboru
 #@note funkci používám pouze pro .docx soubory
-def print_text(file):
+def print_text(file: str) -> str:
    complete_text = []
    doc = docx.Document(file)
    for paragraph in doc.paragraphs:
@@ -225,22 +225,23 @@ def print_text(file):
 
 ## @brief uživatelské vstupy
 class Config:
-   inputfile = ''
-   outputfile = ''
-   decode = False
-   encode = False
-   message = ''
-   bacon = False
-   whitespaces = False
-   replace = False
-   own1 = False #synonyms with bacon encoding
-   own2 = False #synonyms with Huffman
+   def __init__(self, inputfile='', outputfile='', decode=False, encode=False, message='', bacon=False, whitespaces=False, replace=False, own1= False, own2=False):
+      self.inputfile = inputfile
+      self.outputfile = outputfile
+      self.decode = decode
+      self.encode = encode
+      self.message = message
+      self.bacon = bacon
+      self.whitespaces = whitespaces
+      self.replace = replace
+      self.own1 = own1 #synonyms with bacon encoding
+      self.own2 = own2 #synonyms with Huffman
 
 ## @brief zpracování vstupních argumentů
 #@param argv list vstupních argumentů
 #@return instance třídy Config, obsahující hodnoty všech argumentů
 #@note argumentům jsou přiřezeny hodnoty TRUE, pokud jsou použity
-def ArgumentsParsing(argv):
+def ArgumentsParsing(argv: 'input arguments') -> 'ConfigObject':
    #načtení defaultních hodnot
    cfg = Config()
    try:
