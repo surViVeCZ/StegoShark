@@ -45,104 +45,108 @@ alphabet = ["A", "B", "C", "D", "E", "F", "G", "H", "(I,J)", "K", "L", "M", "N",
             "R", "S", "T", "(U/V)", "W", "X", "Y", "Z", "."]
 
 
-
-## @brief funkce k ukrytí tajné zprávy pomocí Baconovy šifry
-#@param file vstupní cover soubor
-#@param message tajná zpráva, kterou si přejeme ukrýt
-#@return cesta k zašifrovanému souboru
-def Bacon_encode(file: str, message: str) -> str:
-   try:
-      doc = docx.Document(file)
-   except:
-      print("Non existing file")
-      sys.exit()
-   message = steganography.split(message)
-   # message_string = steganography.listToString(message)
-
-   index_array = []
-   for i in range(len(message)):
+class bacon_cipher:
+   def __init__(self, file:str,message:str):
+         self.file = file
+         self.message = message
+   ## @brief funkce k ukrytí tajné zprávy pomocí Baconovy šifry
+   #@param file vstupní cover soubor
+   #@param message tajná zpráva, kterou si přejeme ukrýt
+   #@return cesta k zašifrovanému souboru
+   def Bacon_encode(self, file: str, message: str) -> str:
       try:
-         index_array.append(string.ascii_lowercase.index(message[i]))
+         doc = docx.Document(file)
       except:
-         index_array.append(alphabet.index(message[i])+2)
- 
+         print("Non existing file")
+         sys.exit()
+      message = steganography.split(message)
+      # message_string = steganography.listToString(message)
 
-   message_pattern = []
-   print(index_array)
-   for k in index_array:
-      #nutné upravit hodnoty indexů, kvůli dvojicím i,j a u,v (mají stejný vzor v Baconově šifře)
-      if(k > 8 and k <= 20):
-         k -= 1
-      elif(k > 20):
-         k -= 2
-      message_pattern.append(bacons_table[k])
-
-   pattern_string = steganography.listToString(message_pattern)
-   print(message_pattern)
-   print("\n", end='')
-
-   #nutno zjistit počet slov, více slov umožňuje ukrytí delší zprávy
-   full_text = steganography.print_text(file)
-
-   word_list = full_text.split()
-   number_of_words = len(re.findall(r'\w+', full_text))
-
-   #pro ukrytí jednoho znaku je potřeba 5 znaků cover textu
-   if(len(message*5) > number_of_words):
-      print("Cover text doesn't have enough capacity to hide this message")
-      return False
+      index_array = []
+      for i in range(len(message)):
+         try:
+            index_array.append(string.ascii_lowercase.index(message[i]))
+         except:
+            index_array.append(alphabet.index(message[i])+2)
    
-   path = xml_parse.split_document(pattern_string, file, "bacon", "default")
-   return path
 
-## @brief funkce k dešifrování pomocí Baconovy šifry
-#@param file zašifrovaný soubor
-#@return tajná zpráva
-#@note správně dešifrovat můžeme pouze soubory zašifrované stejnou metodou
-def Bacon_decode(file: str) -> str:
-   try:
-      doc = Document(file)
-   except:
-      print("Non existing file")
-      sys.exit()
+      message_pattern = []
+      print(index_array)
+      for k in index_array:
+         #nutné upravit hodnoty indexů, kvůli dvojicím i,j a u,v (mají stejný vzor v Baconově šifře)
+         if(k > 8 and k <= 20):
+            k -= 1
+         elif(k > 20):
+            k -= 2
+         message_pattern.append(bacons_table[k])
 
-   font_styles = doc.styles
+      pattern_string = steganography.listToString(message_pattern)
+      print(message_pattern)
+      print("\n", end='')
 
-   bold_words = []
-   non_bold = []
-   binary = "" #bold = 1, nonbold = 0
-   text = ""
-   end_of_message = 0
-   #rozdělí text na tučné a obyčejné slova
-   for paragraph in doc.paragraphs:
-      text = text + paragraph.text + " "
+      #nutno zjistit počet slov, více slov umožňuje ukrytí delší zprávy
+      full_text = steganography.print_text(file)
 
-      for run in paragraph.runs:
-         #ukončení zprávy
-         if(end_of_message == 5):
-            break
-         # #pro kódování a dekódování Baconovou šifrou nepracuji s bílými znaky (pro práci s nimi je implementována jiná metoda)
-         t = run.text
-         split = t.strip().split(" ")
+      word_list = full_text.split()
+      number_of_words = len(re.findall(r'\w+', full_text))
+
+      #pro ukrytí jednoho znaku je potřeba 5 znaků cover textu
+      if(len(message*5) > number_of_words):
+         print("Cover text doesn't have enough capacity to hide this message")
+         return False
       
-         for word in split:
-            if run.style.name == "baconstyle":
-               bold_words.append(word)
-               binary += '1';
-               end_of_message += 1
-            elif run:
-               if run.text != ' ':
-                  non_bold.append(word)
-                  binary += '0';
-                  end_of_message = 0
-           
+      split_obj = xml_parse.XML_split(pattern_string, file, "bacon", "default")
+      path = split_obj.split_document()
+      return path
+
+   ## @brief funkce k dešifrování pomocí Baconovy šifry
+   #@param file zašifrovaný soubor
+   #@return tajná zpráva
+   #@note správně dešifrovat můžeme pouze soubory zašifrované stejnou metodou
+   def Bacon_decode(self, file: str) -> str:
+      try:
+         doc = Document(file)
+      except:
+         print("Non existing file")
+         sys.exit()
+
+      font_styles = doc.styles
+
+      bold_words = []
+      non_bold = []
+      binary = "" #bold = 1, nonbold = 0
+      text = ""
+      end_of_message = 0
+      #rozdělí text na tučné a obyčejné slova
+      for paragraph in doc.paragraphs:
+         text = text + paragraph.text + " "
+
+         for run in paragraph.runs:
+            #ukončení zprávy
+            if(end_of_message == 5):
+               break
+            # #pro kódování a dekódování Baconovou šifrou nepracuji s bílými znaky (pro práci s nimi je implementována jiná metoda)
+            t = run.text
+            split = t.strip().split(" ")
+         
+            for word in split:
+               if run.style.name == "baconstyle":
+                  bold_words.append(word)
+                  binary += '1';
+                  end_of_message += 1
+               elif run:
+                  if run.text != ' ':
+                     non_bold.append(word)
+                     binary += '0';
+                     end_of_message = 0
+            
 
 
-   #rozdělení na vzory po 5
-   bacons_patterns = re.findall('.....',binary)
-   message = bacon_pattern_to_string(bacons_patterns, bacons_table)
+      #rozdělení na vzory po 5
+      bacons_patterns = re.findall('.....',binary)
+      message = bacon_pattern_to_string(bacons_patterns, bacons_table)
 
-   return message
+      return message
 
 
 ## @brief převedení Baconových vzorů do stringové podoby (tajné zprávy)

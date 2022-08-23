@@ -49,17 +49,23 @@ import synonyms
 #@param cfg uživatelské vstupy (vstupní argumenty)
 #@return cesta k nově vzniklému souboru
 def encode_decode(cfg: object, file: str) -> str:
-      #Dekódování Baconovou šifrou
+   #Dekódování Baconovou šifrou
+   
+   bacon_cipher_obj = bacon.bacon_cipher(file,cfg.message)
+   sys_cipher_obj = synonyms.syn_cipher(file,cfg.message)
+   space_cipher_obj = whitespaces.spaces_cipher(file,cfg.message)
+   
+   print(object)
    if(cfg.decode is True):
       if(cfg.bacon is True):
-         secret_message = bacon.Bacon_decode(file)
+         secret_message = bacon_cipher_obj.Bacon_decode(file)
       elif(cfg.whitespaces is True):
-         secret_message = whitespaces.Spaces_decode(file)
+         secret_message = space_cipher_obj.Spaces_decode(file)
       elif(cfg.replace is True):
-         secret_message = synonyms.syn_decode(file, "default")
+         secret_message = sys_cipher_obj.syn_decode(file, "default")
       elif(cfg.own1 is True):
          #own1 = metoda synonym za využití Baconova kódování, tzn. 5bit
-         secret_message = synonyms.syn_decode(file, "own1")
+         secret_message = sys_cipher_obj.syn_decode(file, "own1")
       elif(cfg.own2 is True):
          #own2 = metoda synonym s využitím Huffmanova kódování
          print("Wasn't implemented. Decoding of this method is way too complicated.")
@@ -95,27 +101,27 @@ def encode_decode(cfg: object, file: str) -> str:
          sys.exit()
 
       if(cfg.bacon is True):
-         file_path = bacon.Bacon_encode(file, cfg.message)
+         file_path = bacon_cipher_obj.Bacon_encode(file, cfg.message)
          print(file_path)
          if file_path is False:
             return False
       elif(cfg.whitespaces is True):
-         file_path = whitespaces.Spaces_encode(file, cfg.message)
+         file_path = space_cipher_obj.Spaces_encode(file, cfg.message)
          if file_path is False:
             return False
       elif(cfg.replace is True):
          #default = klasické kódování 8bit
-         file_path = synonyms.syn_encode(file, cfg.message, "default")
+         file_path = sys_cipher_obj.syn_encode(file, cfg.message, "default")
          if file_path is False:
             return False
       elif(cfg.own1 is True):
          #own1 = metoda synonym za využití Baconova kódování, tzn. 5bit
-         file_path = synonyms.syn_encode(file, cfg.message, "own1")
+         file_path = sys_cipher_obj.syn_encode(file, cfg.message, "own1")
          if file_path is False:
             return False
       elif(cfg.own2 is True):
          #own2 = metoda synonym s využitím Huffmanova kódování
-         file_path = synonyms.syn_encode(file, cfg.message, "own2")
+         file_path = sys_cipher_obj.syn_encode(file, cfg.message, "own2")
          if file_path is False:
             return False
       return file_path

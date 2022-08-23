@@ -93,17 +93,22 @@ def decode():
         str(filepath)
     except:
         messagebox.showerror("Error", "Nutno zlovit vstupní soubor.")
+        
+    bacon_obj = bacon.bacon_cipher(filepath,message)
+    syn_obj = synonyms.syn_cipher(filepath,message)
+    spaces_obj = whitespaces.spaces_cipher(filepath,message)
+    
     if method == 0:
-        secret = bacon.Bacon_decode(str(filepath))
+        secret = bacon_obj.Bacon_decode(str(filepath))
     elif method == 1:
-         secret = whitespaces.Spaces_decode(str(filepath))
+         secret = spaces_obj.Spaces_decode(str(filepath))
     elif method == 2:
-        secret = synonyms.syn_decode(str(filepath), "default")
+        secret = syn_obj.syn_decode(str(filepath), "default")
     elif method == 3:
-        secret = synonyms.syn_decode(str(filepath), "own1")
+        secret = syn_obj.syn_decode(str(filepath), "own1")
     elif method == 4:
         try:
-            secret = synonyms.syn_decode(str(filepath), "own2")
+            secret = syn_obj.syn_decode(str(filepath), "own2")
         except:
             messagebox.showerror("ERROR!", "Dešifrování Huffmanova kódování nebylo implementováno. Huffmanův strom musí být vložen do textu, nebo domluven mezi komunikujícími stranami předem.")
 

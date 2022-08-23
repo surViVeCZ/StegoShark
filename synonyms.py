@@ -84,109 +84,111 @@ def count_dictionary_words(text: str) -> int:
             cnt += 1
     return cnt
 
-## @brief ukrytí tajné zprávy pomocí metody synonym
-#@param file vstupní cover soubor
-#@param message tajná zpráva, kterou si přejeme ukrýt
-#@param bits určuje druh šifrování (8-bit ASCII, Bacon, Huffman)
-#@return cesta k zašifrovanému souboru
-def syn_encode(file: str, message: str, bits: int) -> str:
-    if(bits == "default"):
-        binary_mes = steganography.str_to_binary(message)
 
-    if(bits == "own2"):
-        binary_mes =  huffman_coding.get_frequency(message)
-        print(binary_mes)
-        print(len(binary_mes))
-    
-  
-    full_text = steganography.print_text(file)
-    #pro ukrytí jednoho znaku je potřeba 8 znaků cover textu
-    words_available = count_dictionary_words(full_text)
-    if(bits == "default"):
-        if(len(message)*8 > words_available):
-            print("Cover text doesn't have enough capacity to hide this message")
-            return False
-    #pro ukrytí je zapotřebí pouhých 5 bitů
-    elif(bits == "own1"):
-        if(len(message)*5 > words_available):
-            print("Cover text doesn't have enough capacity to hide this message")
-            return False
-    elif(bits == "own2"):
-        if(len(binary_mes) > words_available):
-            print("Cover text doesn't have enough capacity to hide this message")
-            return False
+class syn_cipher:
+    def __init__(self, file:str,message:str):
+            self.file = file
+            self.message = message
+    ## @brief ukrytí tajné zprávy pomocí metody synonym
+    #@param file vstupní cover soubor
+    #@param message tajná zpráva, kterou si přejeme ukrýt
+    #@param bits určuje druh šifrování (8-bit ASCII, Bacon, Huffman)
+    #@return cesta k zašifrovanému souboru
+    def syn_encode(self, file: str, message: str, bits: int) -> str:
+        if(bits == "default"):
+            binary_mes = steganography.str_to_binary(message)
 
-    #vlastní varianta metody (s využitím Baconova šifrování)
-    if(bits == "own1"):
-        message = steganography.split(message)
-
-        index_array = []
-        for i in range(len(message)):
-            try:
-                index_array.append(string.ascii_lowercase.index(message[i]))
-            except:
-                index_array.append(bacon.alphabet.index(message[i]))
-        print(index_array)
-
-        message_pattern = []
-        for k in index_array:
-            if(k == 24):
-                pass
-            else:
-                #nutné upravit hodnoty indexů, kvůli dvojicím i,j a u,v (mají stejný vzor v Baconově šifře)
-                if(k > 8 and k <= 19):
-                    k -= 1
-                elif(k == 20):
-                    k -= 1
-                elif(k > 20 < 24):
-                    k -= 2
-            message_pattern.append(bacon.bacons_table[k])
-        binary_mes = steganography.listToString(message_pattern)
-
-    if(bits == "default"):
-        path = xml_parse.split_document(binary_mes, file, "synonyms", "default")
-    elif(bits == "own1"):
-        path = xml_parse.split_document(binary_mes, file, "synonyms", "own1")
-    elif(bits == "own2"):
-        path = xml_parse.split_document(binary_mes, file, "synonyms", "own2")
-    return path
+        if(bits == "own2"):
+            binary_mes =  huffman_coding.get_frequency(message)
+            print(binary_mes)
+            print(len(binary_mes))
 
 
-## @brief dešifrování pomocí metody synonym
-#@param file zašifrovaný soubor
-#@param bits určuje druh šifrování (8-bit ASCII, Bacon, Huffman)
-#@return tajná zpráva
-#@note správně dešifrovat můžeme pouze soubory zašifrované stejnou metodou
-def syn_decode(file: str, bits: int) -> str:
-    try:
-      doc = Document(file)
-    except:
-      print("Non existing file")
-      sys.exit()
+        full_text = steganography.print_text(file)
+        #pro ukrytí jednoho znaku je potřeba 8 znaků cover textu
+        words_available = count_dictionary_words(full_text)
+        if(bits == "default"):
+            if(len(message)*8 > words_available):
+                print("Cover text doesn't have enough capacity to hide this message")
+                return False
+        #pro ukrytí je zapotřebí pouhých 5 bitů
+        elif(bits == "own1"):
+            if(len(message)*5 > words_available):
+                print("Cover text doesn't have enough capacity to hide this message")
+                return False
+        elif(bits == "own2"):
+            if(len(binary_mes) > words_available):
+                print("Cover text doesn't have enough capacity to hide this message")
+                return False
 
-    binary = "" 
-    text = ""
+        #vlastní varianta metody (s využitím Baconova šifrování)
+        if(bits == "own1"):
+            message = steganography.split(message)
 
-    for paragraph in doc.paragraphs:
-        text = text + paragraph.text + " "
+            index_array = []
+            for i in range(len(message)):
+                try:
+                    index_array.append(string.ascii_lowercase.index(message[i]))
+                except:
+                    index_array.append(bacon.alphabet.index(message[i]))
+            print(index_array)
 
-        for run in paragraph.runs:
-            t = run.text
-            split = t.strip().split(" ")
-        
-            for word in split:
-                word = word.lower()
-                if word in dictionary_of_synonyms:
-                    binary += "1"
-                elif word in dictionary_of_zeros:
-                    binary += "0"
-    #bacon + synonyms
-    if(bits == "own1"):
-        bacons_patterns = re.findall('.....',binary)
-        secret_message = bacon.bacon_pattern_to_string(bacons_patterns, bacon.bacons_table)
-    elif(bits == "default"):
-        secret_message = steganography.binary_to_str(binary)
-    return secret_message
+            message_pattern = []
+            for k in index_array:
+                if(k == 24):
+                    pass
+                else:
+                    #nutné upravit hodnoty indexů, kvůli dvojicím i,j a u,v (mají stejný vzor v Baconově šifře)
+                    if(k > 8 and k <= 19):
+                        k -= 1
+                    elif(k == 20):
+                        k -= 1
+                    elif(k > 20 < 24):
+                        k -= 2
+                message_pattern.append(bacon.bacons_table[k])
+            binary_mes = steganography.listToString(message_pattern)
+
+        split_obj = xml_parse.XML_split(binary_mes, file, "synonyms", bits)
+        path = split_obj.split_document()
+       
+        return path
+
+
+    ## @brief dešifrování pomocí metody synonym
+    #@param file zašifrovaný soubor
+    #@param bits určuje druh šifrování (8-bit ASCII, Bacon, Huffman)
+    #@return tajná zpráva
+    #@note správně dešifrovat můžeme pouze soubory zašifrované stejnou metodou
+    def syn_decode(self, file: str, bits: int) -> str:
+        try:
+            doc = Document(file)
+        except:
+            print("Non existing file")
+            sys.exit()
+
+        binary = "" 
+        text = ""
+
+        for paragraph in doc.paragraphs:
+            text = text + paragraph.text + " "
+
+            for run in paragraph.runs:
+                t = run.text
+                split = t.strip().split(" ")
+            
+                for word in split:
+                    word = word.lower()
+                    if word in dictionary_of_synonyms:
+                        binary += "1"
+                    elif word in dictionary_of_zeros:
+                        binary += "0"
+        #bacon + synonyms
+        if(bits == "own1"):
+            bacons_patterns = re.findall('.....',binary)
+            secret_message = bacon.bacon_pattern_to_string(bacons_patterns, bacon.bacons_table)
+        elif(bits == "default"):
+            secret_message = steganography.binary_to_str(binary)
+        return secret_message
 
  
 ##@brief XML elementu přiřadí můj vlastní styl

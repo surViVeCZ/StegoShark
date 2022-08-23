@@ -46,51 +46,55 @@ def count_spaces(text: str) -> int:
             cnt += 1
     return cnt
 
-## @brief ukrytí tajné zprávy pomocí Open-space metody
-#@param file vstupní cover soubor
-#@param message tajná zpráva, kterou si přejeme ukrýt
-#@return cesta k zašifrovanému souboru
-def Spaces_encode(file: str, message: str) -> str:
-    binary_mes = steganography.str_to_binary(message)
-    print(binary_mes)
-    print("\n", end='')
+class spaces_cipher:
+    def __init__(self, file:str,message:str):
+            self.file = file
+            self.message = message
+    ## @brief ukrytí tajné zprávy pomocí Open-space metody
+    #@param file vstupní cover soubor
+    #@param message tajná zpráva, kterou si přejeme ukrýt
+    #@return cesta k zašifrovanému souboru
+    def Spaces_encode(self, file: str, message: str) -> str:
+        binary_mes = steganography.str_to_binary(message)
+        print(binary_mes)
+        print("\n", end='')
 
-    #nutno zjistit počet slov, více slov umožňuje ukrytí delší zprávy
-    full_text = steganography.print_text(file)
+        #nutno zjistit počet slov, více slov umožňuje ukrytí delší zprávy
+        full_text = steganography.print_text(file)
 
-    word_list = full_text.split()
-    number_of_spaces = count_spaces(full_text)
+        word_list = full_text.split()
+        number_of_spaces = count_spaces(full_text)
 
-    #pro ukrytí jednoho znaku je potřeba 8 znaků cover textu
-    if(len(message*8) > number_of_spaces):
-        print("Cover text doesn't have enough capacity to hide this message")
-        return False
+        #pro ukrytí jednoho znaku je potřeba 8 znaků cover textu
+        if(len(message*8) > number_of_spaces):
+            print("Cover text doesn't have enough capacity to hide this message")
+            return False
 
-    path = xml_parse.split_document(binary_mes, file, "spaces", "default")
-    return path
+        path = xml_parse.split_document(binary_mes, file, "spaces", "default")
+        return path
 
-## @brief dešifrování pomocí Open-space metody
-#@param file zašifrovaný soubor
-#@return tajná zpráva
-#@note správně dešifrovat můžeme pouze soubory zašifrované stejnou metodou
-def Spaces_decode(file: str) -> str:
-    try:
-        doc = Document(file)
-    except:
-        print("Non existing file")
-        sys.exit()
+    ## @brief dešifrování pomocí Open-space metody
+    #@param file zašifrovaný soubor
+    #@return tajná zpráva
+    #@note správně dešifrovat můžeme pouze soubory zašifrované stejnou metodou
+    def Spaces_decode(self, file: str) -> str:
+        try:
+            doc = Document(file)
+        except:
+            print("Non existing file")
+            sys.exit()
 
-    font_styles = doc.styles
-    binary = ""
-    for paragraph in doc.paragraphs:
-        for run in paragraph.runs:
-            if run.style.name == "spaces_style":
-                binary = binary + '1';
-            elif run.text == " ":
-                binary = binary + '0';
-           
-    secret_message = steganography.binary_to_str(binary)
-    return secret_message
+        font_styles = doc.styles
+        binary = ""
+        for paragraph in doc.paragraphs:
+            for run in paragraph.runs:
+                if run.style.name == "spaces_style":
+                    binary = binary + '1';
+                elif run.text == " ":
+                    binary = binary + '0';
+            
+        secret_message = steganography.binary_to_str(binary)
+        return secret_message
 
 
 ##@brief nastavení mezery na určitou hodnotu
