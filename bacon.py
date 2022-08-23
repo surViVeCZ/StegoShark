@@ -32,6 +32,7 @@ import xml.dom.minidom
 import tempfile
 import steganography
 import xml_parse
+from typing import List
 
 ## @brief každý binární vzor Baconovy metody představuje jeden znak abecedy
 #@note jako terminační znak jsem zvolil "." = "11111"
@@ -49,7 +50,7 @@ alphabet = ["A", "B", "C", "D", "E", "F", "G", "H", "(I,J)", "K", "L", "M", "N",
 #@param file vstupní cover soubor
 #@param message tajná zpráva, kterou si přejeme ukrýt
 #@return cesta k zašifrovanému souboru
-def Bacon_encode(file, message):
+def Bacon_encode(file: str, message: str) -> str:
    try:
       doc = docx.Document(file)
    except:
@@ -98,7 +99,7 @@ def Bacon_encode(file, message):
 #@param file zašifrovaný soubor
 #@return tajná zpráva
 #@note správně dešifrovat můžeme pouze soubory zašifrované stejnou metodou
-def Bacon_decode(file):
+def Bacon_decode(file: str) -> str:
    try:
       doc = Document(file)
    except:
@@ -149,20 +150,20 @@ def Bacon_decode(file):
 #@param bacons_table list Baconových vzorů
 #@return tajná zpráva
 #@note každý Baconův vzor má přiřazenou svoji textovou interpretaci 
-def bacon_pattern_to_string(bacons_patterns, bacons_table):
+def bacon_pattern_to_string(bacons_patterns: List[str], bacons_table: List[str]) -> str:
    bacons_decoded_message = ""
-   for k in range(len(bacons_patterns)):
-      for l in range(len(bacons_table)):
+   for k in bacons_patterns:
+      for index, l in enumerate(bacons_table):
          #11111 je ukončovací znak, zprávu ukončujeme "."
-         if(bacons_patterns[k] == bacons_table[l]):
-            bacons_decoded_message += alphabet[l]
+         if(k == l):
+            bacons_decoded_message += alphabet[index]
    return bacons_decoded_message
 
 
 ##@brief XML elementu přiřadí můj vlastní styl
 #@details přiřazený styl značí bit "1"
 #@return <w:rStyle w:val="baconstyle"/>
-def create_baconstyle_el():
+def create_baconstyle_el() -> str:
    namespace = '{http://schemas.openxmlformats.org/wordprocessingml/2006/main}'
    tag = namespace + 'rStyle'
    ns_val = namespace + 'val'
@@ -176,7 +177,7 @@ def create_baconstyle_el():
 #@param bit jeden bit zprávy
 #@param namespace odkaz na registraci XML tagu
 #@note každý XML namespace je nejprve potřeba zaregistrovat, to provádím v souboru xml_parse.py funkcí ET.register_namespace
-def bacon_element(prop_el,bit,namespace):
+def bacon_element(prop_el: str, bit: int, namespace: str) -> None:
    if bit == "1":
 # apply <w:rStyle w:val="baconstyle"/>  
       for subelement in prop_el[:]:
@@ -195,7 +196,7 @@ def bacon_element(prop_el,bit,namespace):
 ## @brief do dokumentu docx se nahraje můj vlastní styl, který později použiji pro ukrytí zprávy
 #@param font_styles základní styly dokumentu .docx
 #@note abych mohl v XML přiřazovat elementům můj vlastní styl, musí nejprve tento styl v dokumentu existovat
-def add_bacon_style(font_styles):
+def add_bacon_style(font_styles: str) -> None:
    #check jestli styl již existuje, nelze přidat 2x
    custom_style_present = False
    for style in font_styles:

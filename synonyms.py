@@ -34,6 +34,7 @@ import tempfile
 import steganography
 import xml_parse
 import collections
+from typing import List
 
 import steganography
 import bacon
@@ -75,7 +76,7 @@ dictionary_of_synonyms = collections.OrderedDict((("wish",{1}),("uncomplicated",
 #@param text text souboru
 #@return počet slovníkových slov
 #@note funkci používám, abych zjistil, zda-li má text dostatek slov na ukrytí zvolené tajné zprávy
-def count_dictionary_words(text):
+def count_dictionary_words(text: str) -> int:
     cnt = 0
     words = text.split()
     for word in words:
@@ -88,7 +89,7 @@ def count_dictionary_words(text):
 #@param message tajná zpráva, kterou si přejeme ukrýt
 #@param bits určuje druh šifrování (8-bit ASCII, Bacon, Huffman)
 #@return cesta k zašifrovanému souboru
-def syn_encode(file, message, bits):
+def syn_encode(file: str, message: str, bits: int) -> str:
     if(bits == "default"):
         binary_mes = steganography.str_to_binary(message)
 
@@ -156,7 +157,7 @@ def syn_encode(file, message, bits):
 #@param bits určuje druh šifrování (8-bit ASCII, Bacon, Huffman)
 #@return tajná zpráva
 #@note správně dešifrovat můžeme pouze soubory zašifrované stejnou metodou
-def syn_decode(file, bits):
+def syn_decode(file: str, bits: int) -> str:
     try:
       doc = Document(file)
     except:
@@ -191,7 +192,7 @@ def syn_decode(file, bits):
 ##@brief XML elementu přiřadí můj vlastní styl
 #@details přiřazený styl značí bit "1"
 #@return <w:rStyle w:val="synonym_element"/>
-def create_syn_tag():
+def create_syn_tag() -> str:
    namespace = '{http://schemas.openxmlformats.org/wordprocessingml/2006/main}'
    tag = namespace + 'rStyle'
    ns_val = namespace + 'val'
@@ -205,7 +206,7 @@ def create_syn_tag():
 #@param namespace odkaz na registraci XML tagu
 #@param word slovo u kterého zjišťuji, zda-li se vyzkytuje ve slovnících (s neslovníkovými slovy nemanipuluji)
 #@return vyměněné slovo / nezměněné slovo
-def syn_element(prop_el,bit,namespace, word, run):
+def syn_element(prop_el: str, bit: int, namespace: str, word: str, run) -> str:
     syn_word = word
     #na všechny slova, která se vyzkytují ve slovníku přiřadím tag, pouze těmto slovům budu přidělovat bity
     if(word.lower() in dictionary_of_zeros):

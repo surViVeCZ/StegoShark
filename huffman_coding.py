@@ -13,6 +13,8 @@
 from email import message
 import string
 import collections
+from typing import Dict
+from typing import List
 
 
 ## @brief vytvoření uzlů stromu
@@ -42,14 +44,14 @@ class NodeTree(object):
 #@param left parametr určuje, kterou cestou se vydáme
 #@param binString binární vzor pro jednotlivý znak
 #@note funkce je rekurzivně volána, dokud není vyvtořen celý strom
-def huffman_code_tree(node, left=True, binString=''):
+def huffman_code_tree(node, left=True, binString='') -> dict:
     if type(node) is str:
         return {node: binString}
     (l, r) = node.children()
-    d = dict()
-    d.update(huffman_code_tree(l, True, binString + '0'))
-    d.update(huffman_code_tree(r, False, binString + '1'))
-    return d
+    tree = dict()
+    tree.update(huffman_code_tree(l, True, binString + '0'))
+    tree.update(huffman_code_tree(r, False, binString + '1'))
+    return tree
 
 
 ## @brief zjistí frekvenci jednotlivých znaků v textu
@@ -57,7 +59,7 @@ def huffman_code_tree(node, left=True, binString=''):
 #@cite https://www.programiz.com/dsa/huffman-coding
 #@param message vstupní tajná zpráva
 #@return zpráva převedená do Huffmanova kódu
-def get_frequency(message):
+def get_frequency(message: str) -> str:
     freq = {}
     huffman_message = ""
     for c in message:

@@ -9,7 +9,7 @@
 # Název práce:    Digitální textová steganografie 
 # Cíl práce:      Implementace 4 vybraných steganografických metod
 #----------------------------------------------------------------------
-
+from dataclasses import dataclass
 from email import message
 from email.errors import CharsetError
 from operator import index
@@ -36,6 +36,7 @@ import lxml
 import xml.dom.minidom
 import tempfile
 import tkinter
+from typing import List
 #moduly
 import bacon
 import whitespaces
@@ -47,7 +48,7 @@ import synonyms
 #@param file vstupní cover soubor
 #@param cfg uživatelské vstupy (vstupní argumenty)
 #@return cesta k nově vzniklému souboru
-def encode_decode(cfg: object, file: str) -> 'filepath':
+def encode_decode(cfg: object, file: str) -> str:
       #Dekódování Baconovou šifrou
    if(cfg.decode is True):
       if(cfg.bacon is True):
@@ -124,7 +125,7 @@ def encode_decode(cfg: object, file: str) -> 'filepath':
 #@param zip_file_location cesta k word/document.xml
 #@param outside_file_location document.xml
 #@return nově vzniklý dokument
-def updateZip(zipname: str, zip_file_location: str, outside_file_location: str) -> 'newDoc':
+def updateZip(zipname: str, zip_file_location: str, outside_file_location: str) -> None:
    tmpfd, tmpname = tempfile.mkstemp(dir=os.path.dirname(zipname))
    os.close(tmpfd)
 
@@ -160,7 +161,7 @@ def split_to_words(string: str) -> str:
 #@param c znak tajné zprávy
 #@return TRUE pokud je znak validní v XML
 #@return FALSE pokud znak není validní
-def valid_xml_char_ordinal(c: chr) -> 'ordChr':
+def valid_xml_char_ordinal(c: chr) -> int:
     codepoint = ord(c)
     return (
         0x20 <= codepoint <= 0xD7FF or
@@ -172,7 +173,7 @@ def valid_xml_char_ordinal(c: chr) -> 'ordChr':
 ## @brief převede list na textový řetězec
 #@param l vstupní list
 #@return textový řetězec
-def listToString(l: str) -> str: 
+def listToString(l: List[str]) -> str: 
     string = ""
     for ch in l: 
         string += ch  
@@ -224,24 +225,24 @@ def print_text(file: str) -> str:
 
 
 ## @brief uživatelské vstupy
+@dataclass
 class Config:
-   def __init__(self, inputfile='', outputfile='', decode=False, encode=False, message='', bacon=False, whitespaces=False, replace=False, own1= False, own2=False):
-      self.inputfile = inputfile
-      self.outputfile = outputfile
-      self.decode = decode
-      self.encode = encode
-      self.message = message
-      self.bacon = bacon
-      self.whitespaces = whitespaces
-      self.replace = replace
-      self.own1 = own1 #synonyms with bacon encoding
-      self.own2 = own2 #synonyms with Huffman
+      inputfile: str = ''
+      outputfile: str = ''
+      decode: bool = False
+      encode:bool = True
+      message: str = ''
+      bacon:bool = False
+      whitespaces:bool = False
+      replace:bool = False
+      own1:bool = False
+      own2:bool = False
 
 ## @brief zpracování vstupních argumentů
 #@param argv list vstupních argumentů
 #@return instance třídy Config, obsahující hodnoty všech argumentů
 #@note argumentům jsou přiřezeny hodnoty TRUE, pokud jsou použity
-def ArgumentsParsing(argv: 'input arguments') -> 'ConfigObject':
+def ArgumentsParsing(argv: List[str]) -> object:
    #načtení defaultních hodnot
    cfg = Config()
    try:
@@ -273,7 +274,7 @@ def ArgumentsParsing(argv: 'input arguments') -> 'ConfigObject':
          cfg.own2 = True
    return cfg
 
-def main(argv):
+def main(argv: List[str]) -> None:
    cfg = ArgumentsParsing(argv)
    if(cfg.bacon is False and cfg.whitespaces is False and cfg.replace is False and cfg.own1 is False and cfg.own2 is False):
       print("Wrong parameters, use -h for help")

@@ -30,6 +30,7 @@ import xml.etree.ElementTree
 import lxml
 import xml.dom.minidom
 import tempfile
+from typing import List
 
 import steganography
 import bacon
@@ -42,7 +43,7 @@ import synonyms
 #@param method vybraná steganografická metoda
 #@param bits druh šifrování (pouze u metody synonym)
 #@return cesta k změněnému souboru
-def split_document(message_pattern,file, method, bits):
+def split_document(message_pattern: str, file: str, method: str, bits: int) -> str:
        
    #pro ukončení zprávy používám counter
    cnt = 0
@@ -253,7 +254,7 @@ def split_document(message_pattern,file, method, bits):
 #@param method vybraná steganografická metoda
 #@return změněný run
 #@pokud šifruji Baconovou šifrou,  mažu u slov které nesou šifrovanou informaci styl fontu a jeho velikost, neboť informaci ukrývám právě pomocí těhto 2 vlastností
-def new_run_element(word, bit, properties_to_inherit, method):
+def new_run_element(word: str, bit: int, properties_to_inherit: str, method: str) -> str:
    namespace = '{http://schemas.openxmlformats.org/wordprocessingml/2006/main}'
    run_tag = namespace + 'r'
    run_properties = namespace + 'rPr'
