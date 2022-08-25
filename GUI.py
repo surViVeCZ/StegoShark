@@ -98,6 +98,8 @@ def decode():
     syn_obj = synonyms.syn_cipher(filepath,message)
     spaces_obj = whitespaces.spaces_cipher(filepath,message)
     
+    print(f'Method is: {method}')
+    print(f'filepath is: {str(filepath)}')
     if method == 0:
         secret = bacon_obj.Bacon_decode(str(filepath))
     elif method == 1:
@@ -112,8 +114,8 @@ def decode():
         except:
             messagebox.showerror("ERROR!", "Dešifrování Huffmanova kódování nebylo implementováno. Huffmanův strom musí být vložen do textu, nebo domluven mezi komunikujícími stranami předem.")
 
-    text = steganography.print_text(str(filepath))
-    print(text)
+    print(f'SECRET IS: {secret}')
+    #text = steganography.print_text(str(filepath))
     message.delete(1.0,"end")
     message.insert('1.0', secret)
     messagebox.showinfo("DECODED!", "Soubor byl dešifrován")

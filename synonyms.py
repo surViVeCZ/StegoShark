@@ -126,11 +126,11 @@ class syn_cipher:
             message = steganography.split(message)
 
             index_array = []
-            for i in range(len(message)):
+            for ch in message:
                 try:
-                    index_array.append(string.ascii_lowercase.index(message[i]))
+                    index_array.append(string.ascii_lowercase.index(ch))
                 except:
-                    index_array.append(bacon.alphabet.index(message[i]))
+                    index_array.append(bacon.alphabet.index(ch))
             print(index_array)
 
             message_pattern = []

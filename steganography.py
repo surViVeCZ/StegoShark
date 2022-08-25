@@ -95,7 +95,7 @@ def encode_decode(cfg: object, file: str) -> str:
       decoded_file.save(file_path)
       return file_path
       
-   elif(cfg.encode == True):
+   elif(cfg.encode is True):
       if(cfg.message == ''):
          print("To encode you need to use parameter -s for secret message")
          sys.exit()

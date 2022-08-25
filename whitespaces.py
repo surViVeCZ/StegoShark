@@ -41,8 +41,8 @@ from typing import List
 #@note funkce je nezbytná, pro určení, zda-li má text dostatečnou kapacitu na ukrytí tajné zprávy
 def count_spaces(text: str) -> int:
     cnt = 0
-    for i in range(0, len(text)):
-        if text[i] == " ":
+    for ch in text:
+        if ch == " ":
             cnt += 1
     return cnt
 
@@ -55,6 +55,7 @@ class spaces_cipher:
     #@param message tajná zpráva, kterou si přejeme ukrýt
     #@return cesta k zašifrovanému souboru
     def Spaces_encode(self, file: str, message: str) -> str:
+        print("INSIDE ENCODE")
         binary_mes = steganography.str_to_binary(message)
         print(binary_mes)
         print("\n", end='')
@@ -69,8 +70,9 @@ class spaces_cipher:
         if(len(message*8) > number_of_spaces):
             print("Cover text doesn't have enough capacity to hide this message")
             return False
-
-        path = xml_parse.split_document(binary_mes, file, "spaces", "default")
+        
+        split_obj = xml_parse.XML_split(binary_mes, file, "spaces", "default")
+        path = split_obj.split_document()
         return path
 
     ## @brief dešifrování pomocí Open-space metody

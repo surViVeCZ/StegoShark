@@ -158,13 +158,11 @@ class XML_split:
          new_runs = []
          for run in par.findall(run_tag): #<w:p>-><w:r>
             run_props_q_res = run.findall(run_properties) #<w:p>-><w:r>-><w:rPr>
-            if len(run_props_q_res) == 0:
-               run_props = None
-            else:
-               run_props = run_props_q_res[0]
+            
+            run_props = None if len(run_props_q_res) == 0 else run_props_q_res[0]
                
             text_node = run.findall(text)
-            if len(text_node) > 0:
+            if text_node:
                run_text = text_node[0].text
             else:
                par.remove(run)
@@ -181,10 +179,7 @@ class XML_split:
             elif(self.method == "spaces"):
                words = re.split(r'(\s+)', run_text)
                for word in words:
-                  if(word == " "):
-                     bit = next(msg_iter, None)
-                  else:
-                     bit = None
+                  bit = next(msg_iter, None) if word == " " else None
                
                   new_run = new_run_element(word, bit, run_props, self.method)
                   new_runs.append(new_run)
@@ -279,11 +274,7 @@ def new_run_element(word: str, bit: int, properties_to_inherit: str, method: str
 
    new_run = xml.etree.ElementTree.Element(run_tag)
 
-   if properties_to_inherit is None:
-      prop_el = xml.etree.ElementTree.Element(run_properties)
-   else:
-      prop_el = deepcopy(properties_to_inherit)
-
+   prop_el = xml.etree.ElementTree.Element(run_properties) if properties_to_inherit is None else deepcopy(properties_to_inherit)
 
    #přidání stylů do xml souboru docx, odstranění původních (těch, které způsobují kolizi)
    if(method == "bacon"):

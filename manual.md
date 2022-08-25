@@ -38,7 +38,7 @@ __--own2__ = šifrování/dešifrování metodou synonym využívající Huffman
 ## Příklady spuštění
 Šifrování Baconovou šifrou
 ```
-python3 steganography.py -i cover_files/bacon/adele.docx -e -s "tajnazprava." -b 
+python3 steganography.py -i tests/cover_texts/songs/adele.docx -e -s "tajnazprava." -b 
 ```
 Dešifrování Baconovou šifrou
 ```

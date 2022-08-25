@@ -63,11 +63,11 @@ class bacon_cipher:
       # message_string = steganography.listToString(message)
 
       index_array = []
-      for i in range(len(message)):
+      for i in message:
          try:
-            index_array.append(string.ascii_lowercase.index(message[i]))
+            index_array.append(string.ascii_lowercase.index(i))
          except:
-            index_array.append(alphabet.index(message[i])+2)
+            index_array.append(alphabet.index(i)+2)
    
 
       message_pattern = []
