@@ -6,12 +6,7 @@
 # Cíl práce:      Implementace 4 vybraných steganografických metod
 #----------------------------------------------------------------------
 
-import re
 import os
-import string
-import sys
-import timeit
-import docx
 from docx import Document
 from docx.shared import Inches, Pt
 from docx.enum.style import WD_STYLE_TYPE
@@ -19,10 +14,7 @@ from docx.enum.text import WD_ALIGN_PARAGRAPH
 import matplotlib.pyplot as plt
 import numpy as np
 
-import xml_parse
-import steganography
-import tests
-
+import error_handler
 
 ## @brief funkce mění formátování dokumentu
 #@param doc_path cesta k dokumentu
@@ -59,7 +51,6 @@ def change_font_style(doc_path: str) -> None:
         os.mkdir(current_dir + "/"+save_path) 
     try:
         full_path = os.path.join(save_path, file_name)
-    except:
-        print("Non existing path")
-        sys.exit()
+    except Exception as e:
+        raise error_handler.Custom_error(e.args[0])
     new_doc.save(full_path)

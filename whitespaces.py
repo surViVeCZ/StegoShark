@@ -18,11 +18,6 @@ from docx.shared import Inches, Pt
 from docx.enum.style import WD_STYLE_TYPE
 from termcolor import colored
 import numpy as np
-import re
-import os
-import string
-import shutil
-import zipfile
 from copy import deepcopy
 import xml.etree.ElementTree as ET
 from lxml import etree
@@ -30,7 +25,7 @@ from xml.etree import ElementTree
 import xml.etree.ElementTree
 import lxml
 import xml.dom.minidom
-import tempfile
+import error_handler
 import steganography
 import xml_parse
 from typing import List
@@ -82,9 +77,8 @@ class spaces_cipher:
     def Spaces_decode(self, file: str) -> str:
         try:
             doc = Document(file)
-        except:
-            print("Non existing file")
-            sys.exit()
+        except Exception as e:
+            raise error_handler.Custom_error(e.args[0])
 
         font_styles = doc.styles
         binary = ""

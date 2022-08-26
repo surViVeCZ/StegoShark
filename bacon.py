@@ -6,8 +6,8 @@
 # Cíl práce:      Implementace 4 vybraných steganografických metod
 #----------------------------------------------------------------------
 
+from ast import Import
 from email import message
-from email.errors import CharsetError
 from operator import index
 import sys, getopt
 from xml.dom.minidom import Element
@@ -33,6 +33,7 @@ import tempfile
 import steganography
 import xml_parse
 from typing import List
+import error_handler
 
 ## @brief každý binární vzor Baconovy metody představuje jeden znak abecedy
 #@note jako terminační znak jsem zvolil "." = "11111"
@@ -56,9 +57,8 @@ class bacon_cipher:
    def Bacon_encode(self, file: str, message: str) -> str:
       try:
          doc = docx.Document(file)
-      except:
-         print("Non existing file")
-         sys.exit()
+      except Exception as e:
+         raise error_handler.Custom_error(e.args[0])
       message = steganography.split(message)
       # message_string = steganography.listToString(message)
 
@@ -106,9 +106,8 @@ class bacon_cipher:
    def Bacon_decode(self, file: str) -> str:
       try:
          doc = Document(file)
-      except:
-         print("Non existing file")
-         sys.exit()
+      except Exception as e:
+         raise error_handler.Custom_error(e.args[0])
 
       font_styles = doc.styles
 

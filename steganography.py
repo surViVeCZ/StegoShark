@@ -42,6 +42,7 @@ import bacon
 import whitespaces
 import xml_parse
 import synonyms
+import error_handler
 
 
 ## @brief v této funkci rozhodujeme, která šifrovací,nebo dešifrovací metoda se použije
@@ -50,7 +51,6 @@ import synonyms
 #@return cesta k nově vzniklému souboru
 def encode_decode(cfg: object, file: str) -> str:
    #Dekódování Baconovou šifrou
-   
    bacon_cipher_obj = bacon.bacon_cipher(file,cfg.message)
    sys_cipher_obj = synonyms.syn_cipher(file,cfg.message)
    space_cipher_obj = whitespaces.spaces_cipher(file,cfg.message)
@@ -78,9 +78,8 @@ def encode_decode(cfg: object, file: str) -> str:
       #vytvoření a zápis do souboru 
       try:
          decoded_file = docx.Document()
-      except:
-         print("Non existing file")
-         sys.exit()
+      except Exception as e:
+         raise error_handler.Custom_error(e.args[0])
 
       if(secret_message  is not None):
          cleaned_string = ''.join(c for c in secret_message if valid_xml_char_ordinal(c))
@@ -101,8 +100,10 @@ def encode_decode(cfg: object, file: str) -> str:
          sys.exit()
 
       if(cfg.bacon is True):
-         file_path = bacon_cipher_obj.Bacon_encode(file, cfg.message)
-         print(file_path)
+         try:
+            file_path = bacon_cipher_obj.Bacon_encode(file, cfg.message)
+         except ImportError as error:
+            raise error_handler.Custom_error(error.args[0])
          if file_path is False:
             return False
       elif(cfg.whitespaces is True):
@@ -255,7 +256,7 @@ def ArgumentsParsing(argv: List[str]) -> object:
       opts, args = getopt.getopt(argv,"i:ed:s:bwro",['ifile=','encode','decode','message','bacon','whitespaces','replace','own1', 'own2'])
    except getopt.GetoptError:
      print("steganography.py -i <inputfile> [-e/-d] -s <secret_message> [-b/-w/-r/--own1/--own2]")
-     sys.exit(2)
+     sys.exit()
    for opt, arg in opts:
       if opt == '-h':
         print("steganography.py -i <inputfile> [-e/-d] -s <secret_message> [-b/-w/-r/--own1/--own2]")
@@ -295,8 +296,11 @@ def main(argv: List[str]) -> None:
    if(cfg.inputfile.endswith('.docx')):
    
       print("\n", end='')
-      print(cfg.inputfile)
-      file_path = encode_decode(cfg, cfg.inputfile)
+      # print(cfg.inputfile)
+      try:
+         file_path = encode_decode(cfg, cfg.inputfile)
+      except Exception as e:
+         raise error_handler.Custom_error(e.args[0])
       if file_path is False:
          return False
       # print(print_text(cfg.inputfile))

@@ -38,6 +38,7 @@ from typing import List
 
 import steganography
 import bacon
+import error_handler
 import huffman_coding
 
 ##@brief slovník slov, které představují "0" bit
@@ -162,9 +163,8 @@ class syn_cipher:
     def syn_decode(self, file: str, bits: int) -> str:
         try:
             doc = Document(file)
-        except:
-            print("Non existing file")
-            sys.exit()
+        except Exception as e:
+            raise error_handler.Custom_error(e.args[0])
 
         binary = "" 
         text = ""

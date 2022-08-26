@@ -24,6 +24,7 @@ import bacon
 import whitespaces
 import synonyms
 import huffman_coding
+import error_handler
 
 text_path = None
 ## @brief zjistí zvolenou metodu v combo box
@@ -35,8 +36,10 @@ def method_changed(event):
 def choose_input():
     global text_path
     global filepath
-    inputfile = filedialog.askopenfile(initialdir="/", title="Zvol soubor k zašifrování",
-    filetypes=(("documents", "*.docx"), ("text files", "*.txt")))
+    try:
+        inputfile = filedialog.askopenfile(initialdir="/", title="Zvol soubor k zašifrování",filetypes=(("documents", "*.docx"), ("text files", "*.txt")))
+    except Exception as e:
+        raise error_handler.Custom_error(e.args[0])
     if inputfile:
         filepath = os.path.abspath(inputfile.name)
 
@@ -51,13 +54,13 @@ def encode():
     try:
         print('Message index is: {}\n'.format(method),  end = '')
     except:
-        messagebox.showerror("Error", "Je potřeba vybrat steganografickou metodu.")
+        raise Exception(messagebox.showerror("Error", "Je potřeba vybrat steganografickou metodu."))
 
     print("Secret message is: " + secret_mes)
     try:
         str(filepath)
     except:
-        messagebox.showerror("Error", "Musíš zvolit vstupní soubor.")
+        raise Exception(messagebox.showerror("Error", "Musíš zvolit vstupní soubor."))
     if method == 0:
         method_name = '-b'
     elif method == 1:
@@ -72,7 +75,7 @@ def encode():
     try:
         check = main(['-i', str(filepath), '-e', '-s', secret_mes, method_name])
     except:
-        messagebox.showerror("ERROR!", "Chybně zadané parametry! (Baconova šifra beze pouze znaky A-Z (bez mezer a speciálních znaků), totéž platí pro metodu synonym vužívající tohoto šifrování")
+        raise Exception(messagebox.showerror("ERROR!", "Chybně zadané parametry! (Baconova šifra beze pouze znaky A-Z (bez mezer a speciálních znaků), totéž platí pro metodu synonym vužívající tohoto šifrování"))
     if check is False:
         messagebox.showerror("ERROR!", "Soubor nemá dostatečnou kapacitu na ukrytí této zprávy.")
     else:
@@ -88,11 +91,11 @@ def decode():
     try:
         print('Message index is: {}\n'.format(method),  end = '')
     except:
-        messagebox.showerror("Error", "Je potřeba vybrat steganografickou metodu.")
+        raise Exception(messagebox.showerror("Error", "Je potřeba vybrat steganografickou metodu."))
     try:
         str(filepath)
     except:
-        messagebox.showerror("Error", "Nutno zlovit vstupní soubor.")
+        raise Exception(messagebox.showerror("Error", "Nutno zlovit vstupní soubor."))
         
     bacon_obj = bacon.bacon_cipher(filepath,message)
     syn_obj = synonyms.syn_cipher(filepath,message)
@@ -112,7 +115,7 @@ def decode():
         try:
             secret = syn_obj.syn_decode(str(filepath), "own2")
         except:
-            messagebox.showerror("ERROR!", "Dešifrování Huffmanova kódování nebylo implementováno. Huffmanův strom musí být vložen do textu, nebo domluven mezi komunikujícími stranami předem.")
+            raise Exception(messagebox.showerror("ERROR!", "Dešifrování Huffmanova kódování nebylo implementováno. Huffmanův strom musí být vložen do textu, nebo domluven mezi komunikujícími stranami předem."))
 
     print(f'SECRET IS: {secret}')
     #text = steganography.print_text(str(filepath))
