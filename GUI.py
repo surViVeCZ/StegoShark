@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import matplotlib
+matplotlib.use('Agg')
 
 #----------------------------------------------------------------------
 # Autor:          Petr Pouč                                           
@@ -7,6 +9,7 @@
 # Název práce:    Digitální textová steganografie 
 # Cíl práce:      Implementace 4 vybraných steganografických metod
 #----------------------------------------------------------------------
+import os
 from base64 import encode
 from cProfile import label
 import sys
@@ -17,9 +20,7 @@ from tkinter import messagebox
 import os
 from tkinter.messagebox import showinfo
 
-from matplotlib.pyplot import text
 from steganography import main
-import steganography
 import bacon
 import whitespaces
 import synonyms
@@ -101,8 +102,8 @@ def decode():
     syn_obj = synonyms.syn_cipher(filepath,message)
     spaces_obj = whitespaces.spaces_cipher(filepath,message)
     
-    print(f'Method is: {method}')
-    print(f'filepath is: {str(filepath)}')
+    # print(f'Method is: {method}')
+    # print(f'filepath is: {str(filepath)}')
     if method == 0:
         secret = bacon_obj.Bacon_decode(str(filepath))
     elif method == 1:
