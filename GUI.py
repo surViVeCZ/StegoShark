@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-import matplotlib
-matplotlib.use('Agg')
+
 
 #----------------------------------------------------------------------
 # Autor:          Petr Pouč                                           
@@ -26,6 +25,10 @@ import whitespaces
 import synonyms
 import huffman_coding
 import error_handler
+
+if os.environ.get('DISPLAY','') == '':
+    print('no display found. Using :0.0')
+    os.environ.__setitem__('DISPLAY', ':0.0')
 
 text_path = None
 ## @brief zjistí zvolenou metodu v combo box
