@@ -9,10 +9,6 @@ import os
 def bacon_obj():
     run = bacon_cipher("", "secret")
     return run
-@pytest.fixture
-def spaces_obj():
-    run = spaces_cipher("", "secret")
-    return run
 
 def test_spaces_encode_docx(bacon_obj):
     thisdir_bin = os.getcwdb()
