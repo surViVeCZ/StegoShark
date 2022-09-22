@@ -2,6 +2,7 @@ from bacon import bacon_cipher
 from whitespaces import spaces_cipher
 from synonyms import syn_cipher
 from error_handler import Custom_error
+import steganography
 import pytest
 import os
 
@@ -23,6 +24,18 @@ def spaces_obj():
 def syn_obj():
     run = syn_cipher("", "secret")
     return run
+
+
+def test_encode():
+    results = []
+    switch = ["-b", "-w", "-r"]
+    for s in switch:
+        results.append(steganography.main(
+            ['-i', "tests/cover_texts/songs/adele.docx", '-e', '-s', "secret", s]))
+        results.append(steganography.main(
+            ['-i', "tests/cover_texts/other/cover_11.txt", '-e', '-s', "secret", s]))
+    
+    assert not any(results)
 
 
 def test_bacon_encode_docx(bacon_obj):
