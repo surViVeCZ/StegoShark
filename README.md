@@ -1,3 +1,8 @@
+
+![CI](https://github.com/surViVeCZ/StegoShark/actions/workflows/CI.yml/badge.svg)
+![github repo size](https://img.shields.io/github/repo-size/surViVeCZ/StegoShark)
+![Python versions](https://img.shields.io/pypi/pyversions/Django)
+
 [![IMG-20220922-112510-modified.png](https://i.postimg.cc/vTC5yqHB/IMG-20220922-112510-modified.png)](https://postimg.cc/H84r4tMD)
 
 __Autor:__ Petr Pouč
