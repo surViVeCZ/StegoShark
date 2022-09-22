@@ -10,9 +10,6 @@
 # Šifrování pomocí Huffmanova kódování jsem dne 30.03.2022 převzal z této stránky
 # cite https://www.programiz.com/dsa/huffman-coding
 
-from email import message
-import string
-import collections
 from typing import Dict
 from typing import List
 

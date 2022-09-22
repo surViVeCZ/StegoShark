@@ -6,20 +6,13 @@
 # Cíl práce:      Implementace 4 vybraných steganografických metod
 # ----------------------------------------------------------------------
 
-from codecs import encode
-import re
 import os
-import string
 import sys
 import timeit
-import docx
 import matplotlib.pyplot as plt
 import numpy as np
 
 # moduly
-import bacon
-import whitespaces
-import xml_parse
 import robustness
 import synonyms
 import steganography
@@ -197,7 +190,7 @@ def get_folder_size(full_path):
 def encode_syn():
     thisdir_bin = os.getcwdb()
     cover_size_path = os.getcwd() + '/cover_files/synonyms'
-    path = bytes('/cover_files/synonyms', 'utf-8')
+    bytes('/cover_files/synonyms', 'utf-8')
 
     changed_path = os.path.join(thisdir_bin, b"cover_files")
     changed_path = os.path.join(changed_path, b"synonyms")
@@ -261,7 +254,7 @@ def encode_syn():
 def encode_own1():
     thisdir_bin = os.getcwdb()
     cover_size_path = os.getcwd() + '/cover_files/synonyms'
-    path = bytes('/cover_files/synonyms', 'utf-8')
+    bytes('/cover_files/synonyms', 'utf-8')
 
     changed_path = os.path.join(thisdir_bin, b"cover_files")
     changed_path = os.path.join(changed_path, b"synonyms")
@@ -327,7 +320,7 @@ def encode_own1():
 def encode_own2():
     thisdir_bin = os.getcwdb()
     cover_size_path = os.getcwd() + '/cover_files/synonyms'
-    path = bytes('/cover_files/synonyms', 'utf-8')
+    bytes('/cover_files/synonyms', 'utf-8')
 
     changed_path = os.path.join(thisdir_bin, b"cover_files")
     changed_path = os.path.join(changed_path, b"synonyms")
@@ -392,7 +385,7 @@ def encode_own2():
 def encode_spaces():
     thisdir_bin = os.getcwdb()
     cover_size_path = os.getcwd() + '/cover_files/spaces'
-    path = bytes('/cover_files/spaces', 'utf-8')
+    bytes('/cover_files/spaces', 'utf-8')
 
     changed_path = os.path.join(thisdir_bin, b"cover_files")
     changed_path = os.path.join(changed_path, b"spaces")
@@ -526,7 +519,6 @@ def decode_bacon():
     encoded_path = os.getcwd()
 
     cnt = 0
-    message = 0
     success = 0
     global bacon_encoded_size
     print("BACON DECODING:")
@@ -545,7 +537,7 @@ def decode_bacon():
             check = steganography.main(
                 ['-i', "encoded/" + encoded, '-d', '-s', '-b'])
             head_tail = os.path.split(encoded)
-            file_name = head_tail[1]
+            head_tail[1]
 
     bacon_decodes = []
     decoded_path = os.path.join(thisdir_bin, b"decoded")
@@ -592,7 +584,6 @@ def decode_spaces():
     encoded_path = os.getcwd()
 
     cnt = 0
-    message = 0
     success = 0
     global spaces_encoded_size
     print("SPACES DECODING:")
@@ -609,7 +600,7 @@ def decode_spaces():
             check = steganography.main(
                 ['-i', "encoded/" + encoded, '-d', '-s', '-w'])
             head_tail = os.path.split(encoded)
-            file_name = head_tail[1]
+            head_tail[1]
 
     spaces_decodes = []
     decoded_path = os.path.join(thisdir_bin, b"decoded")
@@ -656,7 +647,6 @@ def decode_syn():
     encoded_path = os.getcwd()
 
     cnt = 0
-    message = 0
     success = 0
     global syn_encoded_size
     print("SYNONYMS DECODING:")
@@ -673,7 +663,7 @@ def decode_syn():
             check = steganography.main(
                 ['-i', "encoded/" + encoded, '-d', '-s', '-r'])
             head_tail = os.path.split(encoded)
-            file_name = head_tail[1]
+            head_tail[1]
 
         # if check is False:
         #     print("#%d failed ✖ (%s)" % (cnt, file_name))
@@ -743,7 +733,7 @@ def bacon_robustness_check():
         if file.startswith("bacon"):
             bacon_changed_files.append(file)
 
-    decoded_path = os.path.join(thisdir_bin, b"decoded")
+    os.path.join(thisdir_bin, b"decoded")
 
     cnt = 0
     success = 0
@@ -803,7 +793,7 @@ def spaces_robustness_check():
         if file.startswith("spaces"):
             spaces_changed_files.append(file)
 
-    decoded_path = os.path.join(thisdir_bin, b"decoded")
+    os.path.join(thisdir_bin, b"decoded")
 
     cnt = 0
     success = 0
@@ -864,7 +854,7 @@ def syn_robustness_check():
         if file.startswith("syn"):
             syn_changed_files.append(file)
 
-    decoded_path = os.path.join(thisdir_bin, b"decoded")
+    os.path.join(thisdir_bin, b"decoded")
 
     cnt = 0
     success = 0

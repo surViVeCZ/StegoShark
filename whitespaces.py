@@ -6,30 +6,14 @@
 # Cíl práce:      Implementace 4 vybraných steganografických metod
 # ----------------------------------------------------------------------
 
-from email import message
-from email.errors import CharsetError
-from operator import index
-import sys
-import getopt
-from xml.dom.minidom import Element
-import docx
-from docx.shared import Length
 from docx import Document
-from docx.shared import Inches, Pt
 from docx.enum.style import WD_STYLE_TYPE
 from termcolor import colored
-import numpy as np
-from copy import deepcopy
-import xml.etree.ElementTree as ET
-from lxml import etree
-from xml.etree import ElementTree
 import xml.etree.ElementTree
-import lxml
 import xml.dom.minidom
 import error_handler
 import steganography
 import xml_parse
-from typing import List
 
 # @brief počítá počet mezer v textu
 # @param text textová část souboru
@@ -63,7 +47,7 @@ class spaces_cipher:
         # nutno zjistit počet slov, více slov umožňuje ukrytí delší zprávy
         full_text = steganography.print_text(file)
 
-        word_list = full_text.split()
+        full_text.split()
         number_of_spaces = count_spaces(full_text)
 
         # pro ukrytí jednoho znaku je potřeba 8 znaků cover textu
@@ -85,7 +69,7 @@ class spaces_cipher:
         except Exception as e:
             raise error_handler.Custom_error(e.args[0])
 
-        font_styles = doc.styles
+        doc.styles
         binary = ""
         for paragraph in doc.paragraphs:
             for run in paragraph.runs:

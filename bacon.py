@@ -6,31 +6,15 @@
 # Cíl práce:      Implementace 4 vybraných steganografických metod
 # ----------------------------------------------------------------------
 
-from ast import Import
-from email import message
-from operator import index
-import sys
-import getopt
-from xml.dom.minidom import Element
 import docx
 from docx import Document
 from docx.shared import Inches, Pt
 from docx.enum.style import WD_STYLE_TYPE
 from termcolor import colored
-import numpy as np
 import re
-import os
 import string
-import shutil
-import zipfile
-from copy import deepcopy
-import xml.etree.ElementTree as ET
-from lxml import etree
-from xml.etree import ElementTree
 import xml.etree.ElementTree
-import lxml
 import xml.dom.minidom
-import tempfile
 import steganography
 import xml_parse
 from typing import List
@@ -58,7 +42,7 @@ class bacon_cipher:
     # @return cesta k zašifrovanému souboru
     def Bacon_encode(self, file: str, message: str) -> str:
         try:
-            doc = docx.Document(file)
+            docx.Document(file)
         except Exception as e:
             raise error_handler.Custom_error(e.args[0])
         message = steganography.split(message)
@@ -88,7 +72,7 @@ class bacon_cipher:
         # nutno zjistit počet slov, více slov umožňuje ukrytí delší zprávy
         full_text = steganography.print_text(file)
 
-        word_list = full_text.split()
+        full_text.split()
         number_of_words = len(re.findall(r'\w+', full_text))
 
         # pro ukrytí jednoho znaku je potřeba 5 znaků cover textu
@@ -111,7 +95,7 @@ class bacon_cipher:
         except Exception as e:
             raise error_handler.Custom_error(e.args[0])
 
-        font_styles = doc.styles
+        doc.styles
 
         bold_words = []
         non_bold = []

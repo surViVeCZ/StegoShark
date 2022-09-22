@@ -11,8 +11,6 @@ from docx import Document
 from docx.shared import Inches, Pt
 from docx.enum.style import WD_STYLE_TYPE
 from docx.enum.text import WD_ALIGN_PARAGRAPH
-import matplotlib.pyplot as plt
-import numpy as np
 
 import error_handler
 

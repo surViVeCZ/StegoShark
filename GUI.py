@@ -10,20 +10,16 @@
 # ----------------------------------------------------------------------
 import os
 from base64 import encode
-from cProfile import label
-import sys
 import tkinter as tk
-from tkinter import LEFT, RIDGE, RIGHT, Button, Entry, filedialog, Text, Label
+from tkinter import Button, Label, Text, filedialog
 from tkinter import ttk
 from tkinter import messagebox
 import os
-from tkinter.messagebox import showinfo
 
 from steganography import main
 import bacon
 import whitespaces
 import synonyms
-import huffman_coding
 import error_handler
 
 if os.environ.get('DISPLAY', '') == '':
@@ -103,7 +99,6 @@ def encode():
 def decode():
     global method
     global message
-    method_name = ""
     try:
         print('Message index is: {}\n'.format(method),  end='')
     except:

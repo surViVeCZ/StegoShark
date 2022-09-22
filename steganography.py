@@ -10,38 +10,18 @@
 # Cíl práce:    Implementace 4 vybraných steganografických metod
 # ----------------------------------------------------------------------
 from dataclasses import dataclass
-from email import message
-from email.errors import CharsetError
-from operator import index
 import sys
 import getopt
-from xml.dom.minidom import Element
 import docx
 from docx import Document
-from docx.shared import Inches, Pt
-from docx.enum.style import WD_STYLE_TYPE
 from termcolor import colored
-import numpy as np
-import re
 import os
-import string
-import shutil
 import zipfile
-from copy import deepcopy
-
-import xml.etree.ElementTree as ET
-from lxml import etree
-from xml.etree import ElementTree
-import xml.etree.ElementTree
-import lxml
-import xml.dom.minidom
 import tempfile
-import tkinter
 from typing import List
 # moduly
 import bacon
 import whitespaces
-import xml_parse
 import synonyms
 import error_handler
 
