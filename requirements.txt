@@ -2,4 +2,5 @@ python-docx
 termcolor 
 numpy 
 matplotlib
+coverage
 
