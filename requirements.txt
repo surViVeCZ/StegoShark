@@ -3,4 +3,5 @@ termcolor
 numpy 
 matplotlib
 coverage
+pytest-cov
 
