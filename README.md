@@ -43,7 +43,7 @@ __--own1__ = šifrování/dešifrování metodou synonym využívající Baconov
 
 __--own2__ = šifrování/dešifrování metodou synonym využívající Huffmanova kódování
 
-## Příklady spuštění
+# Příklady spuštění
 Šifrování Baconovou šifrou
 ```
 python3 steganography.py -i cover_files/bacon/adele.docx -e -s "tajnazprava." -b 

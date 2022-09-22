@@ -1,14 +1,14 @@
-#----------------------------------------------------------------------
-# Autor:          Petr Pouč                                           
+# ----------------------------------------------------------------------
+# Autor:          Petr Pouč
 # Login:          xpoucp01
 # Datum:          27.04.2022
-# Název práce:    Digitální textová steganografie 
+# Název práce:    Digitální textová steganografie
 # Cíl práce:      Implementace 4 vybraných steganografických metod
-#----------------------------------------------------------------------
+# ----------------------------------------------------------------------
 
 
-#Šifrování pomocí Huffmanova kódování jsem dne 30.03.2022 převzal z této stránky
-#cite https://www.programiz.com/dsa/huffman-coding
+# Šifrování pomocí Huffmanova kódování jsem dne 30.03.2022 převzal z této stránky
+# cite https://www.programiz.com/dsa/huffman-coding
 
 from email import message
 import string
@@ -17,18 +17,18 @@ from typing import Dict
 from typing import List
 
 
-## @brief vytvoření uzlů stromu
+# @brief vytvoření uzlů stromu
 class NodeTree(object):
 
     def __init__(self, left=None, right=None):
         self.left = left
         self.right = right
 
-    ## @brief dítě uzlu
+    # @brief dítě uzlu
     def children(self):
         return (self.left, self.right)
 
-    ## @brief uzel stromu
+    # @brief uzel stromu
     def nodes(self):
         return (self.left, self.right)
 
@@ -36,14 +36,12 @@ class NodeTree(object):
         return '%s_%s' % (self.left, self.right)
 
 
-
-
-## @brief funkce generuje Huffmanův strom
-#@cite https://www.programiz.com/dsa/huffman-coding
-#@param node uzel stromu
-#@param left parametr určuje, kterou cestou se vydáme
-#@param binString binární vzor pro jednotlivý znak
-#@note funkce je rekurzivně volána, dokud není vyvtořen celý strom
+# @brief funkce generuje Huffmanův strom
+# @cite https://www.programiz.com/dsa/huffman-coding
+# @param node uzel stromu
+# @param left parametr určuje, kterou cestou se vydáme
+# @param binString binární vzor pro jednotlivý znak
+# @note funkce je rekurzivně volána, dokud není vyvtořen celý strom
 def huffman_code_tree(node, left=True, binString='') -> dict:
     if type(node) is str:
         return {node: binString}
@@ -54,11 +52,11 @@ def huffman_code_tree(node, left=True, binString='') -> dict:
     return tree
 
 
-## @brief zjistí frekvenci jednotlivých znaků v textu
-#@details znakům následně přiřadí vzor a zprávu převede do Huffmanova kódu 
-#@cite https://www.programiz.com/dsa/huffman-coding
-#@param message vstupní tajná zpráva
-#@return zpráva převedená do Huffmanova kódu
+# @brief zjistí frekvenci jednotlivých znaků v textu
+# @details znakům následně přiřadí vzor a zprávu převede do Huffmanova kódu
+# @cite https://www.programiz.com/dsa/huffman-coding
+# @param message vstupní tajná zpráva
+# @return zpráva převedená do Huffmanova kódu
 def get_frequency(message: str) -> str:
     freq = {}
     huffman_message = ""
@@ -90,6 +88,6 @@ def get_frequency(message: str) -> str:
 
     for character in message:
         huffman_message += huffmanCode[character]
-        
-    #tajná zprává převedena pomocí huffmanova kódování na úspornější řetězec
+
+    # tajná zprává převedena pomocí huffmanova kódování na úspornější řetězec
     return huffman_message

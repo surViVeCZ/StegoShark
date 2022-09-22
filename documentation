@@ -3,7 +3,7 @@
 # This file describes the settings to be used by the documentation system
 # doxygen (www.doxygen.org) for a project.
 #
-# All text after a double hash (##) is considered a comment and is placed in
+# All text after a double hash (#) is considered a comment and is placed in
 # front of the TAG it is preceding.
 #
 # All text after a single hash (#) is considered a comment and will be ignored.
@@ -1404,7 +1404,7 @@ QHP_VIRTUAL_FOLDER     = doc
 
 # If the QHP_CUST_FILTER_NAME tag is set, it specifies the name of a custom
 # filter to add. For more information please see Qt Help Project / Custom
-# Filters (see: http://qt-project.org/doc/qt-4.8/qthelpproject.html#custom-
+# Filters (see: http://qt-project.org/doc/qt-4.8/qthelpproject.html# custom-
 # filters).
 # This tag requires that the tag GENERATE_QHP is set to YES.
 
@@ -1412,7 +1412,7 @@ QHP_CUST_FILTER_NAME   =
 
 # The QHP_CUST_FILTER_ATTRS tag specifies the list of the attributes of the
 # custom filter to add. For more information please see Qt Help Project / Custom
-# Filters (see: http://qt-project.org/doc/qt-4.8/qthelpproject.html#custom-
+# Filters (see: http://qt-project.org/doc/qt-4.8/qthelpproject.html# custom-
 # filters).
 # This tag requires that the tag GENERATE_QHP is set to YES.
 
