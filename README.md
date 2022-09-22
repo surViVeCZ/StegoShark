@@ -1,6 +1,7 @@
 ![CI](https://github.com/surViVeCZ/StegoShark/actions/workflows/CI.yml/badge.svg)
 ![github repo size](https://img.shields.io/github/repo-size/surViVeCZ/StegoShark)
 ![Python versions](https://img.shields.io/pypi/pyversions/Django)
+[![codecov](https://codecov.io/github/surViVeCZ/StegoShark/branch/main/graph/badge.svg?token=RNQ0OGMSB2)](https://codecov.io/github/surViVeCZ/StegoShark)
 
 [![IMG-20220922-112510-modified.png](https://i.postimg.cc/vTC5yqHB/IMG-20220922-112510-modified.png)](https://postimg.cc/H84r4tMD)
 
