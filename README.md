@@ -2,7 +2,7 @@
 ![github repo size](https://img.shields.io/github/repo-size/surViVeCZ/StegoShark)
 ![Python versions](https://img.shields.io/pypi/pyversions/Django)
 [![codecov](https://codecov.io/github/surViVeCZ/StegoShark/branch/main/graph/badge.svg?token=RNQ0OGMSB2)](https://codecov.io/github/surViVeCZ/StegoShark)
-
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/85c19f8a894e4c148af95b868c9d10a4)](https://www.codacy.com/gh/surViVeCZ/StegoShark/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=surViVeCZ/StegoShark&amp;utm_campaign=Badge_Grade)
 [![IMG-20220922-112510-modified.png](https://i.postimg.cc/vTC5yqHB/IMG-20220922-112510-modified.png)](https://postimg.cc/H84r4tMD)
 
 __Autor:__ Petr Pouč
